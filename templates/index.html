@@ -1010,7 +1010,10 @@
     }
 
     form.addEventListener("submit", (event) => { event.preventDefault(); calculate(); });
-    calculate();
+    // Only auto-calculate on load if required fields are already populated (e.g. browser autofill)
+    if (document.getElementById("name").value && document.getElementById("birth_date").value) {
+      calculate();
+    }
   </script>
 </body>
 </html>
