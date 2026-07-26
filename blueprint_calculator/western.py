@@ -190,6 +190,10 @@ def record_western(ledger: Ledger, snapshot: PlanetarySnapshot) -> dict:
         "lunar_phase_name": moon_phase["phase_name"],
         "aspects": aspects,
         "houses": houses,
+        "house_cusps": [
+            {"house": i + 1, "longitude": snapshot.houses[i], **bridge_tropical_to_sign(snapshot.houses[i])}
+            for i in range(12)
+        ],
         "placements": placements,
         "dominant_retrogrades": [n for n, p in snapshot.bodies.items() if p.retrograde],
     }

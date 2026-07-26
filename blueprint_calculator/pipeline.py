@@ -26,6 +26,7 @@ from . import human_design as hd_mod
 from . import gene_keys as gk_mod
 from . import synthesis as synth
 from . import validation as val
+from .communication import record_communication
 from .preprocessing import Coordinates, record_preprocessing
 from .provenance import Ledger
 
@@ -47,6 +48,7 @@ class BlueprintReport:
     validations: list
     synthesis: dict
     ledger: Ledger
+    communication: dict = field(default_factory=dict)
 
     def validation_summary(self) -> dict:
         by_severity = {"MANDATORY": [], "RECOMMENDED": [], "DIAGNOSTIC": []}
@@ -101,10 +103,13 @@ def run_pipeline(
     # Phase 10
     synthesis_result = synth.record_synthesis(ledger, numerology_result, western_result, vedic_result, hd_result, gk_result)
 
+    # Communication profile (cross-system, deterministic)
+    communication_result = record_communication(numerology_result, western_result, hd_result, gk_result)
+
     return BlueprintReport(
         name=name, birth_date=birth_date, birth_time=birth_time, birth_place=birth_place,
         coordinates=coords, utc_datetime=utc_dt, julian_day=jd,
         numerology=numerology_result, western=western_result, vedic=vedic_result,
         human_design=hd_result, gene_keys=gk_result, validations=validations,
-        synthesis=synthesis_result, ledger=ledger,
+        synthesis=synthesis_result, ledger=ledger, communication=communication_result,
     )

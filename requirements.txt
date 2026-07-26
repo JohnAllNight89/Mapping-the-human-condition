@@ -2,3 +2,6 @@ pyswisseph>=2.10,<3
 timezonefinder>=8,<9
 tzdata
 pytest>=7
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart

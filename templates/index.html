@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blueprint Calculator — Esoteric Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: { 950: "#0b0910", 900: "#12101a", 800: "#191527", 700: "#241d38" },
+            violet2: { DEFAULT: "#8b5cf6", soft: "#a78bfa", deep: "#5b3fa8" },
+            gold: { DEFAULT: "#d4af37", soft: "#e9cd6f", dim: "#8a7328" },
+          },
+          fontFamily: {
+            display: ["Cinzel", "serif"],
+            body: ["Inter", "system-ui", "sans-serif"],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    body { background: radial-gradient(1200px 800px at 80% -10%, #241d38 0%, #12101a 45%, #0b0910 100%); }
+    .card-metal {
+      background: linear-gradient(160deg, #1c1729 0%, #141020 55%, #191428 100%);
+      border: 1px solid #352a52;
+      box-shadow: inset 0 1px 0 rgba(212, 175, 55, 0.12), 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+    .card-metal-gold {
+      background: linear-gradient(160deg, #221b30 0%, #161122 55%, #1d1526 100%);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      box-shadow: inset 0 1px 0 rgba(233, 205, 111, 0.25), 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    .gold-text {
+      background: linear-gradient(180deg, #f3dd8f 0%, #d4af37 55%, #9c7f2c 100%);
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .tab-active { color: #e9cd6f; border-color: #d4af37; background: rgba(139, 92, 246, 0.12); }
+    .tab-idle { color: #9a91b5; border-color: transparent; }
+    .tab-idle:hover { color: #c9c1e0; background: rgba(139, 92, 246, 0.08); }
+    input { color-scheme: dark; }
+    .print-title { display: none; }
+
+    @media print {
+      body { background: #fff !important; color: #111 !important; font-size: 11px; }
+      header, aside, #tab-bar, #print-btn, #form-error { display: none !important; }
+      main { display: block !important; max-width: 100% !important; padding: 0 !important; }
+      [data-panel] { display: block !important; margin-top: 1rem !important; break-inside: avoid-page; }
+      .print-title {
+        display: block; font-family: Cinzel, serif; font-size: 18px;
+        margin: 1.25rem 0 0.5rem; padding-bottom: 0.25rem;
+        border-bottom: 2px solid #b08d2a; color: #6b5416;
+      }
+      .card-metal, .card-metal-gold {
+        background: #fff !important; border: 1px solid #c9c2da !important;
+        box-shadow: none !important; break-inside: avoid;
+      }
+      .gold-text { background: none !important; -webkit-text-fill-color: initial; color: #8a6d1d !important; }
+      .text-slate-100, .text-slate-200, .text-slate-300 { color: #1e1b2a !important; }
+      .text-slate-400, .text-slate-500 { color: #5a5470 !important; }
+      .text-gold-soft { color: #8a6d1d !important; }
+      .text-violet2-soft { color: #5b3fa8 !important; }
+      .text-emerald-400 { color: #047857 !important; }
+      .bg-charcoal-950\/50, .bg-charcoal-950\/60, .bg-charcoal-950\/40,
+      .bg-charcoal-950\/30, .bg-charcoal-950\/70, .odd\:bg-charcoal-950\/30:nth-child(odd),
+      thead { background: #f4f2fa !important; }
+      .border-charcoal-700, .border-charcoal-700\/40, .border-charcoal-700\/60,
+      .border-charcoal-700\/70, .border-gold\/20, .border-gold\/40,
+      .border-gold\/50, .border-violet2\/40 { border-color: #c9c2da !important; }
+      .overflow-x-auto { overflow: visible !important; }
+      table { min-width: 0 !important; }
+      .animate-pulse { animation: none !important; }
+    }
+  </style>
+</head>
+<body class="min-h-screen font-body text-slate-200 antialiased">
+
+  <header class="border-b border-charcoal-700/60 px-6 py-5">
+    <div class="mx-auto flex max-w-7xl items-baseline justify-between gap-4">
+      <div>
+        <h1 class="font-display text-2xl tracking-widest gold-text sm:text-3xl">BLUEPRINT CALCULATOR</h1>
+        <p class="mt-1 text-xs uppercase tracking-[0.3em] text-violet2-soft/70">Esoteric Synthesis Engine · Numerology × Astrology × Human Design × Gene Keys</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="audit-link" class="hidden">
+          <a id="audit-href" href="#" target="_blank"
+             class="rounded-lg border border-violet2/40 px-3 py-1.5 text-xs tracking-wider text-violet2-soft transition hover:bg-violet2/10">
+            ⬇ Audit
+          </a>
+        </span>
+        <span id="engine-status" class="hidden rounded-full border border-gold/40 px-3 py-1 text-xs text-gold-soft sm:inline-block">Synthesis Engines · Online</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto grid max-w-7xl gap-6 p-6 lg:grid-cols-[340px,1fr]">
+
+    <!-- ===================== Sidebar: Birth Profile ===================== -->
+    <aside class="card-metal h-fit rounded-2xl p-6 lg:sticky lg:top-6">
+      <h2 class="font-display text-lg tracking-wide text-gold-soft">Birth Profile</h2>
+      <p class="mt-1 text-xs text-slate-400">The seed data for every system in the synthesis.</p>
+
+      <form id="profile-form" class="mt-6 space-y-5">
+        <div>
+          <label for="name" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-violet2-soft">Full Birth Name</label>
+          <input id="name" name="name" type="text" required value="Johnathon Anthony Long"
+                 placeholder="As written on your birth certificate"
+                 class="w-full rounded-lg border border-charcoal-700 bg-charcoal-950/70 px-3 py-2.5 text-sm text-slate-100 placeholder-slate-500 outline-none transition focus:border-violet2 focus:ring-2 focus:ring-violet2/30" />
+        </div>
+        <div>
+          <label for="birth_date" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-violet2-soft">Birth Date</label>
+          <input id="birth_date" name="birth_date" type="date" required value="1989-06-23"
+                 class="w-full rounded-lg border border-charcoal-700 bg-charcoal-950/70 px-3 py-2.5 text-sm text-slate-100 outline-none transition focus:border-violet2 focus:ring-2 focus:ring-violet2/30" />
+        </div>
+        <div>
+          <label for="birth_time" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-violet2-soft">Birth Time</label>
+          <input id="birth_time" name="birth_time" type="time" value="21:55"
+                 class="w-full rounded-lg border border-charcoal-700 bg-charcoal-950/70 px-3 py-2.5 text-sm text-slate-100 outline-none transition focus:border-violet2 focus:ring-2 focus:ring-violet2/30" />
+          <p class="mt-1 text-[11px] text-slate-500">Local clock time — DST resolved automatically from history.</p>
+        </div>
+        <div>
+          <label for="birth_place" class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-violet2-soft">Birth Place</label>
+          <input id="birth_place" name="birth_place" type="text" placeholder="City, State / Country" value="Atlanta, Georgia, USA"
+                 class="w-full rounded-lg border border-charcoal-700 bg-charcoal-950/70 px-3 py-2.5 text-sm text-slate-100 placeholder-slate-500 outline-none transition focus:border-violet2 focus:ring-2 focus:ring-violet2/30" />
+          <p class="mt-1 text-[11px] text-slate-500">Resolved offline — major cities or raw "lat, lon" coordinates.</p>
+        </div>
+
+        <button type="submit" id="calc-btn"
+                class="w-full rounded-lg bg-gradient-to-r from-violet2-deep via-violet2 to-violet2-deep px-4 py-3 font-display text-sm tracking-[0.2em] text-white shadow-lg shadow-violet2/20 transition hover:from-violet2 hover:to-violet2 hover:shadow-violet2/40 focus:outline-none focus:ring-2 focus:ring-gold/50">
+          CALCULATE BLUEPRINT
+        </button>
+        <p id="form-error" class="hidden rounded-lg border border-red-700/50 bg-red-950/40 px-3 py-2 text-xs text-red-300"></p>
+      </form>
+    </aside>
+
+    <!-- ===================== Workspace: Tabs ===================== -->
+    <section class="min-w-0">
+      <nav id="tab-bar" class="flex gap-1 overflow-x-auto rounded-xl border border-charcoal-700/60 bg-charcoal-900/60 p-1.5">
+        <button data-tab="summary"       class="tab-active whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Summary</button>
+        <button data-tab="genekeys"      class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Gene Keys</button>
+        <button data-tab="humandesign"   class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Human Design</button>
+        <button data-tab="numerology"    class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Numerology</button>
+        <button data-tab="vedic"         class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Vedic Astrology</button>
+        <button data-tab="western"       class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Western Astrology</button>
+        <button data-tab="communication" class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Communication</button>
+        <button data-tab="all"           class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">All Aspects</button>
+      </nav>
+
+      <!-- Summary -->
+      <div id="panel-summary" data-panel class="mt-6 space-y-6">
+        <h2 class="print-title">Soul Blueprint — Summary</h2>
+        <div id="summary-blueprint" class="hidden card-metal-gold rounded-2xl p-6">
+          <header class="flex flex-wrap items-baseline justify-between gap-3">
+            <h3 class="font-display text-lg tracking-wide text-gold-soft">The Soul Blueprint</h3>
+            <button id="print-btn" onclick="window.print()"
+                    class="rounded-lg border border-gold/40 px-3 py-1.5 text-xs tracking-wider text-gold-soft transition hover:bg-gold/10 print:hidden">
+              ⎙ Save Report / PDF
+            </button>
+          </header>
+          <div id="blueprint-archetypes" class="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4"></div>
+          <p id="blueprint-paragraph" class="mt-5 border-t border-gold/20 pt-4 text-sm leading-relaxed text-slate-300"></p>
+        </div>
+        <div class="card-metal-gold rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Profile</h3>
+          <div id="summary-profile" class="mt-3 grid gap-3 text-sm sm:grid-cols-2">
+            <p class="text-slate-400">Calculate a blueprint to populate the summary.</p>
+          </div>
+        </div>
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Core Numbers</h3>
+          <div id="summary-numbers" class="mt-4 grid grid-cols-2 gap-4 xl:grid-cols-4"></div>
+        </div>
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Celestial Signature</h3>
+          <div id="summary-celestial" class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <p class="text-sm text-slate-400">Add birth time and place to reveal the sky.</p>
+          </div>
+        </div>
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">System Status</h3>
+          <ul class="mt-4 space-y-2 text-sm">
+            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Numerology</span><span class="text-emerald-400">● Active</span></li>
+            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Western Astrology</span><span id="status-western" class="text-slate-500">○ Awaiting birth time &amp; place</span></li>
+            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Vedic Astrology</span><span id="status-vedic" class="text-slate-500">○ Awaiting birth time &amp; place</span></li>
+            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Human Design</span><span id="status-hd" class="text-slate-500">○ Awaiting birth time &amp; place</span></li>
+            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Gene Keys</span><span id="status-gk" class="text-slate-500">○ Awaiting birth time &amp; place</span></li>
+            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Communication Profile</span><span id="status-comm" class="text-slate-500">○ Awaiting birth time &amp; place</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Numerology -->
+      <div id="panel-numerology" data-panel class="mt-6 hidden">
+        <h2 class="print-title">Numerology</h2>
+        <div id="numerology-cards" class="grid gap-6 md:grid-cols-2">
+          <p class="text-sm text-slate-400">Calculate a blueprint to reveal the core numbers.</p>
+        </div>
+      </div>
+
+      <!-- Western Astrology -->
+      <div id="panel-western" data-panel class="mt-6 hidden">
+        <h2 class="print-title">Western Astrology (Tropical)</h2>
+        <div id="western-content" class="space-y-6">
+          <p class="text-sm text-slate-400">Add birth time and place, then calculate.</p>
+        </div>
+      </div>
+
+      <!-- Vedic Astrology -->
+      <div id="panel-vedic" data-panel class="mt-6 hidden">
+        <h2 class="print-title">Vedic Astrology (Sidereal · Lahiri)</h2>
+        <div id="vedic-content" class="space-y-6">
+          <p class="text-sm text-slate-400">Add birth time and place, then calculate.</p>
+        </div>
+      </div>
+
+      <!-- Human Design -->
+      <div id="panel-humandesign" data-panel class="mt-6 hidden">
+        <h2 class="print-title">Human Design</h2>
+        <div id="hd-content" class="space-y-6">
+          <p class="text-sm text-slate-400">Add birth time and place, then calculate.</p>
+        </div>
+      </div>
+
+      <!-- Gene Keys -->
+      <div id="panel-genekeys" data-panel class="mt-6 hidden">
+        <h2 class="print-title">Gene Keys</h2>
+        <div id="gk-content" class="space-y-6">
+          <p class="text-sm text-slate-400">Add birth time and place, then calculate.</p>
+        </div>
+      </div>
+
+      <!-- Communication Profile -->
+      <div id="panel-communication" data-panel class="mt-6 hidden">
+        <h2 class="print-title">Communication Profile</h2>
+        <div id="communication-content" class="space-y-6">
+          <p class="text-sm text-slate-400">Add birth time and place, then calculate.</p>
+        </div>
+      </div>
+
+      <!-- All Aspects -->
+      <div id="panel-all" data-panel class="mt-6 hidden space-y-8"></div>
+    </section>
+  </main>
+
+  <script>
+    // ---------- Static content ----------
+    const ARCHETYPES = {
+      1: "The Pioneer", 2: "The Diplomat", 3: "The Creative", 4: "The Builder",
+      5: "The Freedom Seeker", 6: "The Nurturer", 7: "The Mystic", 8: "The Powerhouse",
+      9: "The Humanitarian", 11: "The Illuminator", 22: "The Master Builder", 33: "The Master Teacher",
+    };
+    const CORE_NUMBERS = [
+      { key: "life_path",   title: "Life Path",              subtitle: "The road your soul walks — derived from the birth date." },
+      { key: "expression",  title: "Expression / Destiny",   subtitle: "Innate gifts and goals — every letter of the birth name." },
+      { key: "soul_urge",   title: "Soul Urge / Heart's Desire", subtitle: "The inner yearning — the vowels of the birth name." },
+      { key: "personality", title: "Personality",            subtitle: "The face shown to the world — the consonants of the birth name." },
+    ];
+
+    // ---------- Tabs ----------
+    const tabButtons = document.querySelectorAll("#tab-bar [data-tab]");
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        tabButtons.forEach((b) => { b.classList.remove("tab-active"); b.classList.add("tab-idle"); });
+        btn.classList.add("tab-active"); btn.classList.remove("tab-idle");
+        document.querySelectorAll("[data-panel]").forEach((p) => p.classList.add("hidden"));
+        if (btn.dataset.tab === "all") updateAllAspectsPanel();
+        document.getElementById("panel-" + btn.dataset.tab).classList.remove("hidden");
+      });
+    });
+
+    // ---------- Rendering helpers ----------
+    function masterBadge(result) {
+      return result.is_master
+        ? `<span class="ml-2 inline-block whitespace-nowrap rounded-full border border-gold/50 bg-gold/10 px-2 py-0.5 align-middle text-[10px] font-semibold uppercase tracking-wider text-gold-soft">Master Number</span>`
+        : "";
+    }
+
+    const RETRO = `<span class="text-gold-soft" title="Retrograde">℞</span>`;
+    const th = (label, align = "left") =>
+      `<th class="px-4 py-2.5 text-${align} text-[11px] font-semibold uppercase tracking-wider text-slate-500">${label}</th>`;
+    const td = (content, extra = "") =>
+      `<td class="px-4 py-2.5 ${extra}">${content}</td>`;
+
+    function tableShell(title, subtitle, headRow, bodyRows) {
+      return `
+        <div class="card-metal rounded-2xl p-6">
+          <header class="flex flex-wrap items-baseline justify-between gap-2">
+            <h3 class="font-display text-lg tracking-wide text-gold-soft">${title}</h3>
+            <p class="text-xs text-slate-400">${subtitle}</p>
+          </header>
+          <div class="mt-4 overflow-x-auto rounded-xl border border-charcoal-700/60">
+            <table class="w-full min-w-[560px] text-sm">
+              <thead class="bg-charcoal-950/70"><tr>${headRow}</tr></thead>
+              <tbody class="divide-y divide-charcoal-700/40">${bodyRows}</tbody>
+            </table>
+          </div>
+        </div>`;
+    }
+
+    function angleCard(label, data) {
+      return `
+        <div class="card-metal-gold rounded-2xl p-5 text-center">
+          <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft">${label}</p>
+          <div class="mt-2 font-display text-3xl gold-text">${data.sign_glyph} ${data.sign}</div>
+          <p class="mt-2 font-mono text-sm text-slate-300">${data.position}</p>
+          <p class="mt-1 font-mono text-[11px] text-slate-500">ecliptic ${data.longitude.toFixed(4)}°</p>
+        </div>`;
+    }
+
+    function contextBanner(astro) {
+      return `
+        <div class="card-metal rounded-2xl px-6 py-4">
+          <div class="flex flex-wrap items-center gap-x-8 gap-y-2 text-xs text-slate-400">
+            <span><span class="text-slate-500">Place</span> <span class="text-slate-200">${astro.location.resolved}</span></span>
+            <span class="font-mono">${astro.location.latitude.toFixed(4)}°, ${astro.location.longitude.toFixed(4)}°</span>
+            <span><span class="text-slate-500">Local</span> <span class="text-slate-200">${astro.time.local}</span> <span class="text-violet2-soft">${astro.time.utc_offset}</span></span>
+            <span><span class="text-slate-500">UTC</span> <span class="text-slate-200">${astro.time.utc}</span></span>
+            <span><span class="text-slate-500">TZ</span> <span class="text-slate-200">${astro.location.timezone}</span></span>
+          </div>
+        </div>`;
+    }
+
+    function statCard(label, value, sub, gold = false) {
+      return `
+        <div class="${gold ? "card-metal-gold" : "card-metal"} rounded-2xl p-5 text-center">
+          <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft">${label}</p>
+          <div class="mt-2 font-display text-2xl gold-text">${value}</div>
+          <p class="mt-1.5 text-xs text-slate-400">${sub}</p>
+        </div>`;
+    }
+
+    // ---------- Numerology ----------
+    function renderNumerology(numerologyData) {
+      const cards = CORE_NUMBERS.map(({ key, title, subtitle }) => {
+        const result = numerologyData[key];
+        const archetype = ARCHETYPES[result.number] || "";
+        return `
+          <article class="${result.is_master ? "card-metal-gold" : "card-metal"} rounded-2xl p-6">
+            <header class="flex items-start justify-between gap-3">
+              <div>
+                <h3 class="font-display text-base tracking-wide text-gold-soft">${title}${masterBadge(result)}</h3>
+                <p class="mt-1 text-xs text-slate-400">${subtitle}</p>
+              </div>
+              <div class="text-right">
+                <div class="font-display text-5xl leading-none gold-text">${result.number}</div>
+                <div class="mt-1 text-[11px] uppercase tracking-wider text-violet2-soft">${archetype}</div>
+              </div>
+            </header>
+            <div class="mt-5 space-y-2 border-t border-charcoal-700/70 pt-4">
+              <p class="text-[11px] uppercase tracking-wider text-slate-500">Reduction</p>
+              <p class="font-mono text-sm text-violet2-soft">${result.reduction}</p>
+              <p class="text-[11px] uppercase tracking-wider text-slate-500">Working</p>
+              <p class="break-words font-mono text-[11px] leading-relaxed text-slate-400">${result.letters}</p>
+            </div>
+          </article>`;
+      });
+      document.getElementById("numerology-cards").innerHTML = cards.join("");
+    }
+
+    function renderSummary(profile, numerologyData) {
+      const detail = (label, value) => `
+        <div class="rounded-lg bg-charcoal-950/50 px-4 py-2.5">
+          <p class="text-[11px] uppercase tracking-wider text-slate-500">${label}</p>
+          <p class="mt-0.5 text-slate-100">${value || "—"}</p>
+        </div>`;
+      document.getElementById("summary-profile").innerHTML =
+        detail("Name", profile.name) +
+        detail("Birth Date", profile.birth_date) +
+        detail("Birth Time", profile.birth_time) +
+        detail("Birth Place", profile.birth_place);
+
+      document.getElementById("summary-numbers").innerHTML = CORE_NUMBERS.map(({ key, title }) => {
+        const result = numerologyData[key];
+        return `
+          <div class="rounded-xl ${result.is_master ? "card-metal-gold" : "card-metal"} p-4 text-center">
+            <div class="font-display text-4xl gold-text">${result.number}</div>
+            <p class="mt-2 text-xs font-medium text-slate-300">${title}</p>
+            <p class="mt-0.5 text-[11px] text-violet2-soft">${ARCHETYPES[result.number] || ""}</p>
+          </div>`;
+      }).join("");
+
+      document.getElementById("engine-status").classList.remove("hidden");
+    }
+
+    // ---------- Western Astrology ----------
+    function renderWestern(astro) {
+      const container = document.getElementById("western-content");
+      if (!astro.available) {
+        container.innerHTML = `<div class="card-metal rounded-2xl p-8 text-center text-sm text-slate-400">${astro.reason}</div>`;
+        return;
+      }
+      const western = astro.western;
+      const planetRows = western.planets.map((planet) => `
+        <tr class="odd:bg-charcoal-950/30">
+          ${td(`<span class="mr-2 text-violet2-soft">${planet.glyph}</span><span class="font-medium text-slate-100">${planet.name}</span>`)}
+          ${td(`${planet.sign_glyph} ${planet.sign}`)}
+          ${td(`<span class="font-mono text-slate-200">${planet.position.replace(" " + planet.sign, "")}</span>`)}
+          ${td(`<span class="font-mono text-slate-400">${planet.longitude.toFixed(4)}°</span>`)}
+          ${td(planet.retrograde ? RETRO : `<span class="text-slate-500">D</span>`, "text-center")}
+        </tr>`).join("");
+
+      const houseRows = western.houses.map((house) => `
+        <tr class="odd:bg-charcoal-950/30">
+          ${td(`<span class="font-medium text-slate-100">House ${house.house}</span>`)}
+          ${td(`${house.sign_glyph} ${house.sign}`)}
+          ${td(`<span class="font-mono text-slate-200">${house.position.replace(" " + house.sign, "")}</span>`)}
+          ${td(`<span class="font-mono text-slate-400">${house.longitude.toFixed(4)}°</span>`)}
+        </tr>`).join("");
+
+      container.innerHTML =
+        contextBanner(astro) +
+        `<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+           ${angleCard("Ascendant", western.angles.ascendant)}
+           ${angleCard("Midheaven (MC)", western.angles.midheaven)}
+           ${angleCard("Descendant", western.angles.descendant)}
+           ${angleCard("Imum Coeli (IC)", western.angles.imum_coeli)}
+         </div>` +
+        tableShell("Planetary Positions", "Tropical zodiac · Swiss Ephemeris",
+          th("Body") + th("Sign") + th("Position") + th("Longitude") + th("Motion", "center"), planetRows) +
+        tableShell("House Cusps", "Placidus system",
+          th("House") + th("Sign") + th("Cusp") + th("Longitude"), houseRows);
+    }
+
+    // ---------- Vedic Astrology ----------
+    function renderVedic(astro) {
+      const container = document.getElementById("vedic-content");
+      if (!astro.available) {
+        container.innerHTML = `<div class="card-metal rounded-2xl p-8 text-center text-sm text-slate-400">${astro.reason}</div>`;
+        return;
+      }
+      const vedic = astro.vedic;
+      const grahaRows = vedic.grahas.map((graha) => `
+        <tr class="odd:bg-charcoal-950/30">
+          ${td(`<span class="mr-2 text-violet2-soft">${graha.glyph}</span><span class="font-medium text-slate-100">${graha.name}</span>`)}
+          ${td(`${graha.rashi} <span class="text-slate-500">(${graha.sign})</span>`)}
+          ${td(`<span class="font-mono text-slate-200">${graha.position.replace(" " + graha.rashi, "")}</span>`)}
+          ${td(`${graha.nakshatra} <span class="text-slate-500">· ${graha.nakshatra_lord}</span>`)}
+          ${td(`<span class="font-mono text-slate-300">${graha.pada}</span>`, "text-center")}
+          ${td(graha.retrograde ? RETRO : `<span class="text-slate-500">D</span>`, "text-center")}
+        </tr>`).join("");
+
+      const lagna = vedic.lagna;
+      container.innerHTML =
+        contextBanner(astro) +
+        `<div class="grid gap-4 sm:grid-cols-2">
+           <div class="card-metal-gold rounded-2xl p-5 text-center">
+             <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft">Lagna (Ascendant)</p>
+             <div class="mt-2 font-display text-3xl gold-text">${lagna.rashi}</div>
+             <p class="mt-2 font-mono text-sm text-slate-300">${lagna.position}</p>
+             <p class="mt-1 text-xs text-slate-400">${lagna.nakshatra} · Pada ${lagna.pada}</p>
+           </div>
+           <div class="card-metal rounded-2xl p-5 text-center">
+             <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft">Ayanamsa</p>
+             <div class="mt-2 font-display text-3xl text-slate-100">${vedic.ayanamsa_dms}</div>
+             <p class="mt-2 text-xs text-slate-400">${vedic.ayanamsa_name} · sidereal = tropical − ayanamsa</p>
+           </div>
+         </div>` +
+        tableShell("Graha Positions", "Sidereal zodiac · Lahiri Ayanamsa",
+          th("Graha") + th("Rashi") + th("Position") + th("Nakshatra") + th("Pada", "center") + th("Motion", "center"), grahaRows);
+    }
+
+    // ---------- Human Design ----------
+    const HD_CENTER_ORDER = ["Head", "Ajna", "Throat", "G", "Heart", "Sacral", "Spleen", "Solar Plexus", "Root"];
+
+    function setStatus(id, active) {
+      const el = document.getElementById(id);
+      el.innerHTML = active ? "● Active" : "○ Awaiting birth time &amp; place";
+      el.className = active ? "text-emerald-400" : "text-slate-500";
+    }
+
+    function activationTable(title, subtitle, activations, accent) {
+      const rows = activations.map((entry) => `
+        <tr class="odd:bg-charcoal-950/30">
+          ${td(`<span class="mr-2 ${accent}">${entry.glyph}</span><span class="font-medium text-slate-100">${entry.body}</span>`)}
+          ${td(`<span class="font-mono text-base ${accent}">${entry.notation}</span>`)}
+          ${td(`<span class="text-slate-300">${entry.gate_name}</span>`)}
+          ${td(`<span class="font-mono text-[11px] text-slate-500">${entry.zodiac}</span>`)}
+        </tr>`).join("");
+      return tableShell(title, subtitle,
+        th("Body") + th("Gate.Line") + th("Hexagram") + th("Zodiac"), rows);
+    }
+
+    function renderHumanDesign(astro) {
+      const container = document.getElementById("hd-content");
+      if (!astro.available) {
+        container.innerHTML = `<div class="card-metal rounded-2xl p-8 text-center text-sm text-slate-400">${astro.reason}</div>`;
+        setStatus("status-hd", false);
+        return;
+      }
+      const hd = astro.human_design;
+      const centers = HD_CENTER_ORDER.map((center) => {
+        const defined = hd.defined_centers.includes(center);
+        return `
+          <div class="rounded-xl border px-3 py-3 text-center ${defined
+            ? "border-gold/50 bg-violet2/15 text-slate-100"
+            : "border-charcoal-700/70 bg-charcoal-950/40 text-slate-500"}">
+            <p class="text-xs font-medium">${center}</p>
+            <p class="mt-0.5 text-[10px] uppercase tracking-wider ${defined ? "text-gold-soft" : "text-slate-600"}">${defined ? "Defined" : "Open"}</p>
+          </div>`;
+      }).join("");
+
+      const channels = hd.channels.length
+        ? hd.channels.map((ch) => `
+            <span class="rounded-full border border-violet2/40 bg-violet2/10 px-3 py-1.5 text-xs text-slate-200">
+              <span class="font-mono text-violet2-soft">${ch.label}</span>
+              <span class="text-slate-400"> · ${ch.centers[0]} ↔ ${ch.centers[1]}</span>
+            </span>`).join("")
+        : `<span class="text-sm text-slate-500">No fully defined channels.</span>`;
+
+      container.innerHTML =
+        contextBanner(astro) +
+        `<div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+           ${statCard("Type", hd.type, `Strategy: ${hd.strategy}`, true)}
+           ${statCard("Authority", hd.authority.split(" (")[0], hd.authority.includes("(") ? hd.authority.split(" (")[1].replace(")", "") : "inner compass")}
+           ${statCard("Profile", hd.profile, hd.profile_label)}
+           ${statCard("Definition", hd.definition.replace(" Definition", ""), `Signature: ${hd.signature} · Not-self: ${hd.not_self}`)}
+         </div>` +
+        `<div class="card-metal rounded-2xl p-6">
+           <h3 class="font-display text-lg tracking-wide text-gold-soft">Centers</h3>
+           <div class="mt-4 grid grid-cols-3 gap-3">${centers}</div>
+           <h3 class="mt-6 font-display text-lg tracking-wide text-gold-soft">Defined Channels</h3>
+           <div class="mt-3 flex flex-wrap gap-2">${channels}</div>
+           <p class="mt-4 text-xs text-slate-500">Design calculated at ${hd.design.moment_utc} UTC — the Sun exactly ${hd.design.solar_arc}° of solar longitude before birth.</p>
+         </div>` +
+        `<div class="grid gap-6 xl:grid-cols-2">
+           ${activationTable("Personality", "Conscious · at birth", hd.personality.activations, "text-gold-soft")}
+           ${activationTable("Design", `Unconscious · ${hd.design.moment_utc} UTC`, hd.design.activations, "text-violet2-soft")}
+         </div>`;
+      setStatus("status-hd", true);
+    }
+
+    // ---------- Gene Keys ----------
+    function renderGeneKeys(astro) {
+      const container = document.getElementById("gk-content");
+      if (!astro.available) {
+        container.innerHTML = `<div class="card-metal rounded-2xl p-8 text-center text-sm text-slate-400">${astro.reason}</div>`;
+        setStatus("status-gk", false);
+        return;
+      }
+      const gk = astro.gene_keys;
+      const spheres = gk.activation_sequence.map((sphere) => `
+        <div class="card-metal-gold rounded-2xl p-6">
+          <div class="flex items-baseline justify-between gap-3">
+            <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft">${sphere.sphere}</p>
+            <span class="text-[11px] text-slate-500">${sphere.source}</span>
+          </div>
+          <div class="mt-2 flex items-baseline gap-3">
+            <span class="font-display text-4xl gold-text">${sphere.notation}</span>
+            <span class="text-sm text-slate-300">${sphere.name}</span>
+          </div>
+          <p class="mt-2 text-xs text-slate-400">${sphere.meaning}</p>
+          <div class="mt-4 grid grid-cols-3 gap-2 border-t border-gold/20 pt-3 text-center text-xs">
+            <div><p class="text-[10px] uppercase tracking-wider text-slate-500">Shadow</p><p class="mt-1 text-slate-400">${sphere.shadow}</p></div>
+            <div><p class="text-[10px] uppercase tracking-wider text-violet2-soft">Gift</p><p class="mt-1 text-slate-200">${sphere.gift}</p></div>
+            <div><p class="text-[10px] uppercase tracking-wider text-gold-soft">Siddhi</p><p class="mt-1 gold-text font-medium">${sphere.siddhi}</p></div>
+          </div>
+        </div>`).join("");
+
+      const keyRows = gk.all_keys.map((key) => `
+        <tr class="odd:bg-charcoal-950/30">
+          ${td(`<span class="font-mono text-base text-gold-soft">${key.gene_key}</span>`)}
+          ${td(`<span class="text-slate-200">${key.name}</span>`)}
+          ${td(`<span class="text-slate-400">${key.shadow}</span>`)}
+          ${td(`<span class="text-slate-200">${key.gift}</span>`)}
+          ${td(`<span class="text-gold-soft">${key.siddhi}</span>`)}
+          ${td(`<span class="text-[11px] text-slate-500">${key.sources.join(", ")}</span>`)}
+        </tr>`).join("");
+
+      container.innerHTML =
+        contextBanner(astro) +
+        `<div>
+           <h3 class="mb-4 font-display text-lg tracking-wide text-gold-soft">Activation Sequence</h3>
+           <div class="grid gap-4 xl:grid-cols-2">${spheres}</div>
+         </div>` +
+        tableShell("All Activated Gene Keys", "Every gate in your bodygraph, through the Gene Keys lens",
+          th("Key") + th("Name") + th("Shadow") + th("Gift") + th("Siddhi") + th("Activated By"), keyRows);
+      setStatus("status-gk", true);
+    }
+
+    // ---------- Communication Profile ----------
+    function renderCommunication(astro) {
+      const container = document.getElementById("communication-content");
+      const comm = astro && astro.communication;
+      if (!comm || !comm.archetype) {
+        container.innerHTML = `<div class="card-metal rounded-2xl p-8 text-center text-sm text-slate-400">Add birth time and place, then calculate.</div>`;
+        setStatus("status-comm", false);
+        return;
+      }
+
+      // Archetype hero card
+      const archetypeCard = `
+        <div class="card-metal-gold rounded-2xl p-8 text-center">
+          <p class="text-xs uppercase tracking-[0.3em] text-violet2-soft">Communication Archetype</p>
+          <h3 class="mt-3 font-display text-3xl gold-text sm:text-4xl">${comm.archetype}</h3>
+          <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-300">${comm.summary}</p>
+        </div>`;
+
+      // Processing style card
+      const processingCard = `
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Processing Style</h3>
+          <p class="mt-3 text-sm leading-relaxed text-slate-300">${comm.processing_style}</p>
+        </div>`;
+
+      // Delivery preferences 2×2 grid
+      const deliveryGrid = `
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Delivery Preferences</h3>
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            ${[
+              ["Tone", comm.delivery.tone, "text-gold-soft"],
+              ["Format", comm.delivery.format, "text-violet2-soft"],
+              ["Pacing", comm.delivery.pacing, "text-emerald-400"],
+              ["Avoid", comm.delivery.avoid, "text-red-400"],
+            ].map(([label, value, color]) => `
+              <div class="rounded-xl bg-charcoal-950/50 p-4">
+                <p class="text-[11px] uppercase tracking-wider ${color}">${label}</p>
+                <p class="mt-2 text-sm leading-relaxed text-slate-300">${value}</p>
+              </div>`).join("")}
+          </div>
+        </div>`;
+
+      // Cognitive strengths
+      const strengthsHtml = comm.strengths && comm.strengths.length
+        ? comm.strengths.map((s) => `
+            <li class="flex items-start gap-3 rounded-xl bg-charcoal-950/50 px-4 py-3">
+              <span class="mt-0.5 text-gold-soft">✦</span>
+              <div>
+                <p class="font-medium text-slate-100">${s.strength}</p>
+                <p class="mt-0.5 text-xs text-slate-400">${s.source}</p>
+              </div>
+            </li>`).join("")
+        : `<li class="text-sm text-slate-400">No dominant strengths identified.</li>`;
+
+      const strengthsCard = `
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Cognitive Strengths</h3>
+          <ul class="mt-4 space-y-2">${strengthsHtml}</ul>
+        </div>`;
+
+      // Key indicators table
+      const indicatorRows = (comm.key_indicators || []).map((ind) => `
+        <tr class="odd:bg-charcoal-950/30">
+          ${td(`<span class="text-violet2-soft text-xs font-medium">${ind.system}</span>`)}
+          ${td(`<span class="font-mono text-sm text-slate-200">${ind.indicator}</span>`)}
+          ${td(`<span class="text-xs text-slate-400">${ind.implication}</span>`)}
+        </tr>`).join("");
+
+      const indicatorsTable = tableShell(
+        "Key Indicators",
+        "Cross-system data points driving this analysis",
+        th("System") + th("Indicator") + th("Implication"),
+        indicatorRows,
+      );
+
+      container.innerHTML = archetypeCard + processingCard + deliveryGrid + strengthsCard + indicatorsTable;
+      setStatus("status-comm", true);
+    }
+
+    // ---------- Celestial summary tile ----------
+    function renderCelestial(astro) {
+      const container = document.getElementById("summary-celestial");
+      if (!astro.available) {
+        container.innerHTML = `<p class="text-sm text-slate-400">${astro.reason}</p>`;
+        ["status-western", "status-vedic"].forEach((id) => {
+          const el = document.getElementById(id);
+          el.innerHTML = "○ Awaiting birth time &amp; place";
+          el.className = "text-slate-500";
+        });
+        return;
+      }
+      const bodies = Object.fromEntries(astro.western.planets.map((p) => [p.name, p]));
+      const moonVedic = astro.vedic.grahas.find((g) => g.name === "Moon");
+      const tile = (label, main, sub) => `
+        <div class="rounded-xl card-metal p-4 text-center">
+          <p class="text-[11px] uppercase tracking-wider text-slate-500">${label}</p>
+          <div class="mt-1.5 font-display text-xl gold-text">${main}</div>
+          <p class="mt-1 text-[11px] text-violet2-soft">${sub}</p>
+        </div>`;
+      container.innerHTML =
+        tile("Sun", `${bodies.Sun.sign_glyph} ${bodies.Sun.sign}`, bodies.Sun.position) +
+        tile("Moon", `${bodies.Moon.sign_glyph} ${bodies.Moon.sign}`, bodies.Moon.position) +
+        tile("Ascendant", `${astro.western.angles.ascendant.sign_glyph} ${astro.western.angles.ascendant.sign}`, astro.western.angles.ascendant.position) +
+        (moonVedic ? tile("Moon Nakshatra", moonVedic.nakshatra, `${moonVedic.rashi} · Pada ${moonVedic.pada}`) : "");
+      ["status-western", "status-vedic"].forEach((id) => {
+        const el = document.getElementById(id);
+        el.innerHTML = "● Active";
+        el.className = "text-emerald-400";
+      });
+    }
+
+    // ---------- Soul Blueprint ----------
+    function renderBlueprint(data) {
+      const card = document.getElementById("summary-blueprint");
+      if (!data.synthesis) { card.classList.add("hidden"); return; }
+      card.classList.remove("hidden");
+      document.getElementById("blueprint-paragraph").textContent = data.synthesis.paragraph;
+      document.getElementById("blueprint-archetypes").innerHTML = data.synthesis.archetypes.map((entry) => `
+        <div class="rounded-xl bg-charcoal-950/60 border border-charcoal-700/60 p-3 text-center">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">${entry.label}</p>
+          <p class="mt-1 font-display text-base gold-text">${entry.value}</p>
+          <p class="mt-0.5 text-[10px] text-violet2-soft">${entry.detail}</p>
+        </div>`).join("");
+    }
+
+    // ---------- All Aspects ----------
+    function updateAllAspectsPanel() {
+      const allPanel = document.getElementById("panel-all");
+      if (!allPanel) return;
+      allPanel.innerHTML = "";
+
+      const aspects = [
+        { id: "numerology",    name: "Numerology" },
+        { id: "western",       name: "Western Astrology" },
+        { id: "vedic",         name: "Vedic Astrology" },
+        { id: "humandesign",   name: "Human Design" },
+        { id: "genekeys",      name: "Gene Keys" },
+        { id: "communication", name: "Communication Profile" },
+      ];
+
+      const copyContainer = document.createElement("div");
+      copyContainer.className = "border border-purple-500/30 bg-charcoal-950/80 rounded-2xl p-6 mb-8 relative overflow-hidden";
+      copyContainer.innerHTML = `
+        <div class="flex items-center justify-between border-b border-charcoal-700/80 pb-4 mb-4">
+          <div>
+            <h2 class="text-xl font-bold font-display text-gold-soft tracking-wide">Consolidated Soul Blueprint Report</h2>
+            <p class="text-xs text-charcoal-400 mt-1">Formatted clean markdown — copy and paste directly into your client blueprint files.</p>
+          </div>
+          <button id="copy-all-btn" class="flex items-center gap-2 bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/30 transition-all rounded-lg px-4 py-2 text-sm font-semibold active:scale-95">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/>
+            </svg>
+            <span id="copy-btn-text">Copy Report</span>
+          </button>
+        </div>
+        <div class="relative bg-black/60 border border-charcoal-800 rounded-xl p-4">
+          <pre id="all-aspects-raw-text" class="overflow-auto max-h-96 font-mono text-xs text-gray-300 whitespace-pre-wrap select-all focus:outline-none leading-relaxed"></pre>
+        </div>`;
+      allPanel.appendChild(copyContainer);
+
+      let fullMarkdown = "# COMPREHENSIVE SOUL BLUEPRINT REPORT\n\n";
+
+      aspects.forEach((aspect) => {
+        const original = document.getElementById("panel-" + aspect.id);
+        if (!original) return;
+        fullMarkdown += "## " + aspect.name.toUpperCase() + "\n\n";
+        let aspectMarkdown = "";
+
+        const rows = original.querySelectorAll("tr");
+        if (rows.length > 0) {
+          rows.forEach((row) => {
+            const cells = Array.from(row.querySelectorAll("td, th")).map((c) => c.innerText.trim().replace(/\s+/g, " "));
+            if (cells.length >= 2) aspectMarkdown += "* **" + cells[0] + "**: " + cells.slice(1).join(" - ") + "\n";
+            else if (cells.length === 1 && cells[0]) aspectMarkdown += "* " + cells[0] + "\n";
+          });
+          aspectMarkdown += "\n";
+        }
+
+        const contents = original.querySelectorAll("p, li, blockquote");
+        let addedParagraph = false;
+        contents.forEach((el) => {
+          if (el.closest("table")) return;
+          const text = el.innerText.trim();
+          if (!text || text.toLowerCase().includes("verification mode")) return;
+          if (el.tagName === "LI") { aspectMarkdown += "* " + text + "\n"; addedParagraph = true; }
+          else if (el.tagName === "BLOCKQUOTE") { aspectMarkdown += "> " + text + "\n\n"; addedParagraph = true; }
+          else { aspectMarkdown += text + "\n\n"; addedParagraph = true; }
+        });
+        if (addedParagraph) aspectMarkdown += "\n";
+
+        if (aspectMarkdown.trim()) {
+          fullMarkdown += aspectMarkdown.trim() + "\n\n---\n\n";
+        } else {
+          const fallbackText = original.innerText.replace(/Verification Mode/g, "").replace(/\n\s*\n/g, "\n").trim();
+          fullMarkdown += fallbackText + "\n\n---\n\n";
+        }
+
+        const section = document.createElement("div");
+        section.className = "border border-charcoal-700/60 bg-charcoal-900/40 rounded-2xl p-6 mb-8";
+        const header = document.createElement("div");
+        header.className = "flex items-center justify-between border-b border-charcoal-700/80 pb-4 mb-6";
+        header.innerHTML = `
+          <h2 class="text-xl font-bold font-display text-gold-soft tracking-wide">${aspect.name}</h2>
+          <span class="rounded-full bg-violet-500/10 px-2.5 py-1 text-xs font-semibold text-violet-300 border border-violet-500/20">Verification Mode</span>`;
+        const contentClone = original.cloneNode(true);
+        contentClone.removeAttribute("id");
+        contentClone.classList.remove("hidden", "mt-6");
+        contentClone.querySelectorAll("[id]").forEach((el) => el.removeAttribute("id"));
+        section.appendChild(header);
+        section.appendChild(contentClone);
+        allPanel.appendChild(section);
+      });
+
+      fullMarkdown = fullMarkdown.trim().replace(/\n+---\n*$/, "");
+      const codeBlock = document.getElementById("all-aspects-raw-text");
+      if (codeBlock) codeBlock.textContent = fullMarkdown;
+
+      const copyBtn = document.getElementById("copy-all-btn");
+      if (copyBtn) {
+        copyBtn.addEventListener("click", () => {
+          navigator.clipboard.writeText(fullMarkdown).then(() => {
+            const btnText = document.getElementById("copy-btn-text");
+            if (btnText) {
+              btnText.textContent = "Copied!";
+              copyBtn.classList.replace("bg-purple-500/20", "bg-emerald-500/20");
+              copyBtn.classList.replace("text-purple-300", "text-emerald-300");
+              copyBtn.classList.replace("border-purple-500/30", "border-emerald-500/30");
+              setTimeout(() => {
+                btnText.textContent = "Copy Report";
+                copyBtn.classList.replace("bg-emerald-500/20", "bg-purple-500/20");
+                copyBtn.classList.replace("text-emerald-300", "text-purple-300");
+                copyBtn.classList.replace("border-emerald-500/30", "border-purple-500/30");
+              }, 2000);
+            }
+          });
+        });
+      }
+    }
+
+    // ---------- API wiring ----------
+    const form = document.getElementById("profile-form");
+    const errorBox = document.getElementById("form-error");
+    const calcButton = document.getElementById("calc-btn");
+
+    async function calculate() {
+      errorBox.classList.add("hidden");
+      calcButton.textContent = "CONSULTING THE NUMBERS...";
+      calcButton.disabled = true;
+      try {
+        const name       = document.getElementById("name").value;
+        const birth_date = document.getElementById("birth_date").value;
+        const birth_time = document.getElementById("birth_time").value;
+        const birth_place = document.getElementById("birth_place").value;
+
+        const response = await fetch("/api/calculate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, birth_date, birth_time, birth_place }),
+        });
+        if (!response.ok) {
+          const body = await response.json().catch(() => ({}));
+          throw new Error(body.detail ? JSON.stringify(body.detail) : `Server error ${response.status}`);
+        }
+        const data = await response.json();
+
+        renderNumerology(data.numerology);
+        renderSummary(data.profile, data.numerology);
+        renderWestern(data.astrology);
+        renderVedic(data.astrology);
+        renderCelestial(data.astrology);
+        renderHumanDesign(data.astrology);
+        renderGeneKeys(data.astrology);
+        renderCommunication(data.astrology);
+        renderBlueprint(data);
+
+        // Update audit download link
+        const params = new URLSearchParams({ name, birth_date, birth_time, birth_place });
+        document.getElementById("audit-href").href = "/api/audit?" + params.toString();
+        document.getElementById("audit-link").classList.remove("hidden");
+
+        const activeTab = document.querySelector("#tab-bar .tab-active");
+        if (activeTab && activeTab.dataset.tab === "all") updateAllAspectsPanel();
+      } catch (error) {
+        errorBox.textContent = "Calculation failed: " + error.message;
+        errorBox.classList.remove("hidden");
+      } finally {
+        calcButton.textContent = "CALCULATE BLUEPRINT";
+        calcButton.disabled = false;
+      }
+    }
+
+    form.addEventListener("submit", (event) => { event.preventDefault(); calculate(); });
+    calculate();
+  </script>
+</body>
+</html>
