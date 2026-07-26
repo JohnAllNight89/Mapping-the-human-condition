@@ -147,6 +147,150 @@ def record_communication(numerology: dict, western: dict, hd: dict, gk: dict) ->
 
     delivery = {"tone": tone, "format": fmt, "pacing": pacing, "avoid": avoid}
 
+    # -- Step 4b: Cognitive weaknesses — each cites 2+ data points, specific to this combination --
+    weakness_pool = []
+
+    if "Head" in open_centers:
+        if hd_type == "Projector":
+            weakness_pool.append({
+                "weakness": "Absorbing Others' Mental Agendas",
+                "source": (
+                    f"Open Head + {hd_type}: you pick up and amplify unresolved questions from those you guide, "
+                    f"which can feel like your own insight-drive — the difference is whether the urgency arrived "
+                    f"with a person or was already present when you were alone"
+                ),
+            })
+        elif life_path in (11, 22, 33):
+            weakness_pool.append({
+                "weakness": "Master Frequency Amplifying Conditioned Pressure",
+                "source": (
+                    f"Open Head + Life Path {life_path}: master number carriers already run at elevated sensitivity — "
+                    f"the open Head adds environmental mental-field amplification, making conditioned urgency feel "
+                    f"like spiritual signal when it's often ambient noise"
+                ),
+            })
+        else:
+            weakness_pool.append({
+                "weakness": "Obligation to Others' Unanswered Questions",
+                "source": (
+                    f"Open Head + {hd_type}: questions that enter awareness generate pressure to resolve them — "
+                    f"the design test is distinguishing your own genuine inquiry from questions you've inherited "
+                    f"from the people and environments around you"
+                ),
+            })
+
+    if "Ajna" in open_centers:
+        if expression in (7, 9):
+            weakness_pool.append({
+                "weakness": "Analysis Loop Without Stable Landing",
+                "source": (
+                    f"Open Ajna + Expression {expression}: the depth-drive of {expression} keeps analyzing, "
+                    f"but the open Ajna can't hold a fixed position — conclusions shift, analysis continues, "
+                    f"and sharing gets postponed indefinitely waiting for certainty that structurally can't arrive"
+                ),
+            })
+        elif 1 in profile_lines:
+            weakness_pool.append({
+                "weakness": "Research Without Foundational Closure",
+                "source": (
+                    f"Open Ajna + Profile {profile} line 1 (Investigator): line 1 needs a solid foundation "
+                    f"before moving forward, but the shifting Ajna makes the foundation feel perpetually incomplete — "
+                    f"the next layer of research never quite answers the question underneath"
+                ),
+            })
+        else:
+            weakness_pool.append({
+                "weakness": "Borrowed Certainty Under Social Pressure",
+                "source": (
+                    f"Open Ajna + {hd_type}: mental positions that form under environmental pressure can feel "
+                    f"like genuine conviction — the tell is whether the position dissolves as soon as "
+                    f"the pressure (person, setting, conversation) lifts"
+                ),
+            })
+
+    if "Throat" in open_centers:
+        if 5 in profile_lines:
+            weakness_pool.append({
+                "weakness": "Speaking to Fill the Projection",
+                "source": (
+                    f"Open Throat + Profile {profile} line 5 (Heretic): others project savior and "
+                    f"solution-provider roles onto line 5, which activates the open Throat to respond — "
+                    f"words that come from the pressure of others' expectations rather than from internal readiness"
+                ),
+            })
+        elif 4 in profile_lines:
+            weakness_pool.append({
+                "weakness": "Relational Activation of Premature Expression",
+                "source": (
+                    f"Open Throat + Profile {profile} line 4 (Opportunist): relational orientation can "
+                    f"bypass the body's wait signal, activating expression to sustain connection "
+                    f"rather than because there's genuine internal readiness to speak"
+                ),
+            })
+        else:
+            weakness_pool.append({
+                "weakness": "Variable Vocal Presence Without Consistency",
+                "source": (
+                    f"Open Throat + {hd_type}: expression is environment-dependent rather than self-initiated — "
+                    f"powerful and recognized when genuinely invited, scattered or invisible when initiated outside of strategy"
+                ),
+            })
+
+    if "Solar Plexus" in open_centers:
+        if dominant_element == "Water":
+            weakness_pool.append({
+                "weakness": "Emotional Field Absorption Blurring Internal Signal",
+                "source": (
+                    f"Open Solar Plexus + Water-dominant chart: Water element brings natural emotional attunement; "
+                    f"the open Solar Plexus amplifies that — the result is deep sensitivity that can blur "
+                    f"the line between what you feel and what you've absorbed from the field around you"
+                ),
+            })
+        else:
+            weakness_pool.append({
+                "weakness": "Emotionally Charged Decision Pressure",
+                "source": (
+                    f"Open Solar Plexus + {hd_type}: emotional states absorbed from the environment "
+                    f"can generate urgency that feels like your own — the design functions best "
+                    f"with a pause before commitment rather than deciding in the heat of the charge"
+                ),
+            })
+
+    if 3 in profile_lines:
+        weakness_pool.append({
+            "weakness": "Trial Catalogued as Personal Failure",
+            "source": (
+                f"Profile {profile} line 3 (Martyr): the learning engine requires direct experience and "
+                f"iteration by design — the shadow is attaching emotional weight to 'wrong turns,' "
+                f"treating necessary discovery as personal inadequacy rather than design-aligned data"
+            ),
+        })
+
+    if 5 in profile_lines:
+        weakness_pool.append({
+            "weakness": "Living Under Constant Projection Pressure",
+            "source": (
+                f"Profile {profile} line 5 (Heretic): others persistently project savior and "
+                f"universal-problem-solver expectations — the gap between what others need you to be "
+                f"and who you actually are is a real, ongoing, invisible energy cost"
+            ),
+        })
+
+    if hd_type == "Projector" and "Sacral" in open_centers:
+        weakness_pool.append({
+            "weakness": "Borrowed Energy Ending Without Warning",
+            "source": (
+                f"Projector + open Sacral: you can access and amplify the Sacral energy of others, "
+                f"which feels like genuine sustained capacity — until it abruptly runs out, because "
+                f"it wasn't your energy base. The completion signal arrives faster and harder than expected"
+            ),
+        })
+
+    weaknesses = weakness_pool[:3] if weakness_pool else [
+        {"weakness": "No dominant conditioning vulnerabilities identified",
+         "source": "Current configuration shows balanced open-center awareness across the profile"}
+    ]
+
     # -- Step 4: Cognitive strengths (top 3 with source attribution) --
     strength_descriptions = {
         "mental_certainty": (
@@ -219,5 +363,6 @@ def record_communication(numerology: dict, western: dict, hd: dict, gk: dict) ->
         "processing_style": processing_style,
         "delivery": delivery,
         "strengths": strengths,
+        "weaknesses": weaknesses,
         "key_indicators": key_indicators[:5],
     }
