@@ -164,6 +164,7 @@
           </header>
           <div id="blueprint-archetypes" class="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4"></div>
           <p id="blueprint-paragraph" class="mt-5 border-t border-gold/20 pt-4 text-sm leading-relaxed text-slate-300"></p>
+          <div id="blueprint-synthesis-summary" class="mt-6"></div>
         </div>
         <div class="card-metal-gold rounded-2xl p-6">
           <h3 class="font-display text-lg tracking-wide text-gold-soft">Profile</h3>
@@ -195,9 +196,9 @@
       </div>
 
       <!-- Numerology -->
-      <div id="panel-numerology" data-panel class="mt-6 hidden">
+      <div id="panel-numerology" data-panel class="mt-6 hidden space-y-6">
         <h2 class="print-title">Numerology</h2>
-        <div id="numerology-cards" class="grid gap-6 md:grid-cols-2">
+        <div id="numerology-cards">
           <p class="text-sm text-slate-400">Calculate a blueprint to reveal the core numbers.</p>
         </div>
       </div>
@@ -334,32 +335,159 @@
         </div>`;
     }
 
+    function sectionSummary(s) {
+      if (!s || !s.light) return "";
+      return `
+        <div class="card-metal-gold rounded-2xl p-8 space-y-5">
+          <h3 class="font-display text-xl tracking-wide text-gold-soft border-b border-gold/20 pb-3">Section Analysis</h3>
+          <div class="rounded-xl bg-emerald-950/30 border border-emerald-700/30 p-5">
+            <p class="mb-3 text-[11px] uppercase tracking-[0.28em] text-emerald-400">✦ The Light · Gifts &amp; Natural Strengths</p>
+            <p class="text-sm leading-relaxed text-slate-300">${s.light}</p>
+          </div>
+          <div class="rounded-xl bg-violet2/5 border border-violet2/25 p-5">
+            <p class="mb-3 text-[11px] uppercase tracking-[0.28em] text-violet2-soft">◈ The Shadow · Patterns to Integrate</p>
+            <p class="text-sm leading-relaxed text-slate-300">${s.shadow}</p>
+          </div>
+          <div class="rounded-xl bg-gold/5 border border-gold/35 p-5">
+            <p class="mb-3 text-[11px] uppercase tracking-[0.28em] text-gold-soft">⬡ The Synthesis · Pillars of Being</p>
+            <p class="text-sm leading-relaxed text-slate-200 font-medium">${s.synthesis}</p>
+          </div>
+        </div>`;
+    }
+
+    function numSmall(label, n, note = "") {
+      const isMaster = n && [11, 22, 33].includes(n.number !== undefined ? n.number : n);
+      const val = n && n.number !== undefined ? n.number : n;
+      return `
+        <div class="rounded-xl ${isMaster ? "card-metal-gold" : "card-metal"} p-4 text-center">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">${label}</p>
+          <div class="mt-1 font-display text-3xl gold-text">${val ?? "—"}</div>
+          ${note ? `<p class="mt-0.5 text-[10px] text-violet2-soft">${note}</p>` : ""}
+        </div>`;
+    }
+
+    function listBadges(label, arr, color = "text-violet2-soft") {
+      const items = arr && arr.length
+        ? arr.map(v => `<span class="rounded-full border border-violet2/30 bg-violet2/10 px-2.5 py-0.5 text-xs font-mono ${color}">${v}</span>`).join(" ")
+        : `<span class="text-xs text-slate-500">None</span>`;
+      return `
+        <div class="rounded-xl card-metal p-4">
+          <p class="mb-2 text-[10px] uppercase tracking-wider text-slate-500">${label}</p>
+          <div class="flex flex-wrap gap-1.5">${items}</div>
+        </div>`;
+    }
+
     // ---------- Numerology ----------
-    function renderNumerology(numerologyData) {
-      const cards = CORE_NUMBERS.map(({ key, title, subtitle }) => {
-        const result = numerologyData[key];
-        const archetype = ARCHETYPES[result.number] || "";
+    const NUM_SUBTITLES = {
+      life_path:   "The road your soul walks — derived from the birth date.",
+      expression:  "Innate gifts and goals — every letter of the birth name.",
+      soul_urge:   "The inner yearning — the vowels of the birth name.",
+      personality: "The face shown to the world — the consonants of the birth name.",
+      attitude:    "First impression and surface manner — month + day.",
+      birthday:    "Special talent brought into this life — the birth day.",
+      generation:  "Generational overlay — the birth year.",
+      maturity:    "The number you grow into — Expression + Life Path.",
+      balance:     "How you handle emotional stress — first initials.",
+    };
+    const PY_THEMES = {
+      1:"New beginnings", 2:"Relationships", 3:"Creativity", 4:"Foundation",
+      5:"Change", 6:"Responsibility", 7:"Inner wisdom", 8:"Power & harvest",
+      9:"Completion", 11:"Heightened intuition", 22:"Master building", 33:"Service",
+    };
+    function renderNumerology(d) {
+      const coreKeys = ["life_path","expression","soul_urge","personality"];
+      const coreCards = coreKeys.map(key => {
+        const r = d[key]; const arch = ARCHETYPES[r.number] || "";
         return `
-          <article class="${result.is_master ? "card-metal-gold" : "card-metal"} rounded-2xl p-6">
+          <article class="${r.is_master ? "card-metal-gold" : "card-metal"} rounded-2xl p-6">
             <header class="flex items-start justify-between gap-3">
-              <div>
-                <h3 class="font-display text-base tracking-wide text-gold-soft">${title}${masterBadge(result)}</h3>
-                <p class="mt-1 text-xs text-slate-400">${subtitle}</p>
-              </div>
-              <div class="text-right">
-                <div class="font-display text-5xl leading-none gold-text">${result.number}</div>
-                <div class="mt-1 text-[11px] uppercase tracking-wider text-violet2-soft">${archetype}</div>
-              </div>
+              <div><h3 class="font-display text-base tracking-wide text-gold-soft">${NUM_SUBTITLES[key].split("—")[0].trim()}${masterBadge(r)}</h3>
+              <p class="mt-1 text-xs text-slate-400">${NUM_SUBTITLES[key]}</p></div>
+              <div class="text-right"><div class="font-display text-5xl leading-none gold-text">${r.number}</div>
+              <div class="mt-1 text-[11px] uppercase tracking-wider text-violet2-soft">${arch}</div></div>
             </header>
-            <div class="mt-5 space-y-2 border-t border-charcoal-700/70 pt-4">
+            <div class="mt-5 space-y-1.5 border-t border-charcoal-700/70 pt-4">
               <p class="text-[11px] uppercase tracking-wider text-slate-500">Reduction</p>
-              <p class="font-mono text-sm text-violet2-soft">${result.reduction}</p>
-              <p class="text-[11px] uppercase tracking-wider text-slate-500">Working</p>
-              <p class="break-words font-mono text-[11px] leading-relaxed text-slate-400">${result.letters}</p>
+              <p class="font-mono text-sm text-violet2-soft">${r.reduction}</p>
             </div>
           </article>`;
-      });
-      document.getElementById("numerology-cards").innerHTML = cards.join("");
+      }).join("");
+
+      const pillarsSection = `
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Core Identity Numbers</h3>
+          <div class="mt-4 grid gap-5 md:grid-cols-2">${coreCards}</div>
+        </div>`;
+
+      const birthSection = `
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Birth-Date Pillars</h3>
+          <p class="mt-1 text-xs text-slate-400">Encoded directly in the birth date — attitude, talent, and generational overlay.</p>
+          <div class="mt-4 grid grid-cols-3 gap-4">
+            ${numSmall("Attitude", d.attitude, "Month + Day")}
+            ${numSmall("Birthday", d.birthday, "Day of birth")}
+            ${numSmall("Generation", d.generation, "Birth year")}
+          </div>
+        </div>`;
+
+      const derivedSection = `
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Derived Numbers</h3>
+          <p class="mt-1 text-xs text-slate-400">Computed from the core numbers — what you grow into and how you carry yourself.</p>
+          <div class="mt-4 grid grid-cols-3 gap-4">
+            ${numSmall("Maturity", d.maturity, "Expression + Life Path")}
+            ${numSmall("Balance", d.balance, "First initials")}
+            ${numSmall("Subconscious Self", d.subconscious_self, "9 − karmic lessons")}
+          </div>
+        </div>`;
+
+      const karmicSection = `
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Karmic Patterns</h3>
+          <p class="mt-1 text-xs text-slate-400">Frequencies requiring conscious cultivation or reckoning in this lifetime.</p>
+          <div class="mt-4 grid gap-4 sm:grid-cols-2">
+            ${listBadges("Karmic Debt Numbers", d.karmic_debts, "text-red-400")}
+            ${listBadges("Karmic Lesson Numbers", d.karmic_lessons, "text-amber-400")}
+          </div>
+        </div>`;
+
+      const timingSection = `
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Active Timing</h3>
+          <p class="mt-1 text-xs text-slate-400">The energetic frequency of the current year, month, and day.</p>
+          <div class="mt-4 grid grid-cols-3 gap-4">
+            ${numSmall("Personal Year", d.personal_year, PY_THEMES[d.personal_year] || "")}
+            ${numSmall("Personal Month", d.personal_month, "")}
+            ${numSmall("Personal Day", d.personal_day, "")}
+          </div>
+        </div>`;
+
+      const mkCycleGrid = (label, arr) => arr.map((n, i) =>
+        numSmall(`${label} ${i + 1}`, n, "")).join("");
+
+      const cyclesSection = `
+        <div class="card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Life Cycles</h3>
+          <p class="mt-1 text-xs text-slate-400">Pinnacles (peaks of each phase), Challenges (friction points), and Period Cycles (ruling energies).</p>
+          <div class="mt-5 space-y-5">
+            <div>
+              <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-violet2-soft">Pinnacle Numbers</p>
+              <div class="grid grid-cols-4 gap-3">${mkCycleGrid("Pinnacle", d.pinnacles)}</div>
+            </div>
+            <div>
+              <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-amber-500/80">Challenge Numbers</p>
+              <div class="grid grid-cols-4 gap-3">${mkCycleGrid("Challenge", d.challenges)}</div>
+            </div>
+            <div>
+              <p class="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Period Cycles</p>
+              <div class="grid grid-cols-3 gap-3">${mkCycleGrid("Period", d.periods)}</div>
+            </div>
+          </div>
+        </div>`;
+
+      document.getElementById("numerology-cards").innerHTML =
+        pillarsSection + birthSection + derivedSection + karmicSection + timingSection + cyclesSection +
+        sectionSummary(d.section_summary);
     }
 
     function renderSummary(profile, numerologyData) {
@@ -423,7 +551,8 @@
         tableShell("Planetary Positions", "Tropical zodiac · Swiss Ephemeris",
           th("Body") + th("Sign") + th("Position") + th("Longitude") + th("Motion", "center"), planetRows) +
         tableShell("House Cusps", "Placidus system",
-          th("House") + th("Sign") + th("Cusp") + th("Longitude"), houseRows);
+          th("House") + th("Sign") + th("Cusp") + th("Longitude"), houseRows) +
+        sectionSummary(western.section_summary);
     }
 
     // ---------- Vedic Astrology ----------
@@ -461,7 +590,8 @@
            </div>
          </div>` +
         tableShell("Graha Positions", "Sidereal zodiac · Lahiri Ayanamsa",
-          th("Graha") + th("Rashi") + th("Position") + th("Nakshatra") + th("Pada", "center") + th("Motion", "center"), grahaRows);
+          th("Graha") + th("Rashi") + th("Position") + th("Nakshatra") + th("Pada", "center") + th("Motion", "center"), grahaRows) +
+        sectionSummary(vedic.section_summary);
     }
 
     // ---------- Human Design ----------
@@ -530,7 +660,8 @@
         `<div class="grid gap-6 xl:grid-cols-2">
            ${activationTable("Personality", "Conscious · at birth", hd.personality.activations, "text-gold-soft")}
            ${activationTable("Design", `Unconscious · ${hd.design.moment_utc} UTC`, hd.design.activations, "text-violet2-soft")}
-         </div>`;
+         </div>` +
+        sectionSummary(hd.section_summary);
       setStatus("status-hd", true);
     }
 
@@ -578,7 +709,8 @@
            <div class="grid gap-4 xl:grid-cols-2">${spheres}</div>
          </div>` +
         tableShell("All Activated Gene Keys", "Every gate in your bodygraph, through the Gene Keys lens",
-          th("Key") + th("Name") + th("Shadow") + th("Gift") + th("Siddhi") + th("Activated By"), keyRows);
+          th("Key") + th("Name") + th("Shadow") + th("Gift") + th("Siddhi") + th("Activated By"), keyRows) +
+        sectionSummary(gk.section_summary);
       setStatus("status-gk", true);
     }
 
@@ -658,7 +790,8 @@
         indicatorRows,
       );
 
-      container.innerHTML = archetypeCard + processingCard + deliveryGrid + strengthsCard + indicatorsTable;
+      container.innerHTML = archetypeCard + processingCard + deliveryGrid + strengthsCard + indicatorsTable +
+        sectionSummary(comm.section_summary);
       setStatus("status-comm", true);
     }
 
@@ -706,6 +839,8 @@
           <p class="mt-1 font-display text-base gold-text">${entry.value}</p>
           <p class="mt-0.5 text-[10px] text-violet2-soft">${entry.detail}</p>
         </div>`).join("");
+      document.getElementById("blueprint-synthesis-summary").innerHTML =
+        sectionSummary(data.synthesis.section_summary);
     }
 
     // ---------- All Aspects ----------
