@@ -149,14 +149,88 @@ GENE_KEYS: dict[int, tuple[str, str, str, str]] = {
 
 # ---- Section summary generator ----
 
+def _derive_voice(comm: dict) -> dict:
+    """Read the communication profile and extract voice parameters for adaptive summaries.
+
+    Before writing a single word of section analysis, we assess how this person
+    actually receives information — their processing style, elemental format
+    preference, and cognitive wiring — then speak through their native channel.
+    """
+    delivery = comm.get("delivery", {}) or {}
+    fmt = delivery.get("format", "").lower()
+    proc = (comm.get("processing_style", "") or "").lower()
+
+    if any(w in fmt for w in ("fire", "story", "inspir", "vision", "narrative")):
+        style = "fire"
+    elif any(w in fmt for w in ("earth", "practical", "step", "tangible", "concrete")):
+        style = "earth"
+    elif any(w in fmt for w in ("water", "metaphor", "emotion", "feeling", "resonan")):
+        style = "water"
+    elif any(w in proc for w in ("intuitive", "holistic", "feeling", "emotional")):
+        style = "water"
+    else:
+        style = "air"  # frameworks / concepts / systems thinking
+
+    return {"style": style, "arch": comm.get("archetype", "")}
+
+
+# Per-style sentence hooks injected at the top of each paragraph and the end
+# of every synthesis — this is the adaptive voice layer that makes each summary
+# feel like it was written specifically for the way this person processes information.
+_LIGHT_OPENERS = {
+    "fire":  "Here's what you were built for — ",
+    "earth": "In concrete terms, here's what you came in with — ",
+    "air":   "The architecture of your gifts — ",
+    "water": "Feel into this — ",
+}
+_SHADOW_OPENERS = {
+    "fire":  "The shadow isn't a problem. It's compressed fuel waiting to be lit. ",
+    "earth": "Watch for this pattern in real situations — ",
+    "air":   "Here's where the system breaks down — ",
+    "water": "The undertow to notice — ",
+}
+_SYNTH_OPENERS = {
+    "fire":  "The big picture — ",
+    "earth": "Here's what this means for you, practically — ",
+    "air":   "The through-line across this data — ",
+    "water": "The current running beneath all of this — ",
+}
+_SYNTH_CLOSERS = {
+    "fire":  " You were encoded with this on purpose.",
+    "earth": " Ground into this. It's yours to build with.",
+    "air":   " The model is complete. All the pieces are accounted for.",
+    "water": " Let this land. You already know it's true.",
+}
+_GRAND_OPENERS = {
+    "fire":  "Four systems. One undeniable signal. Here it is — ",
+    "earth": "Here's what four independent systems confirm about you, concretely — ",
+    "air":   "Cross-system convergence: four independent methodologies resolving to a single profile — ",
+    "water": "Every tradition that looked at your birth moment felt the same thing about you — ",
+}
+_GRAND_CLOSERS = {
+    "fire":  " The frequency is unmistakable. You were designed for this.",
+    "earth": " Four systems calculated this from the same birth coordinates. The evidence is solid.",
+    "air":   " Four methodologies. One coherent design. The logic is closed.",
+    "water": " Four different traditions felt the same truth about you. Trust what resonates.",
+}
+
+
 def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
-    """Deterministic 3-paragraph (light/shadow/synthesis) analysis for each tab."""
+    """Deterministic 3-paragraph (light/shadow/synthesis) analysis for each tab.
+
+    Voice is determined FIRST by reading the person's communication profile —
+    their processing style, delivery format, and cognitive wiring — then every
+    summary is written in the voice that reaches them specifically.
+    """
     num = report.numerology
     west = report.western
     ved = report.vedic
     hd = report.human_design
     gk = report.gene_keys
     comm = report.communication or {}
+
+    voice = _derive_voice(comm)
+    vs = voice["style"]
 
     lp = num["life_path"]
     expr = num["expression"]
@@ -199,21 +273,25 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
 
     num_summ = {
         "light": (
+            f"{_LIGHT_OPENERS[vs]}"
             f"Your Life Path {lp} carries the archetype of {lp_arch} — the frequency woven through every major chapter. "
             f"Your Expression {expr} is the outward vehicle: the talents others recognize in you before you name them yourself. "
             f"Your Soul Urge {soul} is the engine underneath — the deep internal pull that drives choices even when logic can't explain them. "
             f"Your Maturity Number {maturity} is the convergence point that sharpens through the 30s and 40s as Life Path and Expression integrate into a single unified current."
         ),
         "shadow": (
+            f"{_SHADOW_OPENERS[vs]}"
             f"{debt_str} "
             f"{lesson_str} "
             f"Your challenge numbers — {ch_str} — mark the friction at the edge of each life phase: not failures in progress, but the exact pressures that build the character the Life Path demands."
         ),
         "synthesis": (
+            f"{_SYNTH_OPENERS[vs]}"
             f"Life Path {lp} and Expression {expr} are two rails of the same track — where they resonate, effort becomes effortless; where they diverge is where growth lives. "
             f"Personal Year {py} places you in a cycle of {py_meaning} right now. "
             f"Your Subconscious Self {subcon} tells you that {subcon} frequencies are already fully integrated — your bedrock. "
             f"The pillars: Life Purpose ({lp}), Natural Expression ({expr}), Inner Drive ({soul}), Present Timing (Year {py}). Nothing here is accidental."
+            f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
 
@@ -247,22 +325,26 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
     )
     west_summ = {
         "light": (
+            f"{_LIGHT_OPENERS[vs]}"
             f"Your {sun} Sun is the conscious identity you grow into — the archetype of your outward creative expression. "
             f"Your {asc} Ascendant is the lens through which all incoming experience is first filtered and the face you meet the world with. "
             f"With {dom_elem} as the dominant element, your natural gifts include {_ELEM_GIFT.get(dom_elem, 'a balanced elemental field')}. "
             f"Your {dom_mod} modality signature describes the rhythm of your engagement: how you initiate and sustain action in the world."
         ),
         "shadow": (
+            f"{_SHADOW_OPENERS[vs]}"
             f"Your {moon} Moon reveals the emotional architecture — the instinctive reactive patterns that activate before the conscious mind responds. "
             f"The Moon's shadow is not the sign itself but the automated responses it produces when stress bypasses reflection. "
             f"{retro_str} "
             f"The shadow of a dominant {dom_elem} field: {_ELEM_SHADOW.get(dom_elem, 'the unexamined elemental tendency')}."
         ),
         "synthesis": (
+            f"{_SYNTH_OPENERS[vs]}"
             f"Sun ({sun}), Moon ({moon}), and Ascendant ({asc}) form the trinity of Western identity: who you are, how you feel, how you appear. "
             f"Your chart ruler — {chart_ruler} — is the planetary governor of the whole chart, the lens through which the entire birth map is focused. "
             f"The {lunar_phase} at birth describes the relationship between conscious purpose (Sun) and emotional need (Moon): the tension or harmony between those two drives is the lived texture of your life. "
             f"Integration means running Sun, Moon, and Ascendant in conscious concert — not suppressing any of the three but letting each inform the others."
+            f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
 
@@ -307,23 +389,27 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
     nak_gift = _NAK_GIFTS.get(moon_nak, "unique lunar intelligence")
     ved_summ = {
         "light": (
+            f"{_LIGHT_OPENERS[vs]}"
             f"Your Moon in {moon_rashi} (sidereal) carries the karmic and emotional inheritance of this incarnation. "
             f"The {moon_nak} nakshatra — ruled by {moon_nak_lord} — brings {nak_gift}. "
             f"Your {lagna_sk} Lagna with lord {lagna_lord} defines the dharmic vehicle: the body, persona, and life trajectory you came here to express. "
             f"The Atmakaraka {atmakaraka} is the soul indicator in Jaimini astrology — the planet encoding the primary lesson and highest calling of this incarnation."
         ),
         "shadow": (
+            f"{_SHADOW_OPENERS[vs]}"
             f"In Vedic cosmology, the shadow is carried by the lunar nodes: Rahu represents insatiable hunger — the new territory the soul must integrate but doesn't yet hold gracefully. "
             f"Ketu marks what the soul has already mastered across lifetimes — the comfort zone that can become spiritual stagnation if left unchallenged. "
             f"The Mahadasha sequence encodes which planetary karma rises for integration in each life phase. "
             f"The shadow work of the Vedic chart is precise: it names which patterns require transformation and in what sequence."
         ),
         "synthesis": (
+            f"{_SYNTH_OPENERS[vs]}"
             f"The Vedic chart reads soul architecture across lifetimes, not just this one. "
             f"Your {lagna_sk} Lagna is the dharmic entrance point — the vehicle you chose for this lifetime. "
             f"Your Moon in {moon_rashi} — {moon_nak} — is the emotional and karmic body: the flavor of interior life and the lens of reactive patterns. "
             f"The Mahadasha beginning with {mahadasha} activates specific planetary karma, placing particular themes at the foreground for an extended period. "
             f"Synthesis: Lagna is what you do, Moon is how you feel, Atmakaraka ({atmakaraka}) is what your soul is learning — three pillars of your Vedic identity."
+            f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
 
@@ -369,22 +455,26 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
     auth_short = authority.split(" (")[0] if "(" in authority else authority
     hd_summ = {
         "light": (
+            f"{_LIGHT_OPENERS[vs]}"
             f"As a {hd_type}, your gift is {_TYPE_GIFTS.get(hd_type, 'unique energetic intelligence')}. "
             f"Your {auth_short} Authority is the body intelligence that knows before the mind constructs a reason — the reliable signal of correct decision-making. "
             f"{defined_str} "
             f"Profile {profile_hd} is the costume your soul wears: the social archetype and learning strategy that shapes how you move through relationships and life themes."
         ),
         "shadow": (
+            f"{_SHADOW_OPENERS[vs]}"
             f"The not-self theme for a {hd_type} is {not_self} — the emotional signal that you are operating out of strategy. Not a moral failing but a compass: when {not_self} arises, alignment is off. "
             f"{open_str} "
             f"Open centers amplify and condition the energy of whoever is in your field — the wisdom lies not in closing them but in witnessing the amplification without identifying with it as your own truth."
         ),
         "synthesis": (
+            f"{_SYNTH_OPENERS[vs]}"
             f"Your Human Design is an operating manual, not a fixed identity. Strategy ({strategy}) tells you how to move without resistance. "
             f"{auth_short} Authority tells you how to make decisions that are genuinely yours. "
             f"{definition} tells you how your energy field is structured and how you interact with others energetically. "
             f"Profile {profile_hd} tells you the mythological role you're here to play. "
             f"Twin signals: your signature ({signature}) confirms you're on track; your not-self ({not_self}) signals you've drifted. Run those alongside Strategy and Authority — that's the complete self-navigation system."
+            f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
 
@@ -408,22 +498,26 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
         lw = {"sphere": "", "gate": 0, "name": "", "shadow": "", "gift": "", "siddhi": ""}
     gk_summ = {
         "light": (
+            f"{_LIGHT_OPENERS[vs]}"
             f"The Gene Keys are a contemplative system of self-realization built on the same 64-gate architecture as Human Design, decoded as Shadow, Gift, and Siddhi. "
             f"Your activation sequence gifts: {gifts_str}. "
             f"The Gift is not something to perform — it is what naturally emerges when the Shadow is no longer running the show. "
             f"Your siddhis — {siddhis_str} — are the highest possible expressions: frequencies to allow as contemplation deepens, not goals to achieve."
         ),
         "shadow": (
+            f"{_SHADOW_OPENERS[vs]}"
             f"The Gene Keys framework is explicit: the Shadow is not the enemy, it is the doorway. "
             f"Repressing the Shadow produces the low frequency; reacting creates drama; accepting and contemplating transmutes it into the Gift. "
             f"Your activation sequence shadows: {shadows_str}. "
             f"The Shadow of your Life's Work — {lw['shadow']} — is the pattern that shows up when the Gift is not flowing. It is compressed Gift waiting to be unpacked."
         ),
         "synthesis": (
+            f"{_SYNTH_OPENERS[vs]}"
             f"The hologenetic profile maps your soul's complete journey: Life's Work (outer purpose), Evolution (inner growth), Radiance (vitality and presence), Purpose (deepest anchor) — four spheres operating simultaneously, each informing the others. "
             f"The key insight: Shadow, Gift, and Siddhi are not three different things but one frequency at three different bandwidths. "
             f"Your Life's Work Gift — {lw['gift']} — is available right now, underneath the Shadow. Your Siddhi — {lw['siddhi']} — is the same frequency at full coherence. "
             f"Contemplation, not effort, is the mechanism. Sustained attention to the Shadow — without judgment, without suppression, without reaction — is sufficient to initiate the transmission."
+            f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
 
@@ -434,21 +528,25 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
     comm_avoid = comm_delivery.get("avoid", "") if comm_delivery else ""
     comm_summ = {
         "light": (
+            f"{_LIGHT_OPENERS[vs]}"
             f"Your communication archetype — {comm_arch} — is a precise description of how your cognitive wiring works at its best, derived from cross-system analysis of Human Design, Western Mercury and elemental balance, and Numerology expression and life path. "
             f"When communicating in alignment with this archetype, information flows: you receive it through your native channels and transmit it in ways others can actually absorb. "
             f"The cognitive strengths identified in your profile are not aspirational — they are already operational. The work is simply to recognize and lean into them."
         ),
         "shadow": (
+            f"{_SHADOW_OPENERS[vs]}"
             f"The shadow of communication is not saying the wrong thing — it is operating from a mode that isn't yours. "
             f"Your primary conditioning pattern to watch: {comm_avoid}. "
             f"This conditioning enters through open centers, gets amplified by environment, and can masquerade as authentic self-expression when it is actually adaptive response to external pressure. "
             f"The signal: you feel drained, misunderstood, or invisible after communication. That's not a cue to push harder — it's an invitation to return to your native mode."
         ),
         "synthesis": (
-            f"Every data point in your chart points toward the same underlying wiring — the communication profile is where all four systems converge on a single practical conclusion. "
-            f"Your processing style — {comm_proc} — is not a preference, it is a structural fact of how your nervous system organizes information. Work with it, not against it. "
-            f"When information is delivered in a format mismatched to your processing style, it doesn't land — not because of a failure of intelligence but a failure of format. "
-            f"The pillars: archetype ({comm_arch}), processing style, delivery preferences, and the specific conditioning to watch. These four coordinates are all you need to navigate any conversation."
+            f"This is the section that speaks your language back to you. "
+            f"Every summary you have read in this report was written in the voice your chart describes — the format, pacing, and framing that matches the way {comm_arch} receives and processes information. "
+            f"Your processing style — {comm_proc} — is not a preference, it is structural. Work with it, not against it. "
+            f"When information arrives in the right format for your wiring, it doesn't just land — it resonates at a frequency that produces immediate recognition. "
+            f"The pillars of your communication design: archetype ({comm_arch}), processing style, delivery preferences, and the specific conditioning to watch. These four coordinates are all you need to navigate any conversation."
+            f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
 
@@ -460,6 +558,7 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
     lw_shadow_grand = lw["shadow"]
     grand_summ = {
         "light": (
+            f"{_LIGHT_OPENERS[vs]}"
             f"When all systems are read together, one singular profile emerges with striking coherence. "
             f"Life Path {lp} ({lp_arch}) × {sun} Sun × {hd_type} × Life's Work Gate {lw_gate_num} ({lw_name_grand}): "
             f"four facts from four independent systems, each calculated from the same underlying birth data, each pointing to the same core frequency. "
@@ -467,6 +566,7 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
             f"No system invented this independently — each calculated it from the precise coordinates of your birth moment."
         ),
         "shadow": (
+            f"{_SHADOW_OPENERS[vs]}"
             f"The shadow that runs across systems is equally coherent. "
             f"Not-self theme ({not_self}), karmic lessons ({ks_str}), Life's Work shadow ({lw_shadow_grand}), and communication conditioning ({comm_avoid}): "
             f"not separate problems but the same pattern seen through four lenses. "
@@ -474,11 +574,13 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
             f"Seeing it confirmed through four independent systems makes it undeniable — and what is clearly seen cannot be unconsciously repeated."
         ),
         "synthesis": (
-            f"The deepest insight of cross-system synthesis: the universe placed the same frequency into your birth moment and encoded it simultaneously into numbers (Numerology), planetary positions (Astrology), energy mechanics (Human Design), and contemplative keys (Gene Keys). "
+            f"{_GRAND_OPENERS[vs]}"
+            f"The universe placed the same frequency into your birth moment and encoded it simultaneously into numbers (Numerology), planetary positions (Astrology), energy mechanics (Human Design), and contemplative keys (Gene Keys). "
             f"The redundancy is not accident — it is emphasis. What all four systems agree on is the irreducible core of who you are. "
-            f"Life Path {lp}, {sun} Sun, {hd_type} with {auth_short} Authority, Gate {lw_gate_num}: these coordinates are your identity confirmed across four independent methodologies. "
+            f"Life Path {lp}, {sun} Sun, {hd_type} with {auth_short} Authority, Gate {lw_gate_num}: your identity confirmed across four independent methodologies. "
             f"The pillars of your being: your purpose ({lp_arch}), your instrument ({expr} Expression), your strategy ({strategy}), your contemplative path (Gate {lw_gate_num} — {lw_name_grand}). "
             f"Nothing here is random. You were specifically designed this way."
+            f"{_GRAND_CLOSERS[vs]}"
         ),
     }
 
