@@ -61,8 +61,7 @@ def life_path_number(birth_date: str) -> ReducedValue:
 def attitude_number(birth_date: str) -> ReducedValue:
     y, m, d = (int(x) for x in birth_date.split("-"))
     total = digit_sum(m) + digit_sum(d)
-    # Exception: masters reduced to single digit for Attitude
-    value, chain = reduce_number(total, preserve_masters=False)
+    value, chain = reduce_number(total, preserve_masters=True)
     return ReducedValue(value=value, raw=total, chain=chain)
 
 

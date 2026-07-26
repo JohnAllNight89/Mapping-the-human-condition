@@ -29,7 +29,7 @@ def report():
 def test_numerology_matches_doc_exactly(report):
     n = report.numerology
     assert n["life_path"] == 11
-    assert n["attitude"] == 2
+    assert n["attitude"] == 11  # June (6) + day 23 (2+3=5) = 11 master number, not reduced
     assert n["birthday"] == 5
     assert n["generation"] == 9
     assert n["expression"] == 7
