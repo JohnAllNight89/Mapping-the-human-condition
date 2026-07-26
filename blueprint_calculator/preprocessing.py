@@ -9,6 +9,9 @@ normalized letter sequence for numerology.
 from __future__ import annotations
 
 import re
+import urllib.parse
+import urllib.request
+import json
 from dataclasses import dataclass
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -56,10 +59,40 @@ class NormalizedName:
 
 # ---------------------------------------------------------------- P3-1 ----
 
+def _nominatim_lookup(place: str) -> tuple[float, float, str]:
+    """Try OpenStreetMap Nominatim for places not in the offline gazetteer."""
+    url = (
+        "https://nominatim.openstreetmap.org/search?"
+        + urllib.parse.urlencode({"q": place, "format": "json", "limit": "1"})
+    )
+    req = urllib.request.Request(
+        url,
+        headers={"User-Agent": "blueprint-calculator/1.0 (mapping-the-human-condition)"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            results = json.loads(resp.read().decode())
+        if not results:
+            raise gazetteer.PlaceNotFound(
+                f"'{place}' not found via Nominatim. "
+                f"Pass coordinates directly as 'lat,lon' instead."
+            )
+        r = results[0]
+        return float(r["lat"]), float(r["lon"]), r.get("display_name", place)
+    except gazetteer.PlaceNotFound:
+        raise
+    except Exception as exc:
+        raise gazetteer.PlaceNotFound(
+            f"'{place}' is not in the offline gazetteer and the online lookup failed ({exc}). "
+            f"Pass coordinates directly as 'lat,lon' instead."
+        ) from exc
+
+
 def resolve_place(place: str) -> Coordinates:
     """Data Point P3-1 -- Resolved Geographic Coordinates.
 
-    Accepts either 'lat,lon' or a city name found in the offline gazetteer.
+    Accepts either 'lat,lon', a city name in the offline gazetteer, or any
+    place name resolvable via Nominatim (OpenStreetMap) as a live fallback.
     """
     place = place.strip()
     latlon_match = re.match(r"^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$", place)
@@ -67,7 +100,10 @@ def resolve_place(place: str) -> Coordinates:
         lat, lon = float(latlon_match.group(1)), float(latlon_match.group(2))
         display_name = f"{lat:.4f}, {lon:.4f}"
     else:
-        lat, lon, display_name = gazetteer.lookup_city(place)
+        try:
+            lat, lon, display_name = gazetteer.lookup_city(place)
+        except gazetteer.PlaceNotFound:
+            lat, lon, display_name = _nominatim_lookup(place)
 
     if not (-90.0 <= lat <= 90.0):
         raise ValueError(f"latitude {lat} out of range [-90, 90]")
