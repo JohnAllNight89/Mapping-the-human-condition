@@ -1250,6 +1250,7 @@
 
         // Store personalized headline descriptions for clickable chips
         _headlineDescriptions = (data.synthesis && data.synthesis.headline_descriptions) || {};
+        _lastData = data;
 
         renderNumerology(data.numerology);
         renderSummary(data.profile, data.numerology, data.synthesis);
@@ -1286,45 +1287,205 @@
     if (document.getElementById("name").value && document.getElementById("birth_date").value) {
       calculate();
     }
-    // ---------- Headline modal ----------
+    // ---------- Panel Detail View (replaces modal) ----------
     let _headlineDescriptions = {};
+    let _lastData = null;
+    let _savedPanelContent = null;
 
-    function openHeadlineModal(key) {
+    // Build "at a glance" data boxes for each key using the stored API response
+    function _atGlanceHtml(key) {
+      const d = _lastData;
+      if (!d) return "";
+      const N = d.numerology;
+      const ast = d.astrology;
+      const W = ast && ast.available ? ast : null;
+      const V = W && W.vedic ? W : null;
+      const HD = W && W.human_design ? W.human_design : null;
+      const GK = W && W.gene_keys ? W.gene_keys : null;
+
+      function numBlock(label, r) {
+        if (!r) return "";
+        return `
+          <div class="${r.is_master ? "card-metal-gold" : "card-metal"} rounded-2xl p-6 text-center">
+            <p class="text-[10px] uppercase tracking-wider text-slate-500">${label}</p>
+            <div class="mt-3 font-display text-6xl gold-text">${r.number}</div>
+            ${r.is_master ? '<p class="mt-1 text-xs font-medium text-gold-soft uppercase tracking-wider">Master Number</p>' : ""}
+            <p class="mt-3 font-mono text-xs text-violet2-soft leading-relaxed">${r.reduction || ""}</p>
+          </div>`;
+      }
+
+      function signBlock(label, glyph, sign, position) {
+        return `
+          <div class="card-metal-gold rounded-2xl p-6 text-center">
+            <p class="text-[10px] uppercase tracking-wider text-slate-500">${label}</p>
+            <div class="mt-3 font-display text-4xl gold-text">${glyph} ${sign}</div>
+            <p class="mt-3 font-mono text-sm text-slate-300">${position}</p>
+          </div>`;
+      }
+
+      function gkBlock(sphere) {
+        if (!sphere) return "";
+        return `
+          <div class="card-metal-gold rounded-2xl p-6">
+            <div class="flex items-baseline gap-3">
+              <span class="font-display text-5xl gold-text">${sphere.notation}</span>
+              <span class="text-lg text-slate-200">${sphere.name}</span>
+            </div>
+            <div class="mt-5 grid grid-cols-3 gap-3 border-t border-gold/20 pt-4 text-center">
+              <div><p class="text-[10px] uppercase tracking-wider text-slate-500">Shadow</p><p class="mt-1.5 text-sm text-slate-400">${sphere.shadow}</p></div>
+              <div><p class="text-[10px] uppercase tracking-wider text-violet2-soft">Gift</p><p class="mt-1.5 text-sm text-slate-200 font-medium">${sphere.gift}</p></div>
+              <div><p class="text-[10px] uppercase tracking-wider text-gold-soft">Siddhi</p><p class="mt-1.5 text-sm gold-text font-medium">${sphere.siddhi}</p></div>
+            </div>
+            <p class="mt-4 text-xs text-slate-400">${sphere.meaning || ""}</p>
+          </div>`;
+      }
+
+      switch (key) {
+        case "life_path":    return numBlock("Life Path Number", N && N.life_path);
+        case "expression":   return numBlock("Expression Number", N && N.expression);
+        case "soul_urge":    return numBlock("Soul Urge Number", N && N.soul_urge);
+        case "personality":  return numBlock("Personality Number", N && N.personality);
+        case "sun_sign": {
+          if (!W) return "";
+          const p = W.western.planets.find(x => x.name === "Sun") || {};
+          return signBlock("Sun · Tropical Zodiac", p.sign_glyph || "☉", p.sign || "", p.position || "");
+        }
+        case "moon_sign": {
+          if (!W) return "";
+          const p = W.western.planets.find(x => x.name === "Moon") || {};
+          return signBlock("Moon · Tropical Zodiac", p.sign_glyph || "☽", p.sign || "", p.position || "");
+        }
+        case "ascendant": {
+          if (!W) return "";
+          const a = W.western.angles.ascendant;
+          return signBlock("Ascendant · Rising Sign", a.sign_glyph || "", a.sign || "", a.position || "");
+        }
+        case "hd_type": {
+          if (!HD) return "";
+          return `
+            <div class="card-metal-gold rounded-2xl p-6 text-center">
+              <div class="font-display text-4xl gold-text">${HD.type}</div>
+              <p class="mt-3 text-sm text-violet2-soft">Strategy: <span class="text-slate-200">${HD.strategy}</span></p>
+              <div class="mt-4 grid grid-cols-2 gap-3 border-t border-gold/20 pt-4 text-xs">
+                <div><p class="text-slate-500">Signature</p><p class="mt-1 text-emerald-400 font-medium">${HD.signature}</p></div>
+                <div><p class="text-slate-500">Not-Self</p><p class="mt-1 text-red-400">${HD.not_self}</p></div>
+              </div>
+            </div>`;
+        }
+        case "authority": {
+          if (!HD) return "";
+          return `
+            <div class="card-metal rounded-2xl p-6 text-center">
+              <p class="text-[10px] uppercase tracking-wider text-slate-500">Inner Authority</p>
+              <div class="mt-3 font-display text-3xl gold-text">${HD.authority}</div>
+              <p class="mt-3 text-xs text-slate-400">How the body knows — the correct decision-making channel for this design</p>
+            </div>`;
+        }
+        case "profile": {
+          if (!HD) return "";
+          return `
+            <div class="card-metal rounded-2xl p-6 text-center">
+              <p class="text-[10px] uppercase tracking-wider text-slate-500">Profile</p>
+              <div class="mt-3 font-display text-4xl gold-text">${HD.profile}</div>
+              <p class="mt-2 text-sm text-violet2-soft">${HD.profile_label}</p>
+              <p class="mt-3 text-xs text-slate-400">The social archetype and role in the collective field</p>
+            </div>`;
+        }
+        case "lifes_work":
+          return GK ? gkBlock(GK.activation_sequence[0]) : "";
+        case "gk_evolution":
+          return GK ? gkBlock(GK.activation_sequence[1]) : "";
+        case "vedic_moon_nak": {
+          if (!V) return "";
+          const moon = V.vedic.grahas.find(g => g.name === "Moon") || {};
+          const dasha = V.vedic.starting_mahadasha || "";
+          return `
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div class="card-metal-gold rounded-2xl p-6 text-center">
+                <p class="text-[10px] uppercase tracking-wider text-slate-500">☽ Moon Nakshatra</p>
+                <div class="mt-3 font-display text-2xl gold-text">${moon.nakshatra || "—"}</div>
+                <p class="mt-2 text-sm text-violet2-soft">${moon.rashi || ""} · Pada ${moon.pada || ""}</p>
+              </div>
+              <div class="card-metal rounded-2xl p-6 text-center">
+                <p class="text-[10px] uppercase tracking-wider text-slate-500">Starting Mahadasha</p>
+                <div class="mt-3 font-display text-2xl gold-text">${dasha || "—"}</div>
+                <p class="mt-2 text-xs text-slate-400">The planetary period active at birth</p>
+              </div>
+            </div>`;
+        }
+        case "vedic_rahu": {
+          if (!V) return "";
+          const rahu = V.vedic.grahas.find(g => g.name === "Rahu") || {};
+          const ketu = V.vedic.grahas.find(g => g.name === "Ketu") || {};
+          return `
+            <div class="grid gap-4 sm:grid-cols-2">
+              <div class="card-metal-gold rounded-2xl p-6 text-center">
+                <p class="text-[10px] uppercase tracking-wider text-slate-500">☊ Rahu · Soul's Hunger</p>
+                <div class="mt-3 font-display text-2xl gold-text">${rahu.rashi || "—"}</div>
+                <p class="mt-2 text-xs text-slate-400">${rahu.nakshatra || ""}</p>
+                <p class="mt-1 text-xs text-slate-500">What this soul came to integrate</p>
+              </div>
+              <div class="card-metal rounded-2xl p-6 text-center">
+                <p class="text-[10px] uppercase tracking-wider text-slate-500">☋ Ketu · Soul's Mastery</p>
+                <div class="mt-3 font-display text-2xl gold-text">${ketu.rashi || "—"}</div>
+                <p class="mt-2 text-xs text-slate-400">${ketu.nakshatra || ""}</p>
+                <p class="mt-1 text-xs text-slate-500">What this soul already knows deeply</p>
+              </div>
+            </div>`;
+        }
+        default: return "";
+      }
+    }
+
+    function openDetailView(el, key) {
       const d = _headlineDescriptions[key];
       if (!d) return;
-      document.getElementById("hm-title").textContent = d.title || "";
-      document.getElementById("hm-subtitle").textContent = d.subtitle || "";
-      document.getElementById("hm-body").innerHTML = glossarize(d.body || "");
-      document.getElementById("headline-modal").classList.remove("hidden");
-      document.body.style.overflow = "hidden";
+      const panel = el.closest("[data-panel]");
+      if (!panel) return;
+      _savedPanelContent = { panelEl: panel, html: panel.innerHTML };
+      const extras = _atGlanceHtml(key);
+      panel.innerHTML = `
+        <div class="space-y-6">
+          <div class="card-metal-gold rounded-2xl p-8">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="text-[11px] uppercase tracking-[0.3em] text-violet2-soft">${d.subtitle || ""}</p>
+                <h2 class="mt-2 font-display text-3xl gold-text sm:text-4xl">${d.title || ""}</h2>
+              </div>
+              <button onclick="closeDetailView()"
+                      class="shrink-0 rounded-xl border border-gold/40 px-5 py-2.5 text-sm font-medium text-gold-soft hover:bg-gold/10 transition">
+                ← Back
+              </button>
+            </div>
+            ${extras ? `<div class="mt-6">${extras}</div>` : ""}
+            <div class="mt-6 border-t border-gold/20 pt-6">
+              <p class="text-sm leading-loose text-slate-300">${glossarize(d.body || "")}</p>
+            </div>
+          </div>
+        </div>`;
+      panel.scrollIntoView({ behavior: "smooth", block: "start" });
     }
 
-    function closeHeadlineModal() {
-      document.getElementById("headline-modal").classList.add("hidden");
-      document.body.style.overflow = "";
+    function closeDetailView() {
+      if (!_savedPanelContent) return;
+      _savedPanelContent.panelEl.innerHTML = _savedPanelContent.html;
+      _savedPanelContent = null;
     }
 
-    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeHeadlineModal(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDetailView(); });
 
     // Delegated click listener for all data-headline elements
     document.addEventListener("click", (e) => {
       const el = e.target.closest("[data-headline]");
-      if (el && el.dataset.headline) openHeadlineModal(el.dataset.headline);
+      if (el && el.dataset.headline) openDetailView(el, el.dataset.headline);
     });
 
   </script>
 
-  <!-- Headline description modal -->
-  <div id="headline-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" role="dialog" aria-modal="true">
-    <div class="absolute inset-0 bg-charcoal-950/85 backdrop-blur-sm" onclick="closeHeadlineModal()"></div>
-    <div class="relative card-metal-gold rounded-2xl p-8 max-w-xl w-full z-10 max-h-[90vh] overflow-y-auto">
-      <button onclick="closeHeadlineModal()"
-              class="absolute top-4 right-5 text-slate-400 hover:text-gold-soft text-2xl leading-none transition"
-              aria-label="Close">×</button>
-      <p id="hm-subtitle" class="text-[11px] uppercase tracking-[0.3em] text-violet2-soft"></p>
-      <h3 id="hm-title" class="mt-2 font-display text-2xl gold-text sm:text-3xl"></h3>
-      <div class="mt-5 border-t border-gold/20 pt-4">
-        <p id="hm-body" class="text-sm leading-relaxed text-slate-300"></p>
+  <!-- (modal removed — panel replacement used instead) -->
+  <div style="display:none">
+    <div id="headline-modal"></div>
+    <p id="hm-subtitle"></p><h3 id="hm-title"></h3><p id="hm-body"></p>
       </div>
     </div>
   </div>
