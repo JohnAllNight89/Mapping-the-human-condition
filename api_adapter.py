@@ -421,7 +421,7 @@ def _headline_descriptions(
     # Expression
     out["expression"] = {
         "title": f"Expression {expr}",
-        "subtitle": EXPR_ARCHETYPES.get(expr, "The frequency others recognize before you've introduced yourself"),
+        "subtitle": "Expression",
         "body": (
             f"Your Expression number is calculated from every letter of your full birth name — "
             f"the sum of who you were named to be. Expression {expr} is not something you develop. "
@@ -598,7 +598,7 @@ def _headline_descriptions(
     if soul:
         out["soul_urge"] = {
             "title": f"Soul Urge {soul}",
-            "subtitle": SOUL_ARCHETYPES.get(soul, "The interior engine — the hunger that makes the path feel like a calling"),
+            "subtitle": "Soul Urge",
             "body": (
                 f"Your Soul Urge is calculated from the vowels of your full birth name — "
                 f"the breath in the letters, the sound underneath the consonant structure. "
@@ -1936,7 +1936,7 @@ def adapt(report: BlueprintReport) -> dict:
         {"system": "Human Design", "label": "Type",           "value": _hd_raw.get("type", ""),                           "subtitle": _hd_raw.get("strategy", ""), "detail": f"Strategy: {_hd_raw.get('strategy', '')}", "headline_key": "hd_type"},
         {"system": "Human Design", "label": "Authority",      "value": _auth_short_t10,                                   "subtitle": "Inner compass",             "detail": HD_AUTHORITY_LABELS.get(_auth_raw, _auth_raw), "headline_key": "authority"},
         {"system": "Numerology",   "label": "Life Path",      "value": str(_lp_t10),                                      "subtitle": LP_ARCHETYPES.get(_lp_t10, ""), "detail": "Birth date sum — life's recurring theme", "headline_key": "life_path"},
-        {"system": "Numerology",   "label": "Soul Urge",      "value": str(_soul_t10),                                    "subtitle": SOUL_ARCHETYPES.get(_soul_t10, "Heart's Desire"), "detail": "Interior yearning — vowels of the birth name", "headline_key": "soul_urge"},
+        {"system": "Numerology",   "label": "Soul Urge",      "value": str(_soul_t10),                                    "subtitle": "Soul Urge",                                      "detail": "Interior yearning — vowels of the birth name", "headline_key": "soul_urge"},
         {"system": "Vedic",        "label": "Moon Nakshatra", "value": _moon_nak_t10,                                     "subtitle": _moon_rashi_t10.split("(")[0].strip() if _moon_rashi_t10 else "", "detail": "Sidereal Moon mansion — emotional root", "headline_key": "vedic_moon_nak"},
         {"system": "Vedic",        "label": "Rahu Direction", "value": _rahu_sk_t10,                                      "subtitle": "Soul's growth vector",        "detail": "The hunger this incarnation came to integrate", "headline_key": "vedic_rahu"},
         {"system": "Western",      "label": "Sun Sign",       "value": _sun_t10,                                          "subtitle": SIGN_GLYPHS.get(_sun_t10, ""), "detail": "Tropical Sun — the conscious identity",  "headline_key": "sun_sign"},
@@ -1945,12 +1945,12 @@ def adapt(report: BlueprintReport) -> dict:
 
     # ---- core numbers 6 ----
     core_numbers_6 = [
-        {"key": "life_path",     "label": "Life Path",    "number": numerology["life_path"]["number"],   "is_master": numerology["life_path"]["is_master"],   "subtitle": numerology["life_path"]["subtitle"],   "headline_key": "life_path"},
-        {"key": "expression",    "label": "Expression",   "number": numerology["expression"]["number"],  "is_master": numerology["expression"]["is_master"],  "subtitle": numerology["expression"]["subtitle"],  "headline_key": "expression"},
-        {"key": "soul_urge",     "label": "Soul Urge",    "number": numerology["soul_urge"]["number"],   "is_master": numerology["soul_urge"]["is_master"],   "subtitle": numerology["soul_urge"]["subtitle"],   "headline_key": "soul_urge"},
-        {"key": "personality",   "label": "Personality",  "number": numerology["personality"]["number"], "is_master": numerology["personality"]["is_master"], "subtitle": numerology["personality"]["subtitle"], "headline_key": None},
-        {"key": "maturity",      "label": "Maturity",     "number": numerology["maturity"]["number"],    "is_master": numerology["maturity"]["is_master"],    "subtitle": numerology["maturity"]["subtitle"],    "headline_key": None},
-        {"key": "personal_year", "label": "Personal Year","number": numerology["personal_year"],         "is_master": numerology["personal_year"] in (11, 22, 33), "subtitle": PY_ARCHETYPES.get(numerology["personal_year"], ""), "headline_key": None},
+        {"key": "life_path",     "label": "Life Path",    "number": numerology["life_path"]["number"],   "is_master": numerology["life_path"]["is_master"],   "subtitle": "Life Path",    "headline_key": "life_path"},
+        {"key": "expression",    "label": "Expression",   "number": numerology["expression"]["number"],  "is_master": numerology["expression"]["is_master"],  "subtitle": "Expression",   "headline_key": "expression"},
+        {"key": "soul_urge",     "label": "Soul Urge",    "number": numerology["soul_urge"]["number"],   "is_master": numerology["soul_urge"]["is_master"],   "subtitle": "Soul Urge",    "headline_key": "soul_urge"},
+        {"key": "personality",   "label": "Personality",  "number": numerology["personality"]["number"], "is_master": numerology["personality"]["is_master"], "subtitle": "Personality",  "headline_key": None},
+        {"key": "maturity",      "label": "Maturity",     "number": numerology["maturity"]["number"],    "is_master": numerology["maturity"]["is_master"],    "subtitle": "Maturity",     "headline_key": None},
+        {"key": "personal_year", "label": "Personal Year","number": numerology["personal_year"],         "is_master": numerology["personal_year"] in (11, 22, 33), "subtitle": "Personal Year", "headline_key": None},
     ]
 
     # ---- celestial 6 (3 western + 3 vedic) ----
