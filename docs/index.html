@@ -80,7 +80,7 @@
 </head>
 <body class="min-h-screen font-body text-slate-200 antialiased">
 
-  <!-- ===== Password Gate ===== -->
+  <!-- ===== Access Gate ===== -->
   <div id="pw-gate" style="
     position:fixed;inset:0;z-index:9999;
     display:flex;align-items:center;justify-content:center;
@@ -97,7 +97,13 @@
                 -webkit-background-clip:text;background-clip:text;color:transparent;
                 margin-bottom:.5rem;">BLUEPRINT CALCULATOR</p>
       <p style="font-size:.75rem;color:#9a91b5;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1.75rem;">Private Access</p>
-      <input id="pw-input" type="password" placeholder="Enter password"
+      <input id="gate-name" type="text" placeholder="Name" autocomplete="off"
+        style="width:100%;background:#12101a;border:1px solid #352a52;border-radius:.5rem;
+               padding:.65rem 1rem;color:#e2e8f0;font-size:.875rem;outline:none;
+               margin-bottom:.6rem;box-sizing:border-box;"
+        onkeydown="if(event.key==='Enter')document.getElementById('gate-pw').focus()"
+      />
+      <input id="gate-pw" type="password" placeholder="Password" autocomplete="off"
         style="width:100%;background:#12101a;border:1px solid #352a52;border-radius:.5rem;
                padding:.65rem 1rem;color:#e2e8f0;font-size:.875rem;outline:none;
                margin-bottom:.75rem;box-sizing:border-box;"
@@ -113,23 +119,24 @@
   </div>
   <script>
     (function(){
-      // SHA-256 of "blueprint" — change this hash to change the password
-      // To generate a new hash: https://emn178.github.io/online-tools/sha256.html
-      const HASH = "5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8";
+      const NAME_HASH = "11842a4ab1d73f30916e1a68a3492fff7fd6ac895b90e8abf8466b575f3ce628";
+      const PW_HASH   = "ecc62cdce88f999ea4180bb393cfb2ea31c884900a02c4de38c5e2193b49d49c";
       async function sha256(msg){
         const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(msg));
         return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,"0")).join("");
       }
       window.checkPw=async function(){
-        const val=document.getElementById("pw-input").value;
-        if(!val){document.getElementById("pw-err").textContent="Please enter a password.";return;}
-        const h=await sha256(val);
-        if(h===HASH){
+        const n=document.getElementById("gate-name").value;
+        const p=document.getElementById("gate-pw").value;
+        if(!n||!p){document.getElementById("pw-err").textContent="Both fields required.";return;}
+        const [nh,ph]=await Promise.all([sha256(n),sha256(p)]);
+        if(nh===NAME_HASH && ph===PW_HASH){
           document.getElementById("pw-gate").style.display="none";
           sessionStorage.setItem("bp_auth","1");
         } else {
-          document.getElementById("pw-err").textContent="Incorrect password.";
-          document.getElementById("pw-input").value="";
+          document.getElementById("pw-err").textContent="Access denied.";
+          document.getElementById("gate-name").value="";
+          document.getElementById("gate-pw").value="";
         }
       };
       if(sessionStorage.getItem("bp_auth")==="1"){
