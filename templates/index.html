@@ -1439,9 +1439,15 @@
 
     function openDetailView(el, key) {
       const d = _headlineDescriptions[key];
-      if (!d) return;
+      if (!d) {
+        alert("DEBUG: no description for key=" + key + "\nAvailable keys: " + Object.keys(_headlineDescriptions).join(", ") + "\n_lastData set: " + (!!_lastData));
+        return;
+      }
       const panel = el.closest("[data-panel]");
-      if (!panel) return;
+      if (!panel) {
+        alert("DEBUG: no [data-panel] ancestor found for key=" + key);
+        return;
+      }
       _savedPanelContent = { panelEl: panel, html: panel.innerHTML };
       const extras = _atGlanceHtml(key);
       panel.innerHTML = `
