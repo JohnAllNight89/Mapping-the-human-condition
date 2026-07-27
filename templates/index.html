@@ -141,66 +141,76 @@
     <!-- ===================== Workspace: Tabs ===================== -->
     <section class="min-w-0">
       <nav id="tab-bar" class="flex gap-1 overflow-x-auto rounded-xl border border-charcoal-700/60 bg-charcoal-900/60 p-1.5">
-        <button data-tab="summary"       class="tab-active whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Summary</button>
-        <button data-tab="genekeys"      class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Gene Keys</button>
+        <button data-tab="genekeys"      class="tab-active whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Gene Keys</button>
         <button data-tab="humandesign"   class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Human Design</button>
         <button data-tab="numerology"    class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Numerology</button>
         <button data-tab="vedic"         class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Vedic Astrology</button>
         <button data-tab="western"       class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Western Astrology</button>
         <button data-tab="communication" class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Communication</button>
+        <button data-tab="summary"       class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">Summary</button>
         <button data-tab="all"           class="tab-idle whitespace-nowrap rounded-lg border-b-2 px-4 py-2 text-sm font-medium transition">All Aspects</button>
       </nav>
 
       <!-- Summary -->
-      <div id="panel-summary" data-panel class="mt-6 space-y-6">
-        <h2 class="print-title">Soul Blueprint — Summary</h2>
-        <div id="summary-blueprint" class="hidden card-metal-gold rounded-2xl p-6">
-          <header class="flex flex-wrap items-baseline justify-between gap-3">
-            <h3 class="font-display text-lg tracking-wide text-gold-soft">The Soul Blueprint</h3>
-            <button id="print-btn" onclick="window.print()"
-                    class="rounded-lg border border-gold/40 px-3 py-1.5 text-xs tracking-wider text-gold-soft transition hover:bg-gold/10 print:hidden">
-              ⎙ Save Report / PDF
+      <!-- Summary — clean narrative, shown last before All Aspects -->
+      <div id="panel-summary" data-panel class="mt-6 hidden">
+        <h2 class="print-title">Soul Blueprint — The Big Picture</h2>
+
+        <!-- Person header -->
+        <div class="rounded-t-2xl card-metal-gold p-6">
+          <div class="flex items-start justify-between gap-4 flex-wrap">
+            <div class="flex-1 min-w-0">
+              <p id="summary-person-name" class="font-display text-2xl gold-text">—</p>
+              <p id="summary-person-meta" class="mt-1 text-xs text-slate-400 leading-relaxed"></p>
+            </div>
+            <button onclick="window.print()"
+                    class="shrink-0 rounded-lg border border-gold/40 px-3 py-1.5 text-xs tracking-wider text-gold-soft transition hover:bg-gold/10 print:hidden">
+              ⎙ Save / PDF
             </button>
-          </header>
-          <div id="blueprint-archetypes" class="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4"></div>
-          <p id="blueprint-paragraph" class="mt-5 border-t border-gold/20 pt-4 text-sm leading-relaxed text-slate-300"></p>
-          <div id="blueprint-synthesis-summary" class="mt-6"></div>
+          </div>
+          <div id="summary-data-strip" class="mt-4 pt-4 border-t border-gold/20 flex flex-wrap gap-x-6 gap-y-1 text-xs font-mono text-slate-400"></div>
         </div>
-        <div class="card-metal-gold rounded-2xl p-6">
-          <h3 class="font-display text-lg tracking-wide text-gold-soft">Profile</h3>
-          <div id="summary-profile" class="mt-3 grid gap-3 text-sm sm:grid-cols-2">
-            <p class="text-slate-400">Calculate a blueprint to populate the summary.</p>
+
+        <!-- Narrative body -->
+        <div class="rounded-b-2xl card-metal p-8 space-y-10">
+          <p id="summary-placeholder" class="text-sm text-slate-400">Calculate a blueprint to reveal the big picture.</p>
+
+          <!-- Big picture synthesis -->
+          <div id="summary-big-picture" class="hidden">
+            <p class="text-[10px] uppercase tracking-[0.3em] text-violet2-soft mb-4">The Big Picture</p>
+            <p id="summary-synthesis-text" class="text-base leading-loose text-slate-100 font-medium"></p>
+          </div>
+
+          <!-- Core identity -->
+          <div id="summary-identity-block" class="hidden border-t border-charcoal-700/40 pt-10">
+            <p class="text-[10px] uppercase tracking-[0.3em] text-violet2-soft mb-4">Who You Are</p>
+            <p id="summary-identity-text" class="text-sm leading-loose text-slate-300"></p>
+          </div>
+
+          <!-- Strengths + Shadow side by side -->
+          <div id="summary-columns" class="hidden border-t border-charcoal-700/40 pt-10 grid sm:grid-cols-2 gap-10">
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-emerald-400/80 mb-5">Strengths &amp; Gifts</p>
+              <ul id="summary-strengths-list" class="space-y-4"></ul>
+            </div>
+            <div>
+              <p class="text-[10px] uppercase tracking-[0.3em] text-violet2-soft mb-5">Growth Edges</p>
+              <ul id="summary-shadow-list" class="space-y-4"></ul>
+            </div>
           </div>
         </div>
-        <div class="card-metal rounded-2xl p-6">
-          <h3 class="font-display text-lg tracking-wide text-gold-soft">Core Numbers</h3>
-          <div id="summary-numbers" class="mt-4 grid grid-cols-2 gap-4 xl:grid-cols-4"></div>
-        </div>
-        <div class="card-metal rounded-2xl p-6">
-          <h3 class="font-display text-lg tracking-wide text-gold-soft">Celestial Signature</h3>
-          <div class="mt-4 grid gap-5 sm:grid-cols-2" id="summary-celestial-wrap">
-            <p id="summary-celestial-placeholder" class="text-sm text-slate-400">Add birth time and place to reveal the sky.</p>
-          </div>
-        </div>
-        <div id="summary-hd-card" class="hidden card-metal rounded-2xl p-6">
-          <h3 class="font-display text-lg tracking-wide text-gold-soft">Human Design Overview</h3>
-          <div id="summary-hd" class="mt-4 grid gap-3 grid-cols-2 xl:grid-cols-3"></div>
-        </div>
-        <div id="summary-gk-card" class="hidden card-metal rounded-2xl p-6">
-          <h3 class="font-display text-lg tracking-wide text-gold-soft">Gene Keys — Activation Spheres</h3>
-          <div id="summary-gk" class="mt-4 grid gap-4 sm:grid-cols-2"></div>
-        </div>
-        <div class="card-metal rounded-2xl p-6">
-          <h3 class="font-display text-lg tracking-wide text-gold-soft">System Status</h3>
-          <ul class="mt-4 space-y-2 text-sm">
-            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Numerology</span><span class="text-emerald-400">● Active</span></li>
-            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Western Astrology</span><span id="status-western" class="text-slate-500">○ Awaiting birth time &amp; place</span></li>
-            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Vedic Astrology</span><span id="status-vedic" class="text-slate-500">○ Awaiting birth time &amp; place</span></li>
-            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Human Design</span><span id="status-hd" class="text-slate-500">○ Awaiting birth time &amp; place</span></li>
-            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Gene Keys</span><span id="status-gk" class="text-slate-500">○ Awaiting birth time &amp; place</span></li>
-            <li class="flex items-center justify-between rounded-lg bg-charcoal-950/50 px-4 py-2.5"><span>Communication Profile</span><span id="status-comm" class="text-slate-500">○ Awaiting birth time &amp; place</span></li>
-          </ul>
-        </div>
+      </div>
+
+      <!-- Hidden placeholders for status IDs (referenced by JS) -->
+      <div style="display:none">
+        <span id="status-western"></span><span id="status-vedic"></span>
+        <span id="status-hd"></span><span id="status-gk"></span><span id="status-comm"></span>
+        <div id="summary-profile"></div><div id="summary-numbers"></div>
+        <div id="summary-celestial-wrap"><p id="summary-celestial-placeholder"></p></div>
+        <div id="summary-hd-card"><div id="summary-hd"></div></div>
+        <div id="summary-gk-card"><div id="summary-gk"></div></div>
+        <div id="summary-blueprint"><div id="blueprint-archetypes"></div>
+          <p id="blueprint-paragraph"></p><div id="blueprint-synthesis-summary"></div></div>
       </div>
 
       <!-- Numerology -->
@@ -235,8 +245,8 @@
         </div>
       </div>
 
-      <!-- Gene Keys -->
-      <div id="panel-genekeys" data-panel class="mt-6 hidden">
+      <!-- Gene Keys (default tab) -->
+      <div id="panel-genekeys" data-panel class="mt-6">
         <h2 class="print-title">Gene Keys</h2>
         <div id="gk-content" class="space-y-6">
           <p class="text-sm text-slate-400">Add birth time and place, then calculate.</p>
@@ -1222,6 +1232,83 @@
       }
     }
 
+    // ---------- Summary — clean narrative ----------
+    function renderSummaryNarrative(data) {
+      const syn  = data.synthesis || {};
+      const prof = data.profile   || {};
+      const num  = data.numerology || {};
+      const ast  = data.astrology  || {};
+
+      // Person header
+      const nameEl = document.getElementById("summary-person-name");
+      if (nameEl) nameEl.textContent = prof.name || "";
+      const metaEl = document.getElementById("summary-person-meta");
+      if (metaEl) metaEl.textContent =
+        [prof.birth_date, prof.birth_time, prof.birth_place].filter(Boolean).join("  ·  ");
+
+      // Compact data strip: Life Path · Expression · Soul Urge · ☉ Sign · ☽ Sign · ASC · HD type/profile
+      const strip = [];
+      if (num.life_path)   strip.push("Life Path "  + num.life_path.number);
+      if (num.expression)  strip.push("Expression " + num.expression.number);
+      if (num.soul_urge)   strip.push("Soul Urge "  + num.soul_urge.number);
+      if (ast.available && ast.western) {
+        const sun  = (ast.western.planets || []).find(p => p.name === "Sun");
+        const moon = (ast.western.planets || []).find(p => p.name === "Moon");
+        const asc  = ast.western.angles && ast.western.angles.ascendant;
+        if (sun)  strip.push("☉ " + sun.sign);
+        if (moon) strip.push("☽ " + moon.sign);
+        if (asc)  strip.push("ASC " + asc.sign);
+      }
+      if (ast.human_design) {
+        const hd = ast.human_design;
+        strip.push("HD " + hd.type + " · " + hd.profile);
+      }
+      const stripEl = document.getElementById("summary-data-strip");
+      if (stripEl) stripEl.textContent = strip.join("   ·   ");
+
+      // Show engine-status badge in header
+      const engEl = document.getElementById("engine-status");
+      if (engEl) engEl.classList.remove("hidden");
+
+      // Hide placeholder, reveal sections
+      const ph = document.getElementById("summary-placeholder");
+      if (ph) ph.style.display = "none";
+
+      // Big-picture synthesis
+      const synthText = (syn.complete_synthesis && syn.complete_synthesis.text) || syn.paragraph || "";
+      if (synthText) {
+        const el = document.getElementById("summary-synthesis-text");
+        if (el) el.innerHTML = glossarize(synthText);
+        const sec = document.getElementById("summary-big-picture");
+        if (sec) sec.classList.remove("hidden");
+      }
+
+      // Core identity
+      const identText = syn.core_identity && syn.core_identity.text;
+      if (identText) {
+        const el = document.getElementById("summary-identity-text");
+        if (el) el.innerHTML = glossarize(identText);
+        const sec = document.getElementById("summary-identity-block");
+        if (sec) sec.classList.remove("hidden");
+      }
+
+      // Strengths + Shadow
+      const strengths = syn.synthesized_strengths || [];
+      const shadows   = syn.synthesized_shadow    || [];
+      if (strengths.length || shadows.length) {
+        const sl = document.getElementById("summary-strengths-list");
+        if (sl) sl.innerHTML = strengths.map(s =>
+          `<li class="flex gap-3 items-start"><span class="text-emerald-400 shrink-0 mt-0.5">✦</span><span class="text-sm leading-relaxed text-slate-300">${s.text}</span></li>`
+        ).join("");
+        const sh = document.getElementById("summary-shadow-list");
+        if (sh) sh.innerHTML = shadows.map(s =>
+          `<li class="flex gap-3 items-start"><span class="text-violet2-soft shrink-0 mt-0.5">◈</span><span class="text-sm leading-relaxed text-slate-400">${s.text}</span></li>`
+        ).join("");
+        const cols = document.getElementById("summary-columns");
+        if (cols) cols.classList.remove("hidden");
+      }
+    }
+
     // ---------- API wiring ----------
     const form = document.getElementById("profile-form");
     const errorBox = document.getElementById("form-error");
@@ -1253,18 +1340,12 @@
         _lastData = data;
 
         renderNumerology(data.numerology);
-        renderSummary(data.profile, data.numerology, data.synthesis);
         renderWestern(data.astrology);
         renderVedic(data.astrology);
-        renderCelestial(data.astrology, data.synthesis);
         renderHumanDesign(data.astrology);
         renderGeneKeys(data.astrology);
         renderCommunication(data.astrology);
-        renderBlueprint(data);
-        if (data.synthesis) {
-          renderSummaryHD(data.synthesis.hd_summary_6);
-          renderSummaryGK(data.synthesis.gk_summary_4);
-        }
+        renderSummaryNarrative(data);
 
         // Update audit download link
         const params = new URLSearchParams({ name, birth_date, birth_time, birth_place });
