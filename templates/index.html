@@ -1290,7 +1290,6 @@
     // ---------- Panel Detail View (replaces modal) ----------
     let _headlineDescriptions = {};
     let _lastData = null;
-    let _savedPanelContent = null;
 
     // Build "at a glance" data boxes for each key using the stored API response
     function _atGlanceHtml(key) {
@@ -1439,43 +1438,21 @@
 
     function openDetailView(el, key) {
       const d = _headlineDescriptions[key];
-      if (!d) {
-        alert("DEBUG: no description for key=" + key + "\nAvailable keys: " + Object.keys(_headlineDescriptions).join(", ") + "\n_lastData set: " + (!!_lastData));
-        return;
-      }
-      const panel = el.closest("[data-panel]");
-      if (!panel) {
-        alert("DEBUG: no [data-panel] ancestor found for key=" + key);
-        return;
-      }
-      _savedPanelContent = { panelEl: panel, html: panel.innerHTML };
+      if (!d) return;
       const extras = _atGlanceHtml(key);
-      panel.innerHTML = `
-        <div class="space-y-6">
-          <div class="card-metal-gold rounded-2xl p-8">
-            <div class="flex items-start justify-between gap-4">
-              <div>
-                <p class="text-[11px] uppercase tracking-[0.3em] text-violet2-soft">${d.subtitle || ""}</p>
-                <h2 class="mt-2 font-display text-3xl gold-text sm:text-4xl">${d.title || ""}</h2>
-              </div>
-              <button onclick="closeDetailView()"
-                      class="shrink-0 rounded-xl border border-gold/40 px-5 py-2.5 text-sm font-medium text-gold-soft hover:bg-gold/10 transition">
-                ← Back
-              </button>
-            </div>
-            ${extras ? `<div class="mt-6">${extras}</div>` : ""}
-            <div class="mt-6 border-t border-gold/20 pt-6">
-              <p class="text-sm leading-loose text-slate-300">${glossarize(d.body || "")}</p>
-            </div>
-          </div>
-        </div>`;
-      panel.scrollIntoView({ behavior: "smooth", block: "start" });
+      const modal = document.getElementById("detail-modal");
+      document.getElementById("dm-subtitle").textContent = d.subtitle || "";
+      document.getElementById("dm-title").textContent   = d.title   || "";
+      document.getElementById("dm-extras").innerHTML    = extras || "";
+      document.getElementById("dm-extras").style.display = extras ? "" : "none";
+      document.getElementById("dm-body").innerHTML      = glossarize(d.body || "");
+      modal.classList.remove("hidden");
+      document.body.style.overflow = "hidden";
     }
 
     function closeDetailView() {
-      if (!_savedPanelContent) return;
-      _savedPanelContent.panelEl.innerHTML = _savedPanelContent.html;
-      _savedPanelContent = null;
+      document.getElementById("detail-modal").classList.add("hidden");
+      document.body.style.overflow = "";
     }
 
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDetailView(); });
@@ -1489,12 +1466,38 @@
 
   </script>
 
-  <!-- (modal removed — panel replacement used instead) -->
-  <div style="display:none">
-    <div id="headline-modal"></div>
-    <p id="hm-subtitle"></p><h3 id="hm-title"></h3><p id="hm-body"></p>
+  <!-- Detail popup modal -->
+  <div id="detail-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"
+       style="background:rgba(0,0,0,0.75);backdrop-filter:blur(4px)">
+    <!-- backdrop click closes -->
+    <div class="absolute inset-0" onclick="closeDetailView()"></div>
+    <!-- card -->
+    <div class="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-yellow-600/40 bg-zinc-900 shadow-2xl"
+         style="background:linear-gradient(135deg,#1a1512 0%,#0f0d0a 100%);border-color:rgba(180,140,60,0.35)">
+      <!-- header -->
+      <div class="flex items-start justify-between gap-4 border-b p-6"
+           style="border-color:rgba(180,140,60,0.2)">
+        <div>
+          <p id="dm-subtitle" class="text-xs uppercase tracking-widest"
+             style="color:rgba(160,120,200,0.8);letter-spacing:.25em"></p>
+          <h2 id="dm-title" class="mt-2 font-display text-3xl"
+              style="background:linear-gradient(135deg,#d4a843,#f0cc6e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text"></h2>
+        </div>
+        <button onclick="closeDetailView()"
+                style="flex-shrink:0;border:1px solid rgba(180,140,60,0.4);border-radius:.75rem;padding:.6rem 1.2rem;font-size:.85rem;font-weight:500;color:rgba(210,170,80,0.9);background:transparent;cursor:pointer;transition:background .15s"
+                onmouseover="this.style.background='rgba(180,140,60,0.12)'"
+                onmouseout="this.style.background='transparent'">
+          ✕ Close
+        </button>
+      </div>
+      <!-- at-a-glance data block -->
+      <div id="dm-extras" class="p-6 pb-0"></div>
+      <!-- personalized body -->
+      <div class="p-6">
+        <p id="dm-body" class="text-sm leading-loose" style="color:rgba(200,200,210,0.9)"></p>
       </div>
     </div>
   </div>
+
 </body>
 </html>
