@@ -344,6 +344,38 @@
         </div>`;
     }
 
+    // Glossary: wrap known terms in dotted underline + title tooltip
+    const _GLOSSARY = {
+      "non-linear":   "Processing the whole before the parts — arriving at insight via pattern recognition or intuition rather than step-by-step logic.",
+      "nonlinear":    "Processing the whole before the parts — arriving at insight via pattern recognition or intuition rather than step-by-step logic.",
+      "holistic":     "Perceiving or working with a system as an integrated whole rather than as separate, isolated parts.",
+      "liminal":      "Existing at a threshold — occupying the in-between space of two states, identities, or phases of growth.",
+      "synthesis":    "The integration of distinct systems into a unified understanding greater than the sum of its parts.",
+      "karmic":       "Patterns carried into this incarnation as areas of growth — opportunities for resolution, not punishment.",
+      "ayanamsa":     "The angular difference between the tropical and sidereal zodiacs — Lahiri corrects for the Earth's axial precession (~50\"/year).",
+      "mahadasha":    "A major planetary period in the Vimsottari Dasha system — each lord rules for years and colors life themes.",
+      "atmakaraka":   "The planet with the highest degree in a sign in Vedic astrology — the indicator of the soul's deepest purpose.",
+      "charakaraka":  "One of the seven planets ranked by degree within their sign in Jyotish — each carries a specific role in the soul's journey.",
+      "sacral":       "The energy center in Human Design governing sustainable life-force, sexuality, and sustained creative work.",
+      "generator":    "A Human Design type — the life-force engine of humanity, built for sustainable response-guided work.",
+      "projector":    "A Human Design type — designed to guide and direct others' energy; recognized before initiating.",
+      "manifestor":   "A Human Design type — the only type with consistent access to initiation; built to inform before acting.",
+      "reflector":    "A Human Design type — amplifies the community field; correct decisions ripen over a lunar cycle.",
+    };
+    const _GLOSSARY_PATTERN = new RegExp(
+      "(?<![<\">])\\b(" + Object.keys(_GLOSSARY).map(k => k.replace(/[-]/g, "[-]")).join("|") + ")\\b(?![^<]*>)",
+      "gi"
+    );
+    function glossarize(text) {
+      if (!text) return text;
+      return text.replace(_GLOSSARY_PATTERN, (match) => {
+        const def = _GLOSSARY[match.toLowerCase()] || _GLOSSARY[match];
+        return def
+          ? `<span class="border-b border-dotted border-gold/40 cursor-help" title="${def.replace(/"/g, "&quot;")}">${match}</span>`
+          : match;
+      });
+    }
+
     function sectionSummary(s) {
       if (!s || !s.light) return "";
       return `
@@ -351,15 +383,15 @@
           <h3 class="font-display text-xl tracking-wide text-gold-soft border-b border-gold/20 pb-3">Section Analysis</h3>
           <div class="rounded-xl bg-emerald-950/30 border border-emerald-700/30 p-5">
             <p class="mb-3 text-[11px] uppercase tracking-[0.28em] text-emerald-400">✦ The Light · Gifts &amp; Natural Strengths</p>
-            <p class="text-sm leading-relaxed text-slate-300">${s.light}</p>
+            <p class="text-sm leading-relaxed text-slate-300">${glossarize(s.light)}</p>
           </div>
           <div class="rounded-xl bg-violet2/5 border border-violet2/25 p-5">
             <p class="mb-3 text-[11px] uppercase tracking-[0.28em] text-violet2-soft">◈ The Shadow · Patterns to Integrate</p>
-            <p class="text-sm leading-relaxed text-slate-300">${s.shadow}</p>
+            <p class="text-sm leading-relaxed text-slate-300">${glossarize(s.shadow)}</p>
           </div>
           <div class="rounded-xl bg-gold/5 border border-gold/35 p-5">
             <p class="mb-3 text-[11px] uppercase tracking-[0.28em] text-gold-soft">⬡ The Synthesis · Pillars of Being</p>
-            <p class="text-sm leading-relaxed text-slate-200 font-medium">${s.synthesis}</p>
+            <p class="text-sm leading-relaxed text-slate-200 font-medium">${glossarize(s.synthesis)}</p>
           </div>
         </div>`;
     }
@@ -816,15 +848,15 @@
         <div class="card-metal-gold rounded-2xl p-8 text-center">
           <p class="text-xs uppercase tracking-[0.3em] text-violet2-soft">Communication Archetype</p>
           <h3 class="mt-3 font-display text-3xl gold-text sm:text-4xl">${comm.archetype}</h3>
-          <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-300">${comm.summary}</p>
+          <p class="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-slate-300">${glossarize(comm.summary)}</p>
+          <div class="mt-5 border-t border-gold/20 pt-4 text-left">
+            <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft mb-2">How You Process</p>
+            <p class="text-sm leading-relaxed text-slate-300">${glossarize(comm.processing_style)}</p>
+          </div>
         </div>`;
 
-      // Processing style card
-      const processingCard = `
-        <div class="card-metal rounded-2xl p-6">
-          <h3 class="font-display text-lg tracking-wide text-gold-soft">Processing Style</h3>
-          <p class="mt-3 text-sm leading-relaxed text-slate-300">${comm.processing_style}</p>
-        </div>`;
+      // Processing style card removed — folded into archetype card above
+      const processingCard = ``;
 
       // Delivery preferences 2×2 grid
       const deliveryGrid = `
@@ -844,16 +876,30 @@
           </div>
         </div>`;
 
-      // Cognitive strengths
+      // Cognitive strengths — 2 obvious + 1 non-obvious
+      const _obvious = (comm.strengths || []).filter(s => s.is_obvious !== false);
+      const _nonObvious = (comm.strengths || []).filter(s => s.is_obvious === false);
       const strengthsHtml = comm.strengths && comm.strengths.length
-        ? comm.strengths.map((s) => `
-            <li class="flex items-start gap-3 rounded-xl bg-charcoal-950/50 px-4 py-3">
-              <span class="mt-0.5 text-gold-soft">✦</span>
-              <div>
-                <p class="font-medium text-slate-100">${s.strength}</p>
-                <p class="mt-0.5 text-xs text-slate-400">${s.source}</p>
-              </div>
-            </li>`).join("")
+        ? [
+            _obvious.length ? `<p class="mb-2 text-[10px] uppercase tracking-[0.25em] text-emerald-400">Core Strengths · Observable From Data</p>` : "",
+            ..._obvious.map(s => `
+              <li class="flex items-start gap-3 rounded-xl bg-charcoal-950/50 px-4 py-3 border border-emerald-700/20">
+                <span class="mt-0.5 text-gold-soft shrink-0">✦</span>
+                <div>
+                  <p class="font-medium text-slate-100">${s.strength}</p>
+                  <p class="mt-1 text-xs text-slate-400 leading-relaxed">${s.source}</p>
+                </div>
+              </li>`),
+            _nonObvious.length ? `<p class="mt-4 mb-2 text-[10px] uppercase tracking-[0.25em] text-gold-soft">Hidden Pattern · Cross-System — Not Obvious Without the Full Picture</p>` : "",
+            ..._nonObvious.map(s => `
+              <li class="flex items-start gap-3 rounded-xl bg-gold/5 border border-gold/30 px-4 py-3">
+                <span class="mt-0.5 text-gold-soft shrink-0">⬡</span>
+                <div>
+                  <p class="font-medium text-slate-100">${s.strength}</p>
+                  <p class="mt-1 text-xs text-slate-400 leading-relaxed">${s.source}</p>
+                </div>
+              </li>`),
+          ].filter(Boolean).join("")
         : `<li class="text-sm text-slate-400">No dominant strengths identified.</li>`;
 
       // Cognitive weaknesses (data-specific, not generic)
@@ -1248,7 +1294,7 @@
       if (!d) return;
       document.getElementById("hm-title").textContent = d.title || "";
       document.getElementById("hm-subtitle").textContent = d.subtitle || "";
-      document.getElementById("hm-body").textContent = d.body || "";
+      document.getElementById("hm-body").innerHTML = glossarize(d.body || "");
       document.getElementById("headline-modal").classList.remove("hidden");
       document.body.style.overflow = "hidden";
     }

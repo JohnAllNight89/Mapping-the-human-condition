@@ -291,36 +291,124 @@ def record_communication(numerology: dict, western: dict, hd: dict, gk: dict) ->
          "source": "Current configuration shows balanced open-center awareness across the profile"}
     ]
 
-    # -- Step 4: Cognitive strengths (top 3 with source attribution) --
+    # -- Step 4: Cognitive strengths — 2 obvious (single-system) + 1 non-obvious (cross-system) --
     strength_descriptions = {
         "mental_certainty": (
             "Structured Mental Processing",
-            f"Defined {'Ajna ' if 'Ajna' in defined_centers else ''}{'and Head centers provide' if 'Head' in defined_centers else 'center provides'} consistent, reliable cognitive frameworks",
+            f"Defined {'Ajna ' if 'Ajna' in defined_centers else ''}{'and Head centers provide' if 'Head' in defined_centers else 'center provides'} consistent, reliable cognitive frameworks that others can count on",
         ),
         "relational": (
             "Relational Intelligence",
-            f"Profile {profile} orientation attunes naturally to interpersonal dynamics and social learning",
+            f"Profile {profile} orientation attunes naturally to interpersonal dynamics — social context is data, not distraction",
         ),
         "experiential": (
             "Experiential Learning Drive",
-            f"Profile {profile} line 3 creates deep learning through direct trial, iteration, and discovery",
+            f"Profile line 3 creates deep knowledge through direct trial and iteration — each failure is a data point, not a verdict",
         ),
         "analytical": (
             "Analytical Depth",
-            f"Mercury in {mercury_sign or 'analytical signs'} with Expression {expression} sharpens precision and logical structure",
+            f"Mercury in {mercury_sign or 'analytical signs'} with Expression {expression} sharpens precision and logical structure — conclusions are earned, not assumed",
         ),
         "intuitive": (
             "Intuitive Pattern Recognition",
-            f"Mercury in {mercury_sign or 'receptive signs'}{' and Water-dominant field' if dominant_element == 'Water' else ''} attunes to non-logical intelligence signals",
+            f"Mercury in {mercury_sign or 'receptive signs'}{' in a Water-dominant chart' if dominant_element == 'Water' else ''} attunes to non-logical signals — you sense the whole before examining the parts",
         ),
     }
 
     top_strengths = sorted(scores.items(), key=lambda x: x[1], reverse=True)
     strengths = [
-        {"strength": strength_descriptions[k][0], "source": strength_descriptions[k][1]}
+        {"strength": strength_descriptions[k][0], "source": strength_descriptions[k][1], "is_obvious": True}
         for k, v in top_strengths
         if v > 0
-    ][:3]
+    ][:2]
+
+    # Cross-system non-obvious strength — earned by the combination, not readable from any single system
+    cross_strength = None
+    if "Ajna" in defined_centers and mercury_sign in ("Pisces", "Scorpio", "Cancer"):
+        cross_strength = {
+            "strength": "Structured Intuition — the Rare Synthesis",
+            "source": (
+                f"Defined Ajna (consistent cognitive framework) combined with Mercury in {mercury_sign} "
+                f"(intuitive, non-linear signal): most people get one or the other. Your defined Ajna gives "
+                f"a stable container to hold and translate what Mercury delivers non-logically. "
+                f"This cross-system combination is rarely seen and almost never discussed."
+            ),
+            "is_obvious": False,
+        }
+    elif life_path in (11, 22, 33) and ("Sacral" in defined_centers or "Solar Plexus" in defined_centers):
+        anchor = "Sacral" if "Sacral" in defined_centers else "Solar Plexus"
+        cross_strength = {
+            "strength": "Master Frequency With Somatic Grounding",
+            "source": (
+                f"Life Path {life_path} (master number — elevated sensitivity and vision) combined with "
+                f"defined {anchor} center (reliable physical anchor): most master-number carriers lack "
+                f"a stable somatic home for the frequency they run. Your defined {anchor} gives it one. "
+                f"The result is vision that can actually land in the body, not just circulate in the mind."
+            ),
+            "is_obvious": False,
+        }
+    elif 4 in profile_lines and mercury_sign in ("Virgo", "Gemini", "Aquarius"):
+        cross_strength = {
+            "strength": "Network Intelligence Filtered by Precision",
+            "source": (
+                f"Profile line 4 (learns and influences through close relationships) combined with "
+                f"Mercury in {mercury_sign} (analytical, precise): the line 4 typically gathers data "
+                f"relationally — emotionally, contextually. Your Mercury strips that data to structure "
+                f"in real time. You extract transferable pattern from conversation in a way few line 4s do."
+            ),
+            "is_obvious": False,
+        }
+    elif dominant_element == "Fire" and expression in (7, 9):
+        cross_strength = {
+            "strength": "Visionary Drive Anchored by Rare Depth",
+            "source": (
+                f"Fire-dominant chart (fast, inspirational, action-oriented) combined with "
+                f"Expression {expression} (depth, introspection, long-arc completion): most Fire communicators "
+                f"run fast and shallow. The {expression} expression pulls you into sustained inquiry and "
+                f"meaningful completion — which is unexpected from someone with a Fire signature and is "
+                f"what makes your vision more than enthusiasm."
+            ),
+            "is_obvious": False,
+        }
+    elif "Head" in open_centers and 3 in profile_lines:
+        cross_strength = {
+            "strength": "Pressure-Free Iteration — Learning Without Debt",
+            "source": (
+                f"Open Head (not bound by fixed questions or mental pressure) combined with "
+                f"Profile line 3 (trial-and-error learning): the open Head means your trials don't need "
+                f"to 'answer' a pre-existing question — you're not carrying a mental agenda into the experiment. "
+                f"This makes your iteration faster and emotionally lighter than defined-Head pioneers, "
+                f"who carry the weight of needing the experiment to close a loop."
+            ),
+            "is_obvious": False,
+        }
+    elif analytical >= 2 and relational >= 2:
+        cross_strength = {
+            "strength": "Analytical Depth Delivered With Relational Warmth",
+            "source": (
+                f"High analytical score (Mercury in {mercury_sign or 'earth/air sign'}, Expression {expression}) "
+                f"combined with high relational score (Profile {profile}): most precision-oriented communicators "
+                f"lose the room with rigor. Most relational communicators sacrifice precision for connection. "
+                f"Your combination holds both — the rare ability to be thorough and warm simultaneously."
+            ),
+            "is_obvious": False,
+        }
+    else:
+        # Generic fallback — always find something cross-system
+        cross_strength = {
+            "strength": "Adaptive Intelligence Across Contexts",
+            "source": (
+                f"Life Path {life_path} (core purpose archetype) combined with HD Type {hd_type} "
+                f"(energy and strategy) and Mercury in {mercury_sign or 'current sign'}: "
+                f"the combination creates a communicator who can switch registers — technical to emotional, "
+                f"big-picture to granular — without losing coherence. Consistency across contexts is rarer "
+                f"than most people realize."
+            ),
+            "is_obvious": False,
+        }
+
+    if cross_strength:
+        strengths.append(cross_strength)
 
     # -- Step 5: Key indicators (top 5 cross-system) --
     line_label_0 = LINE_NAMES.get(profile_lines[0], "") if profile_lines else ""
