@@ -280,30 +280,36 @@ def _headline_descriptions(
         "title": f"Life Path {lp}",
         "subtitle": lp_arch,
         "body": (
-            f"Life Path {lp} — {lp_arch} — means your life's major chapters all orbit the same theme: "
-            f"{lp_theme}. You've felt this as {lp_pull}. "
+            f"Life Path {lp} is the primary frequency your entire existence is built around — "
+            f"the recurring theme that shows up in your relationships, your work, your crises, your breakthroughs. "
+            f"Every major chapter of your life, looked at honestly, is some version of the same arc: {lp_theme}. "
+            f"Not a role you chose. A frequency you carry. It was encoded before you had a name for it. "
+            f"You've felt it as {lp_pull}. "
             f"Your Expression {expr} is the instrument through which this path broadcasts outwardly — "
-            f"the specific talent others recognize in you before you've consciously cultivated it. "
-            f"Your Soul Urge {soul} sits beneath both, the interior engine: the deep need that makes "
-            f"this path feel like a calling rather than a career. "
-            f"Life Path ({lp}), Expression ({expr}), Soul Urge ({soul}) — these three form the numerological "
-            f"triangle of your design, and every major theme in your life is some expression of that triangle in motion."
+            f"the specific voice and gift others have always recognized in you, before you consciously developed it. "
+            f"Your Soul Urge {soul} is the engine underneath both — the interior hunger that makes this feel like a calling "
+            f"rather than a career choice. "
+            f"When Life Path ({lp}), Expression ({expr}), and Soul Urge ({soul}) are running in concert, "
+            f"effort stops feeling like effort. The friction is always in the gap between what these three are pointing toward "
+            f"and what you're actually doing."
         ),
     }
 
     # Expression
     out["expression"] = {
         "title": f"Expression {expr}",
-        "subtitle": "The gift others recognize before you name it",
+        "subtitle": "The frequency others recognize before you've introduced yourself",
         "body": (
-            f"Your Expression Number {expr} is calculated from every letter of your birth name — "
-            f"it describes the natural gifts and voice that others consistently encounter in you, "
-            f"even when you haven't consciously developed them. "
-            f"Where your Life Path {lp} ({lp_arch}) is the road you walk, Expression {expr} is your stride — "
-            f"the specific, recognizable quality of how you move. "
-            f"Your Soul Urge {soul} is the reason you keep walking it. "
-            f"The work isn't to become your Expression number — you already are it. "
-            f"The work is to recognize it operating, stop apologizing for it, and trust it as your natural channel."
+            f"Your Expression number is calculated from every letter of your full birth name — "
+            f"the sum of who you were named to be. Expression {expr} is not something you develop. "
+            f"It is something you already are, and have always been — the natural gifts and voice that others have "
+            f"consistently encountered in you before you had language to describe them. "
+            f"Where Life Path {lp} ({lp_arch}) is the road you walk, Expression {expr} is your stride — "
+            f"the distinctive, recognizable quality of how you move through experience. "
+            f"Your Soul Urge {soul} is the reason you keep walking. "
+            f"The work is not to become this. The work is to stop apologizing for it — "
+            f"to recognize your Expression running in real time and let it operate without editing it down "
+            f"to fit what the room thinks you should be."
         ),
     }
 
@@ -313,16 +319,19 @@ def _headline_descriptions(
             "title": f"{sun} Sun",
             "subtitle": f"{sun_arch} — {sun_theme}" if sun_arch else "The conscious identity archetype",
             "body": (
-                f"Your {sun} Sun is the conscious identity — the archetype you grow into and express "
-                f"more fully as you mature. {sun_theme.capitalize() if sun_theme else 'Your solar identity'} "
+                f"Your {sun} Sun is not a personality label. It is the conscious identity archetype "
+                f"you grow into — the version of yourself that becomes more fully expressed with each decade. "
+                f"{sun_theme.capitalize() if sun_theme else 'Your solar identity'} "
                 f"defines the creative register of your public self. "
-                f"Your {moon} Moon is the emotional body beneath it — "
-                f"the reactive layer that activates before the conscious Sun gets a vote. "
-                f"Your {asc} Ascendant is the face you present: the first thing people sense before they know anything else about you. "
-                f"Sun ({sun}) tells you who you're becoming. Moon ({moon}) tells you how you feel inside. "
-                f"Ascendant ({asc}) tells you how you're perceived. "
-                f"When the {lunar_phase or 'lunar phase'} was in effect at your birth, it set the "
-                f"underlying tension or harmony between Sun and Moon that colors the lived texture of your days."
+                f"Your {moon} Moon is the emotional body underneath it — the layer that activates "
+                f"before your {sun} Sun has had a chance to vote. "
+                f"Sun is who you're becoming; Moon is what you're feeling while you do it. "
+                f"Your {asc} Ascendant is how all of it arrives in the world — "
+                f"the energy people encounter first, before they know your name or have heard you speak. "
+                f"The {lunar_phase or 'lunar phase'} at your birth set the underlying relationship between Sun and Moon — "
+                f"the specific tension or harmony between your conscious direction and your emotional body "
+                f"that colors the lived texture of every day. "
+                f"That texture was not random. It was present at the first breath."
             ),
         }
 
@@ -330,18 +339,21 @@ def _headline_descriptions(
     if moon:
         out["moon_sign"] = {
             "title": f"{moon} Moon",
-            "subtitle": "The emotional architecture — what you feel when no one is watching",
+            "subtitle": "The emotional architecture — the layer that activates before you decide anything",
             "body": (
-                f"Your {moon} Moon is the emotional body — the layer that activates before the conscious mind "
-                f"can respond. A {moon} Moon {moon_emotional}. "
-                f"This isn't a character flaw or a strength — it's the texture of your inner weather. "
-                f"Your {sun} Sun is the identity you're growing toward; your {moon} Moon is the emotional soil "
-                f"that identity is growing out of. "
-                f"The key to working with your Moon isn't to suppress or override it — "
-                f"it's to recognize its patterns fast enough that you can decide how to respond rather "
-                f"than simply react. "
-                f"When your {moon} Moon is nourished and expressed honestly, it becomes a deep source of "
-                f"intelligence rather than a source of reactivity."
+                f"Your {moon} Moon is the emotional body — the layer of you that responds before the mind "
+                f"has had a chance to decide. A {moon} Moon {moon_emotional}. "
+                f"This is not a character flaw. This is not a strength. "
+                f"It is the texture of your interior weather — the automatic register that has been running "
+                f"since birth, whether it was ever named or not. "
+                f"People who know you well have felt it, even when they couldn't describe it precisely. "
+                f"Your {sun} Sun is the identity you're building toward. "
+                f"Your {moon} Moon is the emotional soil that identity is growing out of. "
+                f"You cannot resolve the Moon. You cannot override it. "
+                f"But you can learn to recognize its patterns fast enough to choose your response "
+                f"rather than simply enact it. "
+                f"That speed of recognition is the difference between the Moon running you "
+                f"and you running the Moon."
             ),
         }
 
@@ -349,18 +361,20 @@ def _headline_descriptions(
     if asc:
         out["ascendant"] = {
             "title": f"{asc} Rising",
-            "subtitle": "The lens through which the world first meets you",
+            "subtitle": "The threshold through which all experience arrives",
             "body": (
                 f"Your {asc} Ascendant is the mask the soul chose for this incarnation — "
-                f"not a performance, but the genuine first layer of how you interface with experience. "
+                f"not a performance, but the genuine first layer of how you interface with experience itself. "
                 f"A {asc} Ascendant {asc_theme}. "
-                f"This is the energy people sense before they know your name, before they've heard you speak, "
-                f"before they've had time to form an opinion. "
-                f"Your chart ruler — {chart_ruler} — is the planetary governor of your entire birth chart: "
-                f"wherever {chart_ruler} is placed and how it's aspected shapes the quality of life "
-                f"that flows through your {asc} Ascendant lens. "
-                f"Understanding your Rising means understanding not just how you appear, "
-                f"but how experience arrives and gets processed at the gateway of your life."
+                f"This is what people feel before they know your history, "
+                f"before you've established context, before you've said a single word. "
+                f"Your chart ruler — {chart_ruler} — is the planetary governor of your entire birth map. "
+                f"Its placement, its sign, its aspects color everything the chart describes "
+                f"about how life flows through you. "
+                f"When life feels like it's moving — when things open and synchronize — {chart_ruler} is in play. "
+                f"When things feel blocked, that planet's condition in the chart is almost always part of the answer. "
+                f"The Ascendant is not just a first impression. "
+                f"It is the threshold through which all experience arrives."
             ),
         }
 
@@ -371,13 +385,17 @@ def _headline_descriptions(
             "subtitle": f"Strategy: {strategy}",
             "body": (
                 f"As a {hd_type}, your gift is {_TYPE_GIFTS.get(hd_type, 'a unique energetic intelligence')}. "
-                f"Your strategy — {strategy} — is the specific mechanism through which you move without resistance. "
-                f"When you follow the strategy, life opens. When you bypass it, the friction is unmistakable. "
-                f"Your signature is {signature} — the feeling that confirms you're operating in alignment. "
-                f"Your not-self theme is {not_self} — the feeling that signals you've drifted from your design. "
-                f"Profile {profile} ({profile_label}) is the role your soul came to play in this incarnation. "
-                f"These four — Type, Strategy, Authority, Profile — form the complete operating manual. "
-                f"Not a personality assessment. An energetic blueprint."
+                f"This is not a category. It is a body-type — a specific architecture of how energy moves through you, "
+                f"how you interact with the field around you, and how you were designed to operate correctly. "
+                f"Your strategy — {strategy} — is the mechanism. Not a rule to follow consciously. "
+                f"A rhythm that, when honored, removes resistance from the path. "
+                f"When bypassed, the friction is unmistakable and consistent. "
+                f"Your signature is {signature}: the feeling that confirms you're in alignment. "
+                f"Your not-self is {not_self}: the signal that you've drifted. "
+                f"Profile {profile} ({profile_label}) is the archetype your soul chose for this incarnation — "
+                f"the specific way you learn, engage, and fulfill your role. "
+                f"Strategy, Authority, Definition, Profile — four coordinates. One design. "
+                f"Not a belief system. An energetic blueprint."
             ),
         }
 
@@ -387,15 +405,20 @@ def _headline_descriptions(
         auth_body = _AUTH_DESCRIPTIONS.get(auth_key, f"the {authority} signal — your body knows before your mind constructs a reason")
         out["authority"] = {
             "title": authority,
-            "subtitle": "How your body knows what's correct — before the mind explains why",
+            "subtitle": "The body signal that knows before the mind finishes the sentence",
             "body": (
                 f"Your {authority} Authority is {auth_body}. "
-                f"As a {hd_type}, this is the mechanism built specifically into your design to navigate decisions correctly. "
-                f"Every major decision made through your Authority tends to lead toward your signature ({signature}). "
-                f"Every decision made over it — through logic alone, social pressure, or urgency — tends toward your not-self ({not_self}). "
-                f"The mind makes great after-the-fact justifications. The Authority makes correct decisions in the moment. "
-                f"These are different tools. The mind's job is to witness and understand; "
-                f"the Authority's job is to say yes or no before the mind has had time to argue."
+                f"This is not abstract. It is the specific, somatic mechanism built into your body "
+                f"to make decisions that are actually correct for your design — "
+                f"not correct in theory, correct in practice. "
+                f"As a {hd_type}, this is the tool your architecture provides. "
+                f"The mind makes excellent after-the-fact justifications. "
+                f"It will always give you a reason. It will always construct logic. "
+                f"But the logic arrives after the Authority has already signaled. "
+                f"Every major decision made through your {auth_key} Authority tends toward your signature: {signature}. "
+                f"Every decision made over it — through social pressure, urgency, or pure intellect — "
+                f"tends toward your not-self: {not_self}. "
+                f"Learning to hear the Authority before the mind starts arguing is the whole practice."
             ),
         }
 
@@ -404,21 +427,23 @@ def _headline_descriptions(
         lines = profile.split("/") if "/" in profile else []
         out["profile"] = {
             "title": f"Profile {profile}",
-            "subtitle": profile_label or "Your social archetype and learning strategy",
+            "subtitle": profile_label or "The archetype the soul chose for this lifetime",
             "body": (
-                f"Profile {profile} — {profile_label} — is the costume your soul chose for this lifetime: "
-                f"the social archetype and learning strategy that shapes how you move through relationships, "
-                f"life themes, and the stages of your story. "
+                f"Profile {profile} — {profile_label} — is not a personality description. "
+                f"It is the specific archetype, learning strategy, and social role "
+                f"through which you were designed to move through the world. "
                 + (
-                    f"Line {lines[0]} describes your conscious personality — the face you know and show. "
-                    f"Line {lines[1]} describes your unconscious design — the role others see in you "
+                    f"Line {lines[0]} is your conscious profile — the face you know and show. "
+                    f"Line {lines[1]} is your unconscious design — the role others consistently see in you "
                     f"that you may not fully recognize in yourself. "
+                    f"The gap between those two is where much of the interesting friction in your life lives. "
                     if len(lines) == 2 else ""
                 ) +
                 f"As a {hd_type} with Profile {profile}, the way your type operates and the way your profile "
                 f"engages with others are not separate — they compound each other. "
-                f"Your Life Path {lp} ({lp_arch}) and your Profile {profile} are two different systems "
-                f"describing the same soul in motion: one through numbers, one through the bodygraph."
+                f"Your numerological Life Path {lp} ({lp_arch}) and your Human Design Profile {profile} "
+                f"are two independent methodologies describing the same soul in motion: "
+                f"one found it through numbers, one through the bodygraph. They arrived at the same place."
             ),
         }
 
@@ -429,15 +454,20 @@ def _headline_descriptions(
             "subtitle": lw_name,
             "body": (
                 f"Gate {lw_gate} — {lw_name} — is the Gene Key of your Life's Work: "
-                f"the outward purpose your design is encoded to express in the world. "
-                f"It sits in your Personality Sun — the single most visible, most conscious position "
+                f"the outward purpose your design is encoded to express. "
+                f"It occupies your Personality Sun — the single most visible, most conscious position "
                 f"in the entire bodygraph. You broadcast this frequency whether or not you're aware of it. "
+                f"People have felt it in you long before it was ever named. "
                 f"The shadow you'll wrestle with: {lw_shadow}. "
+                f"This is the low-frequency expression of the same energy — "
+                f"what Gate {lw_gate} looks like when the Gift isn't flowing. "
+                f"It is not the enemy. It is the doorway. "
                 f"The gift that emerges when the shadow is no longer running the show: {lw_gift}. "
-                f"The siddhi — the highest possible expression: {lw_siddhi}. "
-                f"Your Life Path {lp} ({lp_arch}) and Life's Work Gate {lw_gate} ({lw_gift}) "
-                f"are two independent methodologies pointing at the same signal: the specific frequency "
-                f"your birth moment was encoded to transmit."
+                f"The siddhi — the highest possible expression — is {lw_siddhi}. "
+                f"Life Path {lp} ({lp_arch}) and Life's Work Gate {lw_gate} ({lw_gift}) "
+                f"are two independent systems pointing at the same frequency your birth moment was encoded to transmit. "
+                f"One found it through numbers. The other through the neutrino field at the moment you were born. "
+                f"They arrived at the same place."
             ),
         }
 
@@ -445,21 +475,24 @@ def _headline_descriptions(
     if soul:
         out["soul_urge"] = {
             "title": f"Soul Urge {soul}",
-            "subtitle": "The interior engine — the yearning beneath your choices",
+            "subtitle": "The interior engine — the hunger that makes the path feel like a calling",
             "body": (
-                f"Your Soul Urge {soul} is calculated from the vowels of your full birth name — "
-                f"the deep interior need that shapes your choices before logic has a say. "
-                f"Life Path {lp} ({lp_arch}) is the road. Expression {expr} is your stride along it. "
-                f"Soul Urge {soul} is why you keep walking — the hunger that makes this path feel like a calling rather than a strategy. "
-                f"This number rarely surfaces publicly. It lives in what you need most in relationships, "
-                f"what work genuinely sustains you, and what feels hollow when it's consistently absent. "
-                f"When your Expression ({expr}) and Soul Urge ({soul}) are aligned — "
-                f"when you're broadcasting your gifts while feeding your inner drive simultaneously — "
+                f"Your Soul Urge is calculated from the vowels of your full birth name — "
+                f"the breath in the letters, the sound underneath the consonant structure. "
+                f"Soul Urge {soul} is the interior engine: the deep need that shapes your choices "
+                f"before logic has a say, before strategy is deployed, before you've had a moment to consider. "
+                f"Life Path {lp} ({lp_arch}) is the road. Expression {expr} is your stride. "
+                f"Soul Urge {soul} is why you keep walking — the hunger that makes this path feel like a calling "
+                f"rather than a decision you made. "
+                f"This number rarely surfaces publicly. It lives in what you need most from the people closest to you, "
+                f"what work genuinely sustains you versus what exhausts you regardless of the outcome, "
+                f"and what feels hollow when it's consistently absent from your life. "
+                f"When Expression ({expr}) and Soul Urge ({soul}) are running simultaneously — "
+                f"when you're broadcasting your gifts while feeding your inner drive — "
                 f"effort transforms into something closer to devotion. "
-                f"When they diverge — when you're performing your Expression without the Soul Urge being fed — "
-                f"the result is accomplishment without fulfillment. "
-                f"The Soul Urge is also the most reliable compass when choices feel genuinely unclear: "
-                f"not 'which option looks best' but 'which path feeds the deeper hunger.'"
+                f"When they diverge, the result is accomplishment without fulfillment. "
+                f"You can do everything right on the outside and feel it empty on the inside. "
+                f"The Soul Urge is the compass. Not which option looks best — which path feeds the deeper hunger."
             ),
         }
 
@@ -473,18 +506,21 @@ def _headline_descriptions(
         if evo_gate:
             out["gk_evolution"] = {
                 "title": f"Evolution: Gate {evo_gate}",
-                "subtitle": f"{evo_name_h} — what life is teaching you",
+                "subtitle": f"{evo_name_h} — what life keeps returning you to",
                 "body": (
-                    f"Gate {evo_gate} — {evo_name_h} — is the Evolution sphere in Gene Keys: "
-                    f"the inner teaching that life keeps returning you to, the growth running beneath every major chapter. "
+                    f"Gate {evo_gate} — {evo_name_h} — is the Evolution sphere: "
+                    f"the inner teaching that life returns you to, the refinement running beneath every major chapter "
+                    f"whether you're consciously participating in it or not. "
                     f"Where Life's Work (Gate {lw_gate}) is what you do in the world, "
-                    f"Evolution is what life does to you — refinement happening whether or not you're consciously participating. "
-                    f"The shadow to sit with here: {evo_shadow_h}. "
-                    f"When this pattern is running the cycles repeat; honest attention to it — without reacting — is what shifts it. "
-                    f"The gift that emerges through that engagement: {evo_gift_h}. "
-                    f"Life's Work and Evolution are not separate frequencies — they're the same one at different depths: "
-                    f"outward purpose (Gate {lw_gate}) and inner growth (Gate {evo_gate}) compound each other in both directions. "
-                    f"What you're learning internally shapes how your purpose expresses outwardly, and vice versa."
+                    f"Evolution is what the world does to you — the specific pattern that life keeps placing in your path. "
+                    f"The shadow here: {evo_shadow_h}. "
+                    f"When this pattern is operating, the cycles repeat — subtly or dramatically — "
+                    f"until there is genuine engagement rather than reaction or avoidance. "
+                    f"The gift that emerges through that honest engagement: {evo_gift_h}. "
+                    f"Life's Work and Evolution are not separate frequencies. "
+                    f"They're the same energy at two different depths. "
+                    f"What you're learning inside (Gate {evo_gate}) shapes how your purpose expresses outwardly (Gate {lw_gate}). "
+                    f"The outer and inner move together. They always have."
                 ),
             }
 
@@ -530,14 +566,18 @@ def _headline_descriptions(
             "body": (
                 f"{moon_nak_v} is one of the 27 lunar mansions — 13.3° arcs of sky that give Vedic astrology "
                 f"far more precision than the zodiac sign alone. "
-                f"Moon placed here means your emotional intelligence and instinctive responses carry the quality of: {nak_gift_v}. "
-                f"The ruling planet of this nakshatra is {moon_nak_lord_v} — whose frequency colors how this lunar quality expresses. "
-                f"In Jyotish, the Moon governs manas — the thinking-feeling layer that processes all experience before the conscious self responds. "
-                f"More weight is given to the Moon than the Sun for this reason. "
+                f"Moon placed in {moon_nak_v} means your emotional intelligence carries the specific quality of: {nak_gift_v}. "
+                f"People who have known you well have felt this in you, whether or not they ever had language for it. "
+                f"The ruling planet of this nakshatra is {moon_nak_lord_v} — "
+                f"whose frequency colors how this lunar quality expresses and what activates or disturbs it. "
+                f"In Jyotish, the Moon governs manas — the thinking-feeling layer that processes all experience "
+                f"before the conscious self has a chance to respond. "
+                f"This is why Vedic astrology gives more weight to the Moon than the Sun. "
                 f"Your Moon sign ({moon_rashi_sk_v}) describes the broad register; "
-                f"{moon_nak_v} nakshatra is the specific frequency inside that sign — the quality of your inner weather at the finest resolution available. "
-                f"The entire Vimshottari Dasha timeline — the 120-year karma cycle that maps life's unfolding — "
-                f"is calculated from this exact nakshatra, making it the root from which every period of your life is derived."
+                f"{moon_nak_v} is the specific frequency inside that sign — "
+                f"the quality of your inner weather at the finest resolution available. "
+                f"And the entire Vimshottari Dasha timeline — the 120-year map of your life's unfolding — "
+                f"is calculated from this exact point. Everything that follows in time derives from here."
             ),
         }
 
@@ -579,21 +619,22 @@ def _headline_descriptions(
         ketu_fluency_v = _K_H.get(ketu_rashi_v, "accumulated past-life mastery that arrives without effort")
         out["vedic_rahu"] = {
             "title": f"Rahu in {rahu_sk_v}",
-            "subtitle": f"Ketu in {ketu_sk_v} · The karmic axis — soul's direction of growth",
+            "subtitle": f"Ketu in {ketu_sk_v} · The soul's karmic axis",
             "body": (
                 f"Rahu and Ketu are always exactly opposite each other, forming the soul's karmic axis across lifetimes. "
-                f"They are not planets but points — where the Moon's orbital path crosses the ecliptic — "
-                f"and they describe what the soul brought in (Ketu) and where it's growing (Rahu). "
-                f"Ketu in {ketu_sk_v} carries past-life mastery: {ketu_fluency_v}. "
-                f"This fluency is real and available — but its shadow is comfort becoming a substitute for growth, "
-                f"because what's already mastered feels safe in a way that genuinely new territory never does. "
-                f"Rahu in {rahu_sk_v} is the soul's hunger this lifetime — "
+                f"They are not planets but points — where the Moon's orbit crosses the ecliptic — "
+                f"and they describe what the soul carried in (Ketu) and where it is genuinely growing (Rahu). "
+                f"Ketu in {ketu_sk_v} is the past-life mastery: {ketu_fluency_v}. "
+                f"This fluency is real and available — but its shadow is comfort becoming a substitute for growth. "
+                f"What is already mastered feels safe in a way that genuinely new territory never does. "
+                f"Rahu in {rahu_sk_v} is the hunger this lifetime — "
                 f"the pull toward: {rahu_hunger_v}. "
-                f"The discomfort Rahu brings is not a warning sign. It is the precise feeling of growth itself — "
-                f"you're not drawing on prior-life fluency here, you're building new capacity from the ground up. "
-                f"This is why Rahu always feels slightly foreign: you're supposed to be an outsider to this territory at first. "
-                f"The soul chose this axis deliberately. Inhabiting Rahu — even when it feels unfamiliar, "
-                f"even when Ketu's ease calls you back — is the path this incarnation was designed to walk."
+                f"The discomfort Rahu brings is not a warning sign. It is the precise feeling of growth itself. "
+                f"You are not drawing on prior-life fluency here. You are building new capacity from the ground up. "
+                f"This is why Rahu always feels slightly foreign: you are supposed to be an outsider to this territory at first. "
+                f"The soul chose this axis deliberately. "
+                f"Leaning into Rahu — even when it feels unfamiliar, even when Ketu's ease calls you back — "
+                f"is the path this incarnation was designed to walk."
             ),
         }
 
@@ -631,40 +672,40 @@ def _derive_voice(comm: dict) -> dict:
 # of every synthesis — this is the adaptive voice layer that makes each summary
 # feel like it was written specifically for the way this person processes information.
 _LIGHT_OPENERS = {
-    "fire":  "Here's what you were built for — ",
-    "earth": "In concrete terms, here's what you came in with — ",
-    "air":   "The architecture of your gifts — ",
-    "water": "Feel into this — ",
+    "fire":  "The signal is unmistakable — ",
+    "earth": "In concrete terms — ",
+    "air":   "The architecture of it — ",
+    "water": "The current running through all of this — ",
 }
 _SHADOW_OPENERS = {
-    "fire":  "The shadow isn't a problem. It's compressed fuel waiting to be lit. ",
-    "earth": "Watch for this pattern in real situations — ",
-    "air":   "Here's where the system breaks down — ",
-    "water": "The undertow to notice — ",
+    "fire":  "The shadow is not the problem. It is the same energy at a lower frequency. ",
+    "earth": "The pattern to recognize in real situations — ",
+    "air":   "Where the architecture breaks down — ",
+    "water": "The undertow — ",
 }
 _SYNTH_OPENERS = {
-    "fire":  "The big picture — ",
-    "earth": "Here's what this means for you, practically — ",
-    "air":   "The through-line across this data — ",
-    "water": "The current running beneath all of this — ",
+    "fire":  "The through-line — ",
+    "earth": "What this means in practice — ",
+    "air":   "The convergence — ",
+    "water": "The current beneath all of it — ",
 }
 _SYNTH_CLOSERS = {
     "fire":  " You were encoded with this on purpose.",
-    "earth": " Ground into this. It's yours to build with.",
-    "air":   " The model is complete. All the pieces are accounted for.",
+    "earth": " This is yours. Build with it.",
+    "air":   " The design is complete. Every piece is accounted for.",
     "water": " Let this land. You already know it's true.",
 }
 _GRAND_OPENERS = {
-    "fire":  "Four systems. One undeniable signal. Here it is — ",
-    "earth": "Here's what four independent systems confirm about you, concretely — ",
-    "air":   "Cross-system convergence: four independent methodologies resolving to a single profile — ",
-    "water": "Every tradition that looked at your birth moment felt the same thing about you — ",
+    "fire":  "Four independent systems. One undeniable frequency — ",
+    "earth": "Four independent calculations from the same birth data — each arriving at the same conclusion — ",
+    "air":   "Four methodologies, each calculated independently, resolving to a single coherent profile — ",
+    "water": "Four traditions looked at your birth moment and felt the same thing — ",
 }
 _GRAND_CLOSERS = {
     "fire":  " The frequency is unmistakable. You were designed for this.",
-    "earth": " Four systems calculated this from the same birth coordinates. The evidence is solid.",
-    "air":   " Four methodologies. One coherent design. The logic is closed.",
-    "water": " Four different traditions felt the same truth about you. Trust what resonates.",
+    "earth": " Four systems. One birth moment. The evidence is solid.",
+    "air":   " Four independent methodologies. One coherent design. The logic is closed.",
+    "water": " Four different traditions. The same truth, each time. Trust what resonates.",
 }
 
 
@@ -727,25 +768,34 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
     num_summ = {
         "light": (
             f"{_LIGHT_OPENERS[vs]}"
-            f"Life Path {lp} is the {lp_arch} frequency — your recurring life theme, the throughline connecting every major chapter whether you recognized it as such or not. "
-            f"Expression {expr} is what others have always noticed in you — the gifts and voice you broadcast before you've consciously developed them. "
+            f"Life Path {lp} — {lp_arch} — is the recurring theme connecting every major chapter of your life, "
+            f"whether you recognized it as such or not. "
+            f"Expression {expr} is the voice and gift others have always encountered in you — "
+            f"before you consciously developed it, before you had a name for it. "
             f"If people have consistently come to you for a particular kind of help or energy, that's your {expr} operating. "
-            f"Soul Urge {soul} is the engine underneath all of it — the interior pull that makes you choose the things you choose even when you can't fully explain the logic. "
-            f"These three are not random numbers. They are the numerological signature of your birth data."
+            f"Soul Urge {soul} is the engine underneath all of it — "
+            f"the interior pull that makes you choose what you choose even when you can't explain the logic. "
+            f"These three are not arbitrary calculations. They are the numerological frequency of your birth moment."
         ),
         "shadow": (
             f"{_SHADOW_OPENERS[vs]}"
             f"{debt_str} "
             f"{lesson_str} "
-            f"Your challenge numbers — {ch_str} — show up as recurring friction at each major life threshold. "
-            f"Not failures. Not signs that something is wrong with you. The exact pressures that forge the character your Life Path requires."
+            f"Your challenge numbers — {ch_str} — are the recurring friction at each major life threshold. "
+            f"Not failures. Not evidence that something is wrong with you. "
+            f"The exact pressures that forge the character your Life Path requires to operate at full voltage."
         ),
         "synthesis": (
             f"{_SYNTH_OPENERS[vs]}"
-            f"Life Path {lp} and Expression {expr} are two rails of the same track — when they're aligned, effort turns into flow; where they diverge is precisely where growth lives. "
-            f"You're currently in a Personal Year {py}: a cycle of {py_meaning}. Everything happening right now makes more sense through that lens. "
-            f"Subconscious Self {subcon} means {subcon} frequencies are already your bedrock — already integrated and available without effort. "
-            f"Life Purpose ({lp}), Natural Expression ({expr}), Inner Drive ({soul}), Present Timing (Year {py}). Four coordinates of one coherent design."
+            f"Life Path {lp} and Expression {expr} are two rails of the same track — "
+            f"when they're aligned, effort turns into something closer to devotion; "
+            f"where they diverge is precisely where the growth lives. "
+            f"You're currently in Personal Year {py}: a cycle of {py_meaning}. "
+            f"Everything happening right now makes more sense through that lens. "
+            f"Subconscious Self {subcon} means those frequencies are already your bedrock — "
+            f"integrated and available without effort. "
+            f"Life Purpose ({lp}), Natural Expression ({expr}), Inner Drive ({soul}), Present Timing (Year {py}) — "
+            f"four coordinates of one coherent design."
             f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
@@ -781,26 +831,30 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
     west_summ = {
         "light": (
             f"{_LIGHT_OPENERS[vs]}"
-            f"Your {sun} Sun is who you're becoming — the conscious identity archetype you grow into over the course of this life. "
-            f"Your {asc} Ascendant is how the world meets you before you've said a word — the instinctive first impression of your energy. "
+            f"Your {sun} Sun is the conscious identity archetype you grow into more fully with each decade. "
+            f"Your {asc} Ascendant is what the world encounters before you've said a word — "
+            f"the instinctive first impression of your energy, felt before any opinion has formed. "
             f"A {dom_elem}-dominant chart means your natural gifts include {_ELEM_GIFT.get(dom_elem, 'a balanced elemental field')}. "
-            f"Your {dom_mod} modality shapes the rhythm of everything: how you initiate, how you sustain, when you're built to rest."
+            f"Your {dom_mod} modality shapes the rhythm of everything: "
+            f"how you initiate, how you sustain, when you were built to rest."
         ),
         "shadow": (
             f"{_SHADOW_OPENERS[vs]}"
-            f"Your {moon} Moon is the emotional body that activates before your {sun} Sun gets a vote — the layer that runs automatically under stress. "
-            f"The shadow isn't the sign itself. It's what that sign does when it's operating on autopilot and you're not watching. "
+            f"Your {moon} Moon is the emotional body that activates before your {sun} Sun gets a vote — "
+            f"the layer that runs automatically under stress, before choice has entered the room. "
+            f"The shadow is not the sign itself. It is what that sign does when it is operating on autopilot. "
             f"{retro_str} "
             f"The shadow side of a {dom_elem}-dominant chart: {_ELEM_SHADOW.get(dom_elem, 'the unexamined elemental tendency')}. "
-            f"Naming it takes most of its power away."
+            f"Naming it clearly takes most of its power away."
         ),
         "synthesis": (
             f"{_SYNTH_OPENERS[vs]}"
-            f"Sun ({sun}), Moon ({moon}), and Ascendant ({asc}): who you're becoming, how you feel inside, how you show up. "
-            f"Your chart ruler — {chart_ruler} — governs the entire birth map. Its placement and condition color everything the chart describes. "
+            f"Sun ({sun}), Moon ({moon}), Ascendant ({asc}) — who you're becoming, what you're feeling while you do it, how you arrive. "
+            f"Your chart ruler — {chart_ruler} — governs the entire birth map. "
+            f"Its placement and condition color everything else the chart describes. "
             f"The {lunar_phase} at your birth set the underlying relationship between your Sun's direction and your Moon's need — "
-            f"the harmony or tension between those two is the lived texture of your daily experience. "
-            f"The goal isn't to resolve the tension. It's to run all three consciously in concert."
+            f"the harmony or friction between those two is the lived texture of every ordinary day. "
+            f"The goal is not to resolve the tension. It is to run all three consciously, in concert."
             f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
@@ -892,28 +946,36 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
     ved_summ = {
         "light": (
             f"{_LIGHT_OPENERS[vs]}"
-            f"The Vedic chart opens with your Moon — not your Sun — because in this system, the emotional body is the root, not the crown. "
-            f"Moon in {moon_rashi} is the texture of your interior world: how situations land before you've had time to think about them, what restores you, what the body does automatically under pressure. "
-            f"The {moon_nak} nakshatra — ruled by {moon_nak_lord} — is the specific flavor of that Moon: {nak_gift}. "
-            f"That's not abstract cosmology. It's a description of something people have probably recognized in you since childhood, whether it was ever named or not. "
-            f"Your {lagna_sk} Lagna is the dharmic vehicle you arrived in — how you naturally engage with reality, the energy the world encounters first."
+            f"The Vedic chart opens with your Moon — not your Sun — because in Jyotish, the emotional body is the root, not the crown. "
+            f"Moon in {moon_rashi} is the texture of your interior world: how situations land before you've had time to think about them, "
+            f"what restores you, what the body does automatically under pressure. "
+            f"The {moon_nak} nakshatra — ruled by {moon_nak_lord} — is the specific quality of that Moon: {nak_gift}. "
+            f"This is not abstract cosmology. It is a description of something people have recognized in you since childhood, "
+            f"whether it was ever named or not. "
+            f"Your {lagna_sk} Lagna is the dharmic vehicle you arrived in — "
+            f"how you naturally engage with reality, the energy the world encounters first."
         ),
         "shadow": (
             f"{_SHADOW_OPENERS[vs]}"
-            f"Rahu in {rahu_rashi} is the hunger this soul came to integrate — the desire that pulls you forward while making you feel like an outsider in it, "
+            f"Rahu in {rahu_rashi} is the hunger this soul came to integrate — "
+            f"the desire that pulls you forward while making you feel like an outsider in it, "
             f"because it is genuinely new territory: {_RAHU_HUNGER.get(rahu_rashi, 'an unfamiliar but irresistible direction')}. "
-            f"Ketu in {ketu_rashi} is the fluency you already carry from prior lifetimes — so native it runs without effort or attention. "
+            f"Ketu in {ketu_rashi} is the fluency you already carry — so native it runs without effort or attention. "
             f"{_ketu_sentence} "
-            f"The {mahadasha} Mahadasha running now activates specifically: {_MAHADASHA_THEMES.get(mahadasha, 'a distinct chapter of karmic integration')}."
+            f"The {mahadasha} Mahadasha running now activates specifically: "
+            f"{_MAHADASHA_THEMES.get(mahadasha, 'a distinct chapter of karmic integration')}."
         ),
         "synthesis": (
             f"{_SYNTH_OPENERS[vs]}"
             f"Three coordinates, simultaneously true about the same person. "
             f"Lagna ({lagna_sk}): how you show up and move through the world. "
-            f"Moon ({moon_rashi_sk}): what's actually happening inside while you do that. "
-            f"Atmakaraka ({atmakaraka}): the planet encoding the deepest soul lesson — what this incarnation is actually about beneath the surface curriculum. "
-            f"The Mahadasha sequence is the timeline: a moving window that determines which layer of karma rises for integration and when. "
-            f"The Vedic chart doesn't describe your personality. It describes your soul's contract — what it chose to navigate, and in what sequence."
+            f"Moon ({moon_rashi_sk}): what is actually happening inside while you do that. "
+            f"Atmakaraka ({atmakaraka}): the planet encoding the soul's deepest lesson — "
+            f"what this incarnation is actually about beneath the surface curriculum. "
+            f"The Mahadasha sequence is the timeline: the moving window that determines "
+            f"which layer of karma rises for integration and when. "
+            f"The Vedic chart does not describe your personality. "
+            f"It describes your soul's contract — what it chose to navigate, and in what sequence."
             f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
@@ -962,26 +1024,29 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
         "light": (
             f"{_LIGHT_OPENERS[vs]}"
             f"As a {hd_type}, your gift is {_TYPE_GIFTS.get(hd_type, 'unique energetic intelligence')}. "
-            f"Your {auth_short} Authority is not a concept — it's a body signal. It fires before your mind has time to argue with it. "
-            f"That's not a bug, it's the architecture. {defined_str} "
-            f"Profile {profile_hd} is the social archetype your soul chose: the specific way you're designed to engage with people, learn from life, and fulfill your role."
+            f"Your {auth_short} Authority is not a concept — it is a body signal. "
+            f"It fires before the mind has time to argue with it. "
+            f"That is not a bug. That is the architecture. {defined_str} "
+            f"Profile {profile_hd} is the archetype your soul chose — "
+            f"the specific way you were designed to engage with people, learn from life, and fulfill your role."
         ),
         "shadow": (
             f"{_SHADOW_OPENERS[vs]}"
-            f"When {not_self} arises, you've drifted from your design. That's the whole signal. Not a moral failure — a compass reading. "
+            f"When {not_self} arises, you have drifted from your design. That is the whole signal. "
+            f"Not a moral failure — a compass reading. "
             f"{open_str} "
             f"Every open center is a place where you amplify and sample what isn't yours. "
-            f"The problem isn't the openness. The problem is mistaking conditioned input for your own truth."
+            f"The problem is not the openness. The problem is mistaking conditioned input for your own truth. "
+            f"The open center shows you the world's range; it is not describing who you are."
         ),
         "synthesis": (
             f"{_SYNTH_OPENERS[vs]}"
             f"Strategy ({strategy}): how you move without resistance. "
             f"{auth_short} Authority: how you make decisions that are actually yours. "
-            f"{definition}: how your energy field is built and how you interact with other fields. "
+            f"{definition}: how your energy field is built and how it interacts with other fields. "
             f"Profile {profile_hd}: the role your soul came to play. "
-            f"Signature ({signature}) = on track. Not-self ({not_self}) = drifted. "
-            f"Those four — Strategy, Authority, Definition, Profile — are the complete operating manual. "
-            f"Everything else is commentary."
+            f"Signature ({signature}) — on track. Not-self ({not_self}) — drifted. "
+            f"Those four are the complete operating manual. Everything else in Human Design is commentary."
             f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
@@ -1007,25 +1072,31 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
     gk_summ = {
         "light": (
             f"{_LIGHT_OPENERS[vs]}"
-            f"The Gene Keys use the same 64-gate structure as Human Design but as a contemplative system — Shadow, Gift, Siddhi: the low, middle, and high frequencies of the same energy. "
+            f"The Gene Keys use the same 64-gate structure as Human Design, but as a contemplative system — "
+            f"Shadow, Gift, Siddhi: the low, middle, and high frequencies of the same energy. "
             f"Your activation sequence gifts: {gifts_str}. "
-            f"The Gift isn't something to achieve. It's what naturally emerges when you stop feeding the Shadow. "
-            f"Your siddhis — {siddhis_str} — are the ceiling, not the floor. Let them be a direction, not a destination."
+            f"The Gift is not something to achieve. It is what naturally emerges when you stop feeding the Shadow. "
+            f"Your siddhis — {siddhis_str} — are the ceiling, not the floor. "
+            f"Let them be a direction, not a destination."
         ),
         "shadow": (
             f"{_SHADOW_OPENERS[vs]}"
             f"The Gene Keys are direct about this: the Shadow is the doorway. Not the enemy. Not the part to fix. The doorway. "
-            f"Repress it and the frequency drops. React to it and you create drama. Sit with it — just observe, without judgment — and it begins to transmute on its own. "
+            f"Repress it and the frequency drops. React to it and you create drama. "
+            f"Sit with it — observe it, without judgment — and it begins to transmute on its own. "
             f"Your activation sequence shadows: {shadows_str}. "
-            f"The Shadow of your Life's Work specifically — {lw['shadow']} — is the pattern that surfaces when the Gift isn't flowing. "
-            f"It's not a character flaw. It's the same energy at a lower bandwidth. The Gift is already in there."
+            f"The Shadow of your Life's Work — {lw['shadow']} — is the pattern that surfaces when the Gift isn't flowing. "
+            f"It is not a character flaw. It is the same energy at a lower bandwidth. The Gift is already in there."
         ),
         "synthesis": (
             f"{_SYNTH_OPENERS[vs]}"
-            f"Life's Work (what you're here to do), Evolution (what life is teaching you), Radiance (what keeps you vital), Purpose (what grounds you deepest) — "
+            f"Life's Work (what you are here to do), Evolution (what life is teaching you), "
+            f"Radiance (what keeps you vital), Purpose (what grounds you deepest) — "
             f"four spheres, all active simultaneously, all informing each other. "
-            f"Your Life's Work Gift — {lw['gift']} — is available right now. It lives underneath the Shadow of {lw['shadow']}. "
-            f"Contemplation is the mechanism. Not effort. Not willpower. Sustained attention to the Shadow, without reacting to it. That's sufficient."
+            f"Your Life's Work Gift — {lw['gift']} — is available right now. "
+            f"It lives underneath the Shadow of {lw['shadow']}. "
+            f"Contemplation is the mechanism. Not effort. Not willpower. "
+            f"Sustained attention to the Shadow, without reacting to it, is sufficient."
             f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
@@ -1044,28 +1115,40 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
     comm_summ = {
         "light": (
             f"{_LIGHT_OPENERS[vs]}"
-            f"As {comm_arch}, you don't just have a communication style preference — you have a specific cognitive architecture that determines how information actually reaches you and how it comes back out. "
-            f"The processing mode: {comm_proc} "
-            f"This is structural, not stylistic. It shows up in how you've taken in and transmitted information your entire life, whether you named it or not. "
-            f"When someone delivers in the format your wiring is built for — {comm_fmt.split(' — ')[0] if ' — ' in comm_fmt else comm_fmt} — it doesn't just register. It lands at a completely different depth. "
-            f"Your primary cognitive strength is {first_strength}. Already active. Already available right now. The work is recognition, not development."
+            f"As {comm_arch}, this is not a communication style preference. "
+            f"It is a specific cognitive architecture that determines how information actually reaches you "
+            f"and how it comes back out. The processing mode: {comm_proc} "
+            f"This is structural, not stylistic. It has been showing up in how you take in and transmit information "
+            f"your entire life, whether you named it or not. "
+            f"When someone delivers in the format your wiring is built for — "
+            f"{comm_fmt.split(' — ')[0] if ' — ' in comm_fmt else comm_fmt} — "
+            f"it does not just register. It lands at a completely different depth. "
+            f"Your primary cognitive strength is {first_strength}. Already active. Already available right now."
         ),
         "shadow": (
             f"{_SHADOW_OPENERS[vs]}"
-            f"The gap between how you communicate in your native mode and how you communicate when you're conditioned out of it is significant — "
-            f"and most people spend far more time in the second mode than they realize, because the conditioned mode feels normal from inside it. "
+            f"The gap between how you communicate in your native mode and how you communicate "
+            f"when conditioned out of it is significant — "
+            f"and most people spend far more time in the conditioned mode than they realize, "
+            f"because it feels normal from the inside. "
             f"The primary pattern to watch: {comm_avoid}. "
-            f"That conditioning enters through the open centers in your chart, amplifies under environmental pressure, and can masquerade as genuine self-expression when it's actually adaptive response. "
+            f"That conditioning enters through open centers, amplifies under environmental pressure, "
+            f"and can masquerade as genuine self-expression when it is actually adaptive response. "
             f"The underlying vulnerability: {first_weakness}. "
-            f"Not a character flaw — a structural feature of how this particular combination of centers, profile, and Mercury wiring responds when the environment is running louder than your internal signal."
+            f"Not a character flaw — a structural feature of this specific combination of centers, profile, and Mercury wiring "
+            f"when the environment is running louder than your internal signal."
         ),
         "synthesis": (
             f"Every section of this report was written in the voice your chart describes — "
             f"the pacing, framing, and format calibrated to how {comm_arch} actually receives and integrates information. "
-            f"If certain sections landed differently than others, that's the architecture confirming itself in real time. "
-            f"The four coordinates of your communication design: archetype ({comm_arch}), processing mode, delivery preferences, and the specific conditioning pattern to watch. "
-            f"Together they give you a complete map of any exchange: what to lean into, what to calibrate for the person in front of you, and what to recognize as environmental noise rather than a genuine signal from inside you. "
-            f"The most useful thing you can do with this section is test it. Pick a conversation where something didn't land right. Run it through these four coordinates. The misalignment will be visible."
+            f"If certain sections landed differently than others, that is the architecture confirming itself in real time. "
+            f"The four coordinates of your communication design: archetype ({comm_arch}), processing mode, "
+            f"delivery preferences, and the specific conditioning pattern to watch. "
+            f"Together they give you a complete map of any exchange: what to lean into, "
+            f"what to calibrate for the person in front of you, and what to recognize as environmental noise "
+            f"rather than a genuine signal from inside you. "
+            f"Test it. Pick a conversation where something didn't land right. "
+            f"Run it through these four coordinates. The misalignment will be visible."
             f"{_SYNTH_CLOSERS[vs]}"
         ),
     }
@@ -1080,25 +1163,33 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
         "light": (
             f"{_LIGHT_OPENERS[vs]}"
             f"When all systems are read together, one singular profile emerges with striking coherence. "
-            f"Life Path {lp} ({lp_arch}) × {sun} Sun × {hd_type} × Life's Work Gate {lw_gate_num} ({lw_name_grand}): "
-            f"four facts from four independent systems, each calculated from the same underlying birth data, each pointing to the same core frequency. "
+            f"Life Path {lp} ({lp_arch}) · {sun} Sun · {hd_type} · Life's Work Gate {lw_gate_num} ({lw_name_grand}): "
+            f"four facts from four independent systems, each calculated from the same birth coordinates, "
+            f"each pointing to the same core frequency. "
             f"The gift that runs through all of them: {lw_gift_grand}. "
-            f"No system invented this independently — each calculated it from the precise coordinates of your birth moment."
+            f"No system invented this independently. Each derived it from the precise moment you were born."
         ),
         "shadow": (
             f"{_SHADOW_OPENERS[vs]}"
             f"The shadow that runs across systems is equally coherent. "
-            f"Not-self theme ({not_self}), karmic lessons ({ks_str}), Life's Work shadow ({lw_shadow_grand}), and communication conditioning ({comm_avoid}): "
-            f"not separate problems but the same pattern seen through four lenses. "
-            f"The cross-system shadow is always some version of the same fundamental misalignment: operating from conditioned response rather than authentic design. "
-            f"Seeing it confirmed through four independent systems makes it undeniable — and what is clearly seen cannot be unconsciously repeated."
+            f"Not-self ({not_self}), karmic lessons ({ks_str}), Life's Work shadow ({lw_shadow_grand}), "
+            f"communication conditioning ({comm_avoid}): "
+            f"not four separate problems — the same pattern seen through four lenses. "
+            f"The cross-system shadow is always some version of the same misalignment: "
+            f"operating from conditioned response rather than authentic design. "
+            f"Seeing it confirmed across four independent systems makes it impossible to dismiss — "
+            f"and what is clearly seen cannot be unconsciously repeated."
         ),
         "synthesis": (
             f"{_GRAND_OPENERS[vs]}"
-            f"The universe placed the same frequency into your birth moment and encoded it simultaneously into numbers (Numerology), planetary positions (Astrology), energy mechanics (Human Design), and contemplative keys (Gene Keys). "
-            f"The redundancy is not accident — it is emphasis. What all four systems agree on is the irreducible core of who you are. "
-            f"Life Path {lp}, {sun} Sun, {hd_type} with {auth_short} Authority, Gate {lw_gate_num}: your identity confirmed across four independent methodologies. "
-            f"The pillars of your being: your purpose ({lp_arch}), your instrument ({expr} Expression), your strategy ({strategy}), your contemplative path (Gate {lw_gate_num} — {lw_name_grand}). "
+            f"the same frequency encoded simultaneously into numbers (Numerology), "
+            f"planetary positions (Astrology), energy mechanics (Human Design), and contemplative keys (Gene Keys). "
+            f"The redundancy is not accident. It is emphasis. "
+            f"What all four systems agree on is the irreducible core of who you are. "
+            f"Life Path {lp}, {sun} Sun, {hd_type} with {auth_short} Authority, Gate {lw_gate_num}: "
+            f"your identity confirmed across four independent methodologies. "
+            f"The pillars: your purpose ({lp_arch}), your instrument ({expr} Expression), "
+            f"your strategy ({strategy}), your contemplative path (Gate {lw_gate_num} — {lw_name_grand}). "
             f"Nothing here is random. You were specifically designed this way."
             f"{_GRAND_CLOSERS[vs]}"
         ),
@@ -1168,16 +1259,17 @@ def _build_synthesis_panels(report: BlueprintReport, vs: str) -> dict:
     core_id_text = (
         f"Here is who arrived on {report.birth_date}: a Life Path {lp} — {lp_arch} — "
         f"whose recurring life theme is {lp_theme}. "
-        f"The {sun} Sun is the conscious identity, growing more fully into itself as the decades progress. "
-        f"The {asc} Ascendant is the first thing the world encounters — the interface, not the mask. "
-        f"In the body, a {hd_type}. The operative instruction is {strategy} — "
-        f"not as a rule to follow consciously but as a natural rhythm that, when honored, removes friction from the path. "
+        f"Not a role chosen consciously. A frequency encoded before there was a name for it. "
+        f"The {sun} Sun is the conscious identity growing more fully into itself with each decade. "
+        f"The {asc} Ascendant is the first thing the world encounters — the threshold, not the performance. "
+        f"In the body: a {hd_type}. The operative instruction is {strategy} — "
+        f"not a rule to follow consciously, but a rhythm that, when honored, removes friction from the path. "
         f"Vedic astronomy places the Moon in {moon_rashi_sk} in the {moon_nak} nakshatra — "
         f"the interior register from which all emotional processing begins, before thought or choice enters. "
         f"At the Gene Keys level, Gate {lw_gate} ({lw_name}) is the Life's Work: "
         f"the frequency this soul came to express, in whatever form it takes. "
-        f"Five systems. The same birth moment. The same conclusion. "
-        f"The convergence is not coincidence — it is emphasis."
+        f"Five systems. One birth moment. The same conclusion each time. "
+        f"That level of convergence is not coincidence — it is emphasis."
     )
     core_id_sources = [
         f"Numerology: Life Path {lp} ({lp_arch})",
@@ -1204,22 +1296,22 @@ def _build_synthesis_panels(report: BlueprintReport, vs: str) -> dict:
     strengths_list = []
     if lp and lp_arch:
         strengths_list.append({
-            "text": f"Life Path {lp} ({lp_arch}): {lp_theme.capitalize()}. Present in every major chapter whether it was consciously recognized as such or not.",
+            "text": f"Life Path {lp} — {lp_arch}: {lp_theme.capitalize()}. This thread runs through every major chapter of your life whether you recognized it as such or not. It is the frequency you carry, not the role you perform.",
             "sources": [f"Numerology: Life Path {lp}"],
         })
     if hd_type:
         strengths_list.append({
-            "text": f"As a {hd_type}: {_TYPE_STRENGTH.get(hd_type, 'a unique energetic intelligence that others sense before it is named')}.",
+            "text": f"As a {hd_type}: {_TYPE_STRENGTH.get(hd_type, 'a unique energetic intelligence that others sense before it is named')}. Not a style preference — the architecture of how your energy actually moves.",
             "sources": [f"Human Design: {hd_type}"],
         })
     if dom_elem:
         strengths_list.append({
-            "text": f"{dom_elem}-dominant chart: {_ELEM_TALENT.get(dom_elem, 'a balanced elemental field that covers the spectrum')}.",
+            "text": f"{dom_elem}-dominant chart: {_ELEM_TALENT.get(dom_elem, 'a balanced elemental field that covers the spectrum')}. This is the elemental register you operate in naturally — the gift that functions without effort.",
             "sources": [f"Western Astrology: {dom_elem} element dominant"],
         })
     if lw_gate and lw_gift:
         strengths_list.append({
-            "text": f"Life's Work Gate {lw_gate} ({lw_name}) — the Gift of {lw_gift}: the frequency that emerges when the Shadow of {lw_shadow} is no longer running the show.",
+            "text": f"Life's Work Gate {lw_gate} ({lw_name}) — the Gift of {lw_gift}: the frequency that emerges when the Shadow of {lw_shadow} is no longer running the show. You broadcast this from your Personality Sun whether you are aware of it or not.",
             "sources": [f"Gene Keys: Gate {lw_gate}", "Human Design: Personality Sun"],
         })
 
@@ -1240,23 +1332,23 @@ def _build_synthesis_panels(report: BlueprintReport, vs: str) -> dict:
     }
     shadow_list = [
         {
-            "text": f"Life Path {lp}: {lp_pull}. Not a character flaw — the specific friction that forges what the path requires.",
+            "text": f"Life Path {lp}: {lp_pull}. This is not a character flaw — it is the specific friction that forges the character your path requires to operate at full voltage. The tension is not incidental to the design. It is the design.",
             "sources": [f"Numerology: Life Path {lp}"],
         },
     ]
     if rahu_sk:
         shadow_list.append({
-            "text": f"Rahu in {rahu_sk}: the soul's growth edge carries the pattern of {_RAHU_CHAL.get(rahu_rashi, 'navigating genuinely new territory without the fluency accumulated elsewhere')}. The discomfort is the growth — not a warning.",
+            "text": f"Rahu in {rahu_sk}: the soul's growth edge carries the pattern of {_RAHU_CHAL.get(rahu_rashi, 'navigating genuinely new territory without the fluency accumulated elsewhere')}. The discomfort is not a warning sign. It is the precise feeling of growth itself.",
             "sources": [f"Vedic Astrology: Rahu in {rahu_sk}"],
         })
     if lw_shadow:
         shadow_list.append({
-            "text": f"Life's Work Shadow — {lw_shadow}: the low-frequency expression of Gate {lw_gate}. Not the enemy. The doorway. The Gift of {lw_gift} lives on the other side of honest engagement with this pattern.",
+            "text": f"Life's Work Shadow — {lw_shadow}: the low-frequency expression of Gate {lw_gate}. Not the enemy. The doorway. The Gift of {lw_gift} lives on the other side of honest engagement with this pattern. Not effort — honest attention.",
             "sources": [f"Gene Keys: Gate {lw_gate} ({lw_name})"],
         })
     if comm_avoid:
         shadow_list.append({
-            "text": f"Communication conditioning: {comm_avoid}. This pattern enters through open centers and ambient pressure — and can masquerade as genuine self-expression when it's actually adaptive response.",
+            "text": f"Communication conditioning: {comm_avoid}. This pattern enters through open centers and ambient pressure. It can masquerade as genuine self-expression when it is actually adaptive response. Naming it is most of the work.",
             "sources": [f"Communication Profile: {comm_arch}", "Human Design: open center architecture"],
         })
 
@@ -1264,15 +1356,20 @@ def _build_synthesis_panels(report: BlueprintReport, vs: str) -> dict:
     complete_text = (
         f"What five independent systems — each calculated from the same birth coordinates — converge on: "
         f"a person whose place in the world involves {lp_theme}. "
-        f"Not as a role chosen consciously, but as an encoded frequency that keeps manifesting regardless of what it's called. "
+        f"Not a role chosen consciously. An encoded frequency that keeps manifesting regardless of what it is called. "
         f"The {sun} Sun is the conscious identity becoming more fully itself with each year. "
-        f"The {hd_type} body-type means the path opens specifically through {strategy.lower()} — not by force, not through logic alone, specifically through that mechanism. "
-        f"Rahu in {rahu_sk} carries the soul's evolutionary vector — the hunger that doesn't settle until it's genuinely inhabited. "
+        f"The {hd_type} body-type means the path opens specifically through {strategy.lower()} — "
+        f"not by force, not through logic alone, specifically through that mechanism. "
+        f"Rahu in {rahu_sk} carries the soul's evolutionary vector — "
+        f"the hunger that doesn't settle until it's genuinely inhabited. "
         f"Gate {lw_gate} ({lw_name}) and the Gift of {lw_gift} are the frequency this life was encoded to transmit. "
-        f"The {mahadasha} Mahadasha is the active karmic layer — the specific dimension of this design the present moment is calling forward. "
-        f"The Atmakaraka is {atmakaraka} — the planet encoding the soul's deepest lesson, the through-line beneath every surface theme. "
-        f"None of these were placed into five different systems by coincidence. They were encoded once, in a single moment, and five different traditions found the same signal. "
-        f"That level of convergence is the message."
+        f"The {mahadasha} Mahadasha is the active karmic layer — "
+        f"the specific dimension of this design the present moment is calling forward. "
+        f"The Atmakaraka is {atmakaraka} — the planet encoding the soul's deepest lesson, "
+        f"the through-line beneath every surface theme. "
+        f"None of this was placed into five different systems by coincidence. "
+        f"It was encoded once — in a single birth moment — and five different traditions found the same signal. "
+        f"That level of convergence is not a curiosity. It is the message."
     )
     complete_sources = [
         f"Numerology: Life Path {lp} ({lp_arch}) · Expression {expr} · Soul Urge {soul}",
