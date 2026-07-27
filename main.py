@@ -52,7 +52,10 @@ class CalculateRequest(BaseModel):
 
 @app.get("/", include_in_schema=False)
 async def serve_index():
-    return FileResponse("templates/index.html")
+    return FileResponse(
+        "templates/index.html",
+        headers={"Cache-Control": "no-store"},
+    )
 
 
 @app.get("/api/health")
