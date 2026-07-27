@@ -441,6 +441,162 @@ def _headline_descriptions(
             ),
         }
 
+    # Soul Urge
+    if soul:
+        out["soul_urge"] = {
+            "title": f"Soul Urge {soul}",
+            "subtitle": "The interior engine — the yearning beneath your choices",
+            "body": (
+                f"Your Soul Urge {soul} is calculated from the vowels of your full birth name — "
+                f"the deep interior need that shapes your choices before logic has a say. "
+                f"Life Path {lp} ({lp_arch}) is the road. Expression {expr} is your stride along it. "
+                f"Soul Urge {soul} is why you keep walking — the hunger that makes this path feel like a calling rather than a strategy. "
+                f"This number rarely surfaces publicly. It lives in what you need most in relationships, "
+                f"what work genuinely sustains you, and what feels hollow when it's consistently absent. "
+                f"When your Expression ({expr}) and Soul Urge ({soul}) are aligned — "
+                f"when you're broadcasting your gifts while feeding your inner drive simultaneously — "
+                f"effort transforms into something closer to devotion. "
+                f"When they diverge — when you're performing your Expression without the Soul Urge being fed — "
+                f"the result is accomplishment without fulfillment. "
+                f"The Soul Urge is also the most reliable compass when choices feel genuinely unclear: "
+                f"not 'which option looks best' but 'which path feeds the deeper hunger.'"
+            ),
+        }
+
+    # Gene Keys: Evolution (second activation sphere)
+    act_seq_gk = gk.get("activation_sequence", []) if isinstance(gk, dict) else []
+    if len(act_seq_gk) > 1:
+        evo_ent = act_seq_gk[1]
+        evo_gate = evo_ent.get("gate", 0)
+        evo_info = GENE_KEYS.get(evo_gate, ("", "", "", ""))
+        evo_name_h, evo_shadow_h, evo_gift_h, _ = evo_info
+        if evo_gate:
+            out["gk_evolution"] = {
+                "title": f"Evolution: Gate {evo_gate}",
+                "subtitle": f"{evo_name_h} — what life is teaching you",
+                "body": (
+                    f"Gate {evo_gate} — {evo_name_h} — is the Evolution sphere in Gene Keys: "
+                    f"the inner teaching that life keeps returning you to, the growth running beneath every major chapter. "
+                    f"Where Life's Work (Gate {lw_gate}) is what you do in the world, "
+                    f"Evolution is what life does to you — refinement happening whether or not you're consciously participating. "
+                    f"The shadow to sit with here: {evo_shadow_h}. "
+                    f"When this pattern is running the cycles repeat; honest attention to it — without reacting — is what shifts it. "
+                    f"The gift that emerges through that engagement: {evo_gift_h}. "
+                    f"Life's Work and Evolution are not separate frequencies — they're the same one at different depths: "
+                    f"outward purpose (Gate {lw_gate}) and inner growth (Gate {evo_gate}) compound each other in both directions. "
+                    f"What you're learning internally shapes how your purpose expresses outwardly, and vice versa."
+                ),
+            }
+
+    # Vedic: Moon Nakshatra
+    moon_rashi_v = ved.get("moon_rashi", "") if isinstance(ved, dict) else ""
+    moon_nak_v = ved.get("moon_nakshatra", "") if isinstance(ved, dict) else ""
+    moon_nak_lord_v = ved.get("moon_nakshatra_lord", "") if isinstance(ved, dict) else ""
+    if moon_nak_v:
+        _N_GIFT: dict[str, str] = {
+            "Ashwini": "healing instincts and swift pioneering energy",
+            "Bharani": "creative force and the capacity to hold and transform",
+            "Krittika": "purifying intensity and fearless truth-telling",
+            "Rohini": "sensual richness, creative fertility, and magnetic presence",
+            "Mrigashira": "perpetual curiosity and refined aesthetic sense",
+            "Ardra": "storm-weathering strength and transformative intelligence",
+            "Punarvasu": "renewal, optimism, and restoring what has been lost",
+            "Pushya": "nurturing wisdom and the gift of sustaining others",
+            "Ashlesha": "penetrating insight and the ability to see beneath surfaces",
+            "Magha": "ancestral authority and command that others follow naturally",
+            "Purva Phalguni": "creative joy and the gift of bringing delight",
+            "Uttara Phalguni": "steadfast service and executive capability",
+            "Hasta": "craftsmanship, healing hands, and practical intelligence",
+            "Chitra": "architectural brilliance and the eye that sees design in everything",
+            "Swati": "independent spirit and the ability to bend without breaking",
+            "Vishakha": "focused purpose and harvest at the end of long effort",
+            "Anuradha": "devotion and loyalty that outlasts difficulty",
+            "Jyeshtha": "elder wisdom and leadership earned through ordeal",
+            "Mula": "root-level truth-seeking and metaphysical intelligence",
+            "Purva Ashadha": "invincible spirit and confidence that cannot be shaken",
+            "Uttara Ashadha": "ultimate victory through right action",
+            "Shravana": "listening intelligence and the gift of transmitting wisdom",
+            "Dhanishta": "rhythmic power and the ability to prosper through community",
+            "Shatabhisha": "healing at the deepest level and the medicine of truth",
+            "Purva Bhadrapada": "fierce idealism and the purification of what no longer serves",
+            "Uttara Bhadrapada": "depth of compassion and patient mastery",
+            "Revati": "spiritual completion and the wisdom of the journey's end",
+        }
+        nak_gift_v = _N_GIFT.get(moon_nak_v, "a unique lunar intelligence")
+        moon_rashi_sk_v = moon_rashi_v.split("(")[0].strip() if moon_rashi_v else ""
+        out["vedic_moon_nak"] = {
+            "title": f"{moon_nak_v} Nakshatra",
+            "subtitle": f"Moon in {moon_rashi_sk_v} · Ruled by {moon_nak_lord_v}",
+            "body": (
+                f"{moon_nak_v} is one of the 27 lunar mansions — 13.3° arcs of sky that give Vedic astrology "
+                f"far more precision than the zodiac sign alone. "
+                f"Moon placed here means your emotional intelligence and instinctive responses carry the quality of: {nak_gift_v}. "
+                f"The ruling planet of this nakshatra is {moon_nak_lord_v} — whose frequency colors how this lunar quality expresses. "
+                f"In Jyotish, the Moon governs manas — the thinking-feeling layer that processes all experience before the conscious self responds. "
+                f"More weight is given to the Moon than the Sun for this reason. "
+                f"Your Moon sign ({moon_rashi_sk_v}) describes the broad register; "
+                f"{moon_nak_v} nakshatra is the specific frequency inside that sign — the quality of your inner weather at the finest resolution available. "
+                f"The entire Vimshottari Dasha timeline — the 120-year karma cycle that maps life's unfolding — "
+                f"is calculated from this exact nakshatra, making it the root from which every period of your life is derived."
+            ),
+        }
+
+    # Vedic: Rahu/Ketu axis
+    rahu_rashi_v = ved.get("rashis", {}).get("Rahu", "") if isinstance(ved, dict) else ""
+    ketu_rashi_v = ved.get("rashis", {}).get("Ketu", "") if isinstance(ved, dict) else ""
+    if rahu_rashi_v:
+        rahu_sk_v = rahu_rashi_v.split("(")[0].strip()
+        ketu_sk_v = ketu_rashi_v.split("(")[0].strip() if ketu_rashi_v else ""
+        _R_H: dict[str, str] = {
+            "Mesha (Aries)": "independence, self-authorship, and the courage to initiate without waiting for permission",
+            "Vrishabha (Taurus)": "material stability, sensual grounding, and the slow-earned security of building something real",
+            "Mithuna (Gemini)": "information, communication, and the versatility to navigate multiple worlds at once",
+            "Karka (Cancer)": "belonging, deep emotional connection, and a sense of home that feels genuinely yours",
+            "Simha (Leo)": "recognition, creative authorship, and the confidence to be seen fully without apology",
+            "Kanya (Virgo)": "mastery, precision, and the quiet satisfaction of service that actually works",
+            "Tula (Libra)": "partnership, aesthetic harmony, and the art of genuine relational exchange",
+            "Vrishchika (Scorpio)": "depth, transformation, and the territory of hidden truth that most people won't enter",
+            "Dhanu (Sagittarius)": "meaning, philosophical expansion, and the horizon that keeps receding just as you reach it",
+            "Makara (Capricorn)": "earned authority, structural mastery, and the long-game achievement that outlasts trends",
+            "Kumbha (Aquarius)": "originality, collective vision, and the freedom to exist entirely outside conventional frameworks",
+            "Meena (Pisces)": "transcendence, mystical experience, and the dissolution of the boundary between self and everything",
+        }
+        _K_H: dict[str, str] = {
+            "Mesha (Aries)": "initiating, asserting, and acting independently — native, effortless fluency you can draw on without effort",
+            "Vrishabha (Taurus)": "building, accumulating, and creating material stability — deeply natural and available",
+            "Mithuna (Gemini)": "gathering information, adapting your register, networking across contexts — built-in versatility",
+            "Karka (Cancer)": "nurturing, protecting, and creating emotional safety for others — entirely second nature",
+            "Simha (Leo)": "leading, performing, and holding center through presence and personality — effortless",
+            "Kanya (Virgo)": "analyzing, organizing, and solving practical problems with precision — a natural master",
+            "Tula (Libra)": "mediating, harmonizing, and maintaining relational balance — second nature",
+            "Vrishchika (Scorpio)": "investigating, transforming, and navigating intensity and power — deeply familiar territory",
+            "Dhanu (Sagittarius)": "philosophizing, teaching, seeking meaning — naturally expansive and available",
+            "Makara (Capricorn)": "building structure, maintaining discipline, carrying institutional responsibility — built in",
+            "Kumbha (Aquarius)": "holding community, thinking systemically, operating outside conventional norms — entirely fluent",
+            "Meena (Pisces)": "dissolving, surrendering, and attuning to invisible currents — a native frequency",
+        }
+        rahu_hunger_v = _R_H.get(rahu_rashi_v, "an unfamiliar but irresistible direction")
+        ketu_fluency_v = _K_H.get(ketu_rashi_v, "accumulated past-life mastery that arrives without effort")
+        out["vedic_rahu"] = {
+            "title": f"Rahu in {rahu_sk_v}",
+            "subtitle": f"Ketu in {ketu_sk_v} · The karmic axis — soul's direction of growth",
+            "body": (
+                f"Rahu and Ketu are always exactly opposite each other, forming the soul's karmic axis across lifetimes. "
+                f"They are not planets but points — where the Moon's orbital path crosses the ecliptic — "
+                f"and they describe what the soul brought in (Ketu) and where it's growing (Rahu). "
+                f"Ketu in {ketu_sk_v} carries past-life mastery: {ketu_fluency_v}. "
+                f"This fluency is real and available — but its shadow is comfort becoming a substitute for growth, "
+                f"because what's already mastered feels safe in a way that genuinely new territory never does. "
+                f"Rahu in {rahu_sk_v} is the soul's hunger this lifetime — "
+                f"the pull toward: {rahu_hunger_v}. "
+                f"The discomfort Rahu brings is not a warning sign. It is the precise feeling of growth itself — "
+                f"you're not drawing on prior-life fluency here, you're building new capacity from the ground up. "
+                f"This is why Rahu always feels slightly foreign: you're supposed to be an outsider to this territory at first. "
+                f"The soul chose this axis deliberately. Inhabiting Rahu — even when it feels unfamiliar, "
+                f"even when Ketu's ease calls you back — is the path this incarnation was designed to walk."
+            ),
+        }
+
     return out
 
 
@@ -959,6 +1115,181 @@ def _section_summaries(report: BlueprintReport) -> dict:  # noqa: C901
     }
 
 
+def _build_synthesis_panels(report: BlueprintReport, vs: str) -> dict:
+    """Build Core Identity, Strengths, Shadow, and Complete Synthesis panels for the Summary page."""
+    num = report.numerology
+    west = report.western
+    ved = report.vedic or {}
+    hd = report.human_design or {}
+    gk = report.gene_keys or {}
+    comm = report.communication or {}
+
+    lp = num["life_path"]
+    expr = num["expression"]
+    soul = num["soul_urge"]
+    lp_arch = LP_ARCHETYPES.get(lp, "unique frequency")
+    lp_theme = _LP_THEMES.get(lp, ("unique soul path", "a persistent pull"))[0]
+    lp_pull = _LP_THEMES.get(lp, ("", "the tension between your path's demands and the easier route"))[1]
+
+    sun = west.get("sun_sign", "")
+    moon = west.get("moon_sign", "")
+    asc = west.get("ascendant", "")
+    elem_bal = west.get("element_balance", {})
+    dom_elem = max(elem_bal, key=elem_bal.get) if elem_bal else ""
+
+    hd_type = hd.get("type", "")
+    authority = hd.get("authority", "")
+    auth_short = authority.split(" (")[0] if "(" in authority else authority
+    profile_hd = hd.get("profile", "")
+    strategy = hd.get("strategy", "")
+
+    lagna_str = ved.get("lagna", "")
+    lagna_sk = lagna_str.split("(")[0].strip() if lagna_str else ""
+    moon_rashi = ved.get("moon_rashi", "")
+    moon_rashi_sk = moon_rashi.split("(")[0].strip() if moon_rashi else ""
+    moon_nak = ved.get("moon_nakshatra", "")
+    rahu_rashi = ved.get("rashis", {}).get("Rahu", "")
+    rahu_sk = rahu_rashi.split("(")[0].strip() if rahu_rashi else ""
+    ketu_rashi = ved.get("rashis", {}).get("Ketu", "")
+    ketu_sk = ketu_rashi.split("(")[0].strip() if ketu_rashi else ""
+    mahadasha = ved.get("starting_mahadasha", "")
+    atmakaraka = ved.get("charakarakas", {}).get("Atmakaraka", "")
+
+    act_seq = gk.get("activation_sequence", [])
+    lw = act_seq[0] if act_seq else {}
+    lw_gate = lw.get("gate", 0)
+    lw_info = GENE_KEYS.get(lw_gate, ("", "", "", ""))
+    lw_name, lw_shadow, lw_gift, lw_siddhi = lw_info
+
+    comm_arch = comm.get("archetype", "")
+    comm_avoid = (comm.get("delivery", {}) or {}).get("avoid", "")
+
+    # Core Identity paragraph
+    core_id_text = (
+        f"Here is who arrived on {report.birth_date}: a Life Path {lp} — {lp_arch} — "
+        f"whose recurring life theme is {lp_theme}. "
+        f"The {sun} Sun is the conscious identity, growing more fully into itself as the decades progress. "
+        f"The {asc} Ascendant is the first thing the world encounters — the interface, not the mask. "
+        f"In the body, a {hd_type}. The operative instruction is {strategy} — "
+        f"not as a rule to follow consciously but as a natural rhythm that, when honored, removes friction from the path. "
+        f"Vedic astronomy places the Moon in {moon_rashi_sk} in the {moon_nak} nakshatra — "
+        f"the interior register from which all emotional processing begins, before thought or choice enters. "
+        f"At the Gene Keys level, Gate {lw_gate} ({lw_name}) is the Life's Work: "
+        f"the frequency this soul came to express, in whatever form it takes. "
+        f"Five systems. The same birth moment. The same conclusion. "
+        f"The convergence is not coincidence — it is emphasis."
+    )
+    core_id_sources = [
+        f"Numerology: Life Path {lp} ({lp_arch})",
+        f"Western: {sun} Sun · {asc} Ascendant",
+        f"Human Design: {hd_type} · {strategy}",
+        f"Vedic: Moon {moon_rashi_sk} · {moon_nak}",
+        f"Gene Keys: Gate {lw_gate} ({lw_name})",
+    ]
+
+    # Synthesized Strengths
+    _ELEM_TALENT: dict[str, str] = {
+        "Fire": "igniting enthusiasm and momentum — energizing to others and catalytic in groups",
+        "Earth": "building tangible, lasting results — steady under pressure, the one others rely on when things need to hold",
+        "Air": "synthesizing and communicating ideas — the ability to explain complex things with unusual clarity",
+        "Water": "reading emotional subtext — the intelligence that senses what's happening beneath the surface of any exchange",
+    }
+    _TYPE_STRENGTH: dict[str, str] = {
+        "Generator": "the capacity for deep, sustained mastery — when genuinely engaged, the energy is renewable and others feel it as reliable life-force",
+        "Manifesting Generator": "multi-dimensional velocity — pioneering several lanes simultaneously while showing others what's possible before asking permission",
+        "Projector": "penetrating insight into systems and people — wisdom earned through deep observation that others receive as guidance rather than opinion",
+        "Manifestor": "initiatory power — the rare ability to catalyze new realities without needing external approval, opening doors others then walk through",
+        "Reflector": "deep attunement to the collective field — sampling and reflecting the full spectrum of human experience with the wisdom of a month-long cycle",
+    }
+    strengths_list = []
+    if lp and lp_arch:
+        strengths_list.append({
+            "text": f"Life Path {lp} ({lp_arch}): {lp_theme.capitalize()}. Present in every major chapter whether it was consciously recognized as such or not.",
+            "sources": [f"Numerology: Life Path {lp}"],
+        })
+    if hd_type:
+        strengths_list.append({
+            "text": f"As a {hd_type}: {_TYPE_STRENGTH.get(hd_type, 'a unique energetic intelligence that others sense before it is named')}.",
+            "sources": [f"Human Design: {hd_type}"],
+        })
+    if dom_elem:
+        strengths_list.append({
+            "text": f"{dom_elem}-dominant chart: {_ELEM_TALENT.get(dom_elem, 'a balanced elemental field that covers the spectrum')}.",
+            "sources": [f"Western Astrology: {dom_elem} element dominant"],
+        })
+    if lw_gate and lw_gift:
+        strengths_list.append({
+            "text": f"Life's Work Gate {lw_gate} ({lw_name}) — the Gift of {lw_gift}: the frequency that emerges when the Shadow of {lw_shadow} is no longer running the show.",
+            "sources": [f"Gene Keys: Gate {lw_gate}", "Human Design: Personality Sun"],
+        })
+
+    # Synthesized Shadow
+    _RAHU_CHAL: dict[str, str] = {
+        "Mesha (Aries)": "initiating before the integration is complete — can read as impulsive rather than pioneering",
+        "Vrishabha (Taurus)": "over-accumulating for security at the cost of movement and growth",
+        "Mithuna (Gemini)": "scattered attention that prevents the depth this life is actually reaching toward",
+        "Karka (Cancer)": "emotional overwhelm when the sense of belonging feels uncertain",
+        "Simha (Leo)": "dependency on external recognition when the soul is learning to generate it from within",
+        "Kanya (Virgo)": "perfectionism that prevents completion or sharing of what's been built",
+        "Tula (Libra)": "over-adapting to others at the cost of personal clarity and direction",
+        "Vrishchika (Scorpio)": "intensity that can trigger power dynamics or isolate what needs connection",
+        "Dhanu (Sagittarius)": "perpetual search for meaning that bypasses commitment to any single direction",
+        "Makara (Capricorn)": "measuring worth through achievement when the actual curriculum is inner development",
+        "Kumbha (Aquarius)": "detachment from the personal and intimate when collective causes feel more real",
+        "Meena (Pisces)": "boundary dissolution and absorbing emotional states that aren't yours",
+    }
+    shadow_list = [
+        {
+            "text": f"Life Path {lp}: {lp_pull}. Not a character flaw — the specific friction that forges what the path requires.",
+            "sources": [f"Numerology: Life Path {lp}"],
+        },
+    ]
+    if rahu_sk:
+        shadow_list.append({
+            "text": f"Rahu in {rahu_sk}: the soul's growth edge carries the pattern of {_RAHU_CHAL.get(rahu_rashi, 'navigating genuinely new territory without the fluency accumulated elsewhere')}. The discomfort is the growth — not a warning.",
+            "sources": [f"Vedic Astrology: Rahu in {rahu_sk}"],
+        })
+    if lw_shadow:
+        shadow_list.append({
+            "text": f"Life's Work Shadow — {lw_shadow}: the low-frequency expression of Gate {lw_gate}. Not the enemy. The doorway. The Gift of {lw_gift} lives on the other side of honest engagement with this pattern.",
+            "sources": [f"Gene Keys: Gate {lw_gate} ({lw_name})"],
+        })
+    if comm_avoid:
+        shadow_list.append({
+            "text": f"Communication conditioning: {comm_avoid}. This pattern enters through open centers and ambient pressure — and can masquerade as genuine self-expression when it's actually adaptive response.",
+            "sources": [f"Communication Profile: {comm_arch}", "Human Design: open center architecture"],
+        })
+
+    # Complete Synthesis paragraph
+    complete_text = (
+        f"What five independent systems — each calculated from the same birth coordinates — converge on: "
+        f"a person whose place in the world involves {lp_theme}. "
+        f"Not as a role chosen consciously, but as an encoded frequency that keeps manifesting regardless of what it's called. "
+        f"The {sun} Sun is the conscious identity becoming more fully itself with each year. "
+        f"The {hd_type} body-type means the path opens specifically through {strategy.lower()} — not by force, not through logic alone, specifically through that mechanism. "
+        f"Rahu in {rahu_sk} carries the soul's evolutionary vector — the hunger that doesn't settle until it's genuinely inhabited. "
+        f"Gate {lw_gate} ({lw_name}) and the Gift of {lw_gift} are the frequency this life was encoded to transmit. "
+        f"The {mahadasha} Mahadasha is the active karmic layer — the specific dimension of this design the present moment is calling forward. "
+        f"The Atmakaraka is {atmakaraka} — the planet encoding the soul's deepest lesson, the through-line beneath every surface theme. "
+        f"None of these were placed into five different systems by coincidence. They were encoded once, in a single moment, and five different traditions found the same signal. "
+        f"That level of convergence is the message."
+    )
+    complete_sources = [
+        f"Numerology: Life Path {lp} ({lp_arch}) · Expression {expr} · Soul Urge {soul}",
+        f"Western Astrology: {sun} Sun · {moon} Moon · {asc} Ascendant · {dom_elem or 'balanced'} element",
+        f"Human Design: {hd_type} · {strategy} · Profile {profile_hd} · {auth_short} Authority",
+        f"Vedic Astrology: Rahu {rahu_sk} / Ketu {ketu_sk} · {mahadasha} Mahadasha · Atmakaraka {atmakaraka}",
+        f"Gene Keys: Gate {lw_gate} ({lw_name}) · Gift of {lw_gift} · Siddhi of {lw_siddhi}",
+    ]
+
+    return {
+        "core_identity": {"text": core_id_text, "sources": core_id_sources},
+        "strengths": strengths_list,
+        "shadow": shadow_list,
+        "complete_synthesis": {"text": complete_text, "sources": complete_sources},
+    }
+
+
 # ---- Helpers ----
 
 def _jd_to_utc_str(jd: float) -> str:
@@ -1192,6 +1523,7 @@ def adapt(report: BlueprintReport) -> dict:
             "pada": lagna_nak.get("pada", ""),
         },
         "grahas": grahas,
+        "starting_mahadasha": report.vedic.get("starting_mahadasha", ""),
     }
 
     # ---- human design ----
@@ -1340,11 +1672,112 @@ def adapt(report: BlueprintReport) -> dict:
         comm=report.communication or {},
     )
 
+    # ---- synthesis panels (cross-system identity narrative) ----
+    _voice_comm = report.communication or {}
+    _vs = _derive_voice(_voice_comm)["style"]
+    syn_panels = _build_synthesis_panels(report, _vs)
+
+    # ---- top 10 boxes (2 per system) ----
+    _act_seq_t10 = report.gene_keys.get("activation_sequence", [])
+    _lw_t10 = _act_seq_t10[0] if _act_seq_t10 else {}
+    _evo_t10 = _act_seq_t10[1] if len(_act_seq_t10) > 1 else {}
+    _lw_gate_t10 = _lw_t10.get("gate", 0)
+    _evo_gate_t10 = _evo_t10.get("gate", 0)
+    _lw_info_t10 = GENE_KEYS.get(_lw_gate_t10, ("", "", "", ""))
+    _evo_info_t10 = GENE_KEYS.get(_evo_gate_t10, ("", "", "", ""))
+    _hd_raw = report.human_design
+    _auth_raw = _hd_raw.get("authority", "")
+    _auth_short_t10 = _auth_raw.split(" (")[0] if "(" in _auth_raw else _auth_raw
+    _sun_t10 = report.western.get("sun_sign", "")
+    _moon_t10 = report.western.get("moon_sign", "")
+    _ved_t10 = report.vedic or {}
+    _moon_nak_t10 = _ved_t10.get("moon_nakshatra", "")
+    _moon_rashi_t10 = _ved_t10.get("moon_rashi", "")
+    _rahu_t10 = _ved_t10.get("rashis", {}).get("Rahu", "")
+    _rahu_sk_t10 = _rahu_t10.split("(")[0].strip() if _rahu_t10 else ""
+    _lp_t10 = report.numerology["life_path"]
+    _soul_t10 = report.numerology["soul_urge"]
+
+    top_10_boxes = [
+        {"system": "Gene Keys",    "label": "Life's Work",    "value": _lw_t10.get("notation", f"Gate {_lw_gate_t10}"),   "subtitle": _lw_info_t10[0],  "detail": f"Gift: {_lw_info_t10[2]}",  "headline_key": "lifes_work"},
+        {"system": "Gene Keys",    "label": "Evolution",      "value": _evo_t10.get("notation", f"Gate {_evo_gate_t10}"), "subtitle": _evo_info_t10[0], "detail": f"Gift: {_evo_info_t10[2]}", "headline_key": "gk_evolution"},
+        {"system": "Human Design", "label": "Type",           "value": _hd_raw.get("type", ""),                           "subtitle": _hd_raw.get("strategy", ""), "detail": f"Strategy: {_hd_raw.get('strategy', '')}", "headline_key": "hd_type"},
+        {"system": "Human Design", "label": "Authority",      "value": _auth_short_t10,                                   "subtitle": "Inner compass",             "detail": HD_AUTHORITY_LABELS.get(_auth_raw, _auth_raw), "headline_key": "authority"},
+        {"system": "Numerology",   "label": "Life Path",      "value": str(_lp_t10),                                      "subtitle": LP_ARCHETYPES.get(_lp_t10, ""), "detail": "Birth date sum — life's recurring theme", "headline_key": "life_path"},
+        {"system": "Numerology",   "label": "Soul Urge",      "value": str(_soul_t10),                                    "subtitle": "Heart's Desire",             "detail": "Interior yearning — vowels of the birth name", "headline_key": "soul_urge"},
+        {"system": "Vedic",        "label": "Moon Nakshatra", "value": _moon_nak_t10,                                     "subtitle": _moon_rashi_t10.split("(")[0].strip() if _moon_rashi_t10 else "", "detail": "Sidereal Moon mansion — emotional root", "headline_key": "vedic_moon_nak"},
+        {"system": "Vedic",        "label": "Rahu Direction", "value": _rahu_sk_t10,                                      "subtitle": "Soul's growth vector",        "detail": "The hunger this incarnation came to integrate", "headline_key": "vedic_rahu"},
+        {"system": "Western",      "label": "Sun Sign",       "value": _sun_t10,                                          "subtitle": SIGN_GLYPHS.get(_sun_t10, ""), "detail": "Tropical Sun — the conscious identity",  "headline_key": "sun_sign"},
+        {"system": "Western",      "label": "Moon Sign",      "value": _moon_t10,                                         "subtitle": SIGN_GLYPHS.get(_moon_t10, ""), "detail": "Tropical Moon — the emotional architecture", "headline_key": "moon_sign"},
+    ]
+
+    # ---- core numbers 6 ----
+    core_numbers_6 = [
+        {"key": "life_path",     "label": "Life Path",            "number": numerology["life_path"]["number"],    "is_master": numerology["life_path"]["is_master"],    "subtitle": LP_ARCHETYPES.get(numerology["life_path"]["number"], ""), "headline_key": "life_path"},
+        {"key": "expression",    "label": "Expression",           "number": numerology["expression"]["number"],   "is_master": numerology["expression"]["is_master"],   "subtitle": "The gift others recognize",             "headline_key": "expression"},
+        {"key": "soul_urge",     "label": "Soul Urge",            "number": numerology["soul_urge"]["number"],    "is_master": numerology["soul_urge"]["is_master"],    "subtitle": "Interior yearning",                     "headline_key": "soul_urge"},
+        {"key": "personality",   "label": "Personality",          "number": numerology["personality"]["number"],  "is_master": numerology["personality"]["is_master"],  "subtitle": "The face shown to the world",           "headline_key": None},
+        {"key": "maturity",      "label": "Maturity",             "number": numerology["maturity"]["number"],     "is_master": numerology["maturity"]["is_master"],     "subtitle": "What you grow into",                    "headline_key": None},
+        {"key": "personal_year", "label": "Personal Year",        "number": numerology["personal_year"],          "is_master": numerology["personal_year"] in (11, 22, 33), "subtitle": "Current timing cycle",               "headline_key": None},
+    ]
+
+    # ---- celestial 6 (3 western + 3 vedic) ----
+    _sun_planet = next((p for p in planets if p["name"] == "Sun"), {})
+    _moon_planet = next((p for p in planets if p["name"] == "Moon"), {})
+    _moon_graha = next((g for g in grahas if g["name"] == "Moon"), {})
+    celestial_6 = {
+        "western": [
+            {"label": "Sun",       "glyph": _sun_planet.get("sign_glyph", ""),           "value": _sun_planet.get("sign", ""),        "sub": _sun_planet.get("position", ""),             "headline_key": "sun_sign"},
+            {"label": "Moon",      "glyph": _moon_planet.get("sign_glyph", ""),          "value": _moon_planet.get("sign", ""),       "sub": _moon_planet.get("position", ""),            "headline_key": "moon_sign"},
+            {"label": "Ascendant", "glyph": angles["ascendant"]["sign_glyph"],           "value": angles["ascendant"]["sign"],        "sub": angles["ascendant"]["position"],             "headline_key": "ascendant"},
+        ],
+        "vedic": [
+            {"label": "Moon Nakshatra", "glyph": "☽",                                   "value": _moon_graha.get("nakshatra", ""),   "sub": f"{_moon_graha.get('rashi', '')} · Pada {_moon_graha.get('pada', '')}", "headline_key": "vedic_moon_nak"},
+            {"label": "Lagna",          "glyph": "⊕",                                   "value": vedic["lagna"]["rashi"],            "sub": vedic["lagna"]["position"],                  "headline_key": None},
+            {"label": "Rahu Direction", "glyph": "☊",                                   "value": _rahu_sk_t10,                      "sub": "Soul's growth vector",                      "headline_key": "vedic_rahu"},
+        ],
+    }
+
+    # ---- HD summary (6 aspects) ----
+    hd_summary_6 = [
+        {"label": "Type",       "value": human_design["type"],                                       "sub": f"Strategy: {human_design['strategy']}",                           "headline_key": "hd_type"},
+        {"label": "Authority",  "value": human_design["authority"].split(" (")[0],                   "sub": "Inner compass — how the body knows",                              "headline_key": "authority"},
+        {"label": "Profile",    "value": human_design["profile"],                                    "sub": human_design["profile_label"],                                     "headline_key": "profile"},
+        {"label": "Definition", "value": human_design["definition"].replace(" Definition", ""),      "sub": "Energy field architecture",                                       "headline_key": None},
+        {"label": "Signature",  "value": human_design["signature"],                                  "sub": "The feeling when you're aligned",                                 "headline_key": None},
+        {"label": "Not-Self",   "value": human_design["not_self"],                                   "sub": "The signal you've drifted from your design",                      "headline_key": None},
+    ]
+
+    # ---- GK summary (4 activation spheres) ----
+    gk_summary_4 = [
+        {
+            "sphere": s["sphere"],
+            "gate": s.get("gate", 0),
+            "notation": s["notation"],
+            "name": s["name"],
+            "gift": s["gift"],
+            "shadow": s["shadow"],
+            "siddhi": s["siddhi"],
+            "meaning": s["meaning"],
+            "headline_key": "lifes_work" if s["sphere"] == "Life's Work" else ("gk_evolution" if s["sphere"] == "Evolution" else None),
+        }
+        for s in activation_sequence
+    ]
+
     synthesis = {
         "paragraph": report.synthesis["paragraph"],
         "archetypes": archetypes,
+        "top_10_boxes": top_10_boxes,
         "headline_descriptions": headline_descs,
         "section_summary": summaries["grand"],
+        "core_identity": syn_panels["core_identity"],
+        "synthesized_strengths": syn_panels["strengths"],
+        "synthesized_shadow": syn_panels["shadow"],
+        "complete_synthesis": syn_panels["complete_synthesis"],
+        "core_numbers_6": core_numbers_6,
+        "celestial_6": celestial_6,
+        "hd_summary_6": hd_summary_6,
+        "gk_summary_4": gk_summary_4,
     }
 
     # ---- attach section summaries ----

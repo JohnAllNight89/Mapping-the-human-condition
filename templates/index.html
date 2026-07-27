@@ -178,9 +178,17 @@
         </div>
         <div class="card-metal rounded-2xl p-6">
           <h3 class="font-display text-lg tracking-wide text-gold-soft">Celestial Signature</h3>
-          <div id="summary-celestial" class="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <p class="text-sm text-slate-400">Add birth time and place to reveal the sky.</p>
+          <div class="mt-4 grid gap-5 sm:grid-cols-2" id="summary-celestial-wrap">
+            <p id="summary-celestial-placeholder" class="text-sm text-slate-400">Add birth time and place to reveal the sky.</p>
           </div>
+        </div>
+        <div id="summary-hd-card" class="hidden card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Human Design Overview</h3>
+          <div id="summary-hd" class="mt-4 grid gap-3 grid-cols-2 xl:grid-cols-3"></div>
+        </div>
+        <div id="summary-gk-card" class="hidden card-metal rounded-2xl p-6">
+          <h3 class="font-display text-lg tracking-wide text-gold-soft">Gene Keys — Activation Spheres</h3>
+          <div id="summary-gk" class="mt-4 grid gap-4 sm:grid-cols-2"></div>
         </div>
         <div class="card-metal rounded-2xl p-6">
           <h3 class="font-display text-lg tracking-wide text-gold-soft">System Status</h3>
@@ -491,7 +499,7 @@
         sectionSummary(d.section_summary);
     }
 
-    function renderSummary(profile, numerologyData) {
+    function renderSummary(profile, numerologyData, synthesis) {
       const detail = (label, value) => `
         <div class="rounded-lg bg-charcoal-950/50 px-4 py-2.5">
           <p class="text-[11px] uppercase tracking-wider text-slate-500">${label}</p>
@@ -503,18 +511,65 @@
         detail("Birth Time", profile.birth_time) +
         detail("Birth Place", profile.birth_place);
 
-      document.getElementById("summary-numbers").innerHTML = CORE_NUMBERS.map(({ key, title }) => {
-        const result = numerologyData[key];
-        return `
-          <div class="rounded-xl ${result.is_master ? "card-metal-gold" : "card-metal"} p-4 text-center cursor-pointer hover:border-gold/60 transition" data-headline="${key}" title="Click to learn what this means for you">
-            <div class="font-display text-4xl gold-text">${result.number}</div>
-            <p class="mt-2 text-xs font-medium text-slate-300">${title}</p>
-            <p class="mt-0.5 text-[11px] text-violet2-soft">${ARCHETYPES[result.number] || ""}</p>
-            <p class="mt-1.5 text-[10px] text-slate-600 uppercase tracking-wider">↑ what this means for you</p>
-          </div>`;
-      }).join("");
+      const numbers6 = synthesis && synthesis.core_numbers_6;
+      if (numbers6) {
+        document.getElementById("summary-numbers").className = "mt-4 grid grid-cols-2 gap-4 xl:grid-cols-6";
+        document.getElementById("summary-numbers").innerHTML = numbers6.map(item => `
+          <div class="rounded-xl ${item.is_master ? "card-metal-gold" : "card-metal"} p-4 text-center${item.headline_key ? ' cursor-pointer hover:border-gold/60 transition' : ''}"${item.headline_key ? ` data-headline="${item.headline_key}" title="Click to learn more"` : ''}>
+            <div class="font-display text-4xl gold-text">${item.number}</div>
+            <p class="mt-2 text-xs font-medium text-slate-300">${item.label}</p>
+            <p class="mt-0.5 text-[11px] text-violet2-soft">${item.subtitle || ""}</p>
+            ${item.headline_key ? '<p class="mt-1.5 text-[10px] text-slate-600 uppercase tracking-wider">↑ what this means for you</p>' : ""}
+          </div>`).join("");
+      } else {
+        document.getElementById("summary-numbers").className = "mt-4 grid grid-cols-2 gap-4 xl:grid-cols-4";
+        document.getElementById("summary-numbers").innerHTML = CORE_NUMBERS.map(({ key, title }) => {
+          const result = numerologyData[key];
+          return `
+            <div class="rounded-xl ${result.is_master ? "card-metal-gold" : "card-metal"} p-4 text-center cursor-pointer hover:border-gold/60 transition" data-headline="${key}" title="Click to learn what this means for you">
+              <div class="font-display text-4xl gold-text">${result.number}</div>
+              <p class="mt-2 text-xs font-medium text-slate-300">${title}</p>
+              <p class="mt-0.5 text-[11px] text-violet2-soft">${ARCHETYPES[result.number] || ""}</p>
+              <p class="mt-1.5 text-[10px] text-slate-600 uppercase tracking-wider">↑ what this means for you</p>
+            </div>`;
+        }).join("");
+      }
 
       document.getElementById("engine-status").classList.remove("hidden");
+    }
+
+    // ---------- Summary HD + GK tiles ----------
+    function renderSummaryHD(hd6) {
+      if (!hd6 || !hd6.length) return;
+      document.getElementById("summary-hd-card").classList.remove("hidden");
+      document.getElementById("summary-hd").innerHTML = hd6.map(item => `
+        <div class="rounded-xl ${item.headline_key ? "card-metal-gold cursor-pointer hover:border-gold/60" : "card-metal"} p-4 text-center transition"${item.headline_key ? ` data-headline="${item.headline_key}" title="Click to learn more"` : ''}>
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">${item.label}</p>
+          <div class="mt-1.5 font-display text-base gold-text leading-tight">${item.value}</div>
+          <p class="mt-1 text-[11px] text-violet2-soft">${item.sub || ""}</p>
+          ${item.headline_key ? '<p class="mt-1 text-[10px] text-slate-700 uppercase tracking-wider">↑ tap</p>' : ""}
+        </div>`).join("");
+    }
+
+    function renderSummaryGK(gk4) {
+      if (!gk4 || !gk4.length) return;
+      document.getElementById("summary-gk-card").classList.remove("hidden");
+      document.getElementById("summary-gk").innerHTML = gk4.map(item => `
+        <div class="rounded-2xl ${item.headline_key ? "card-metal-gold cursor-pointer hover:border-gold/60" : "card-metal"} p-5 transition"${item.headline_key ? ` data-headline="${item.headline_key}" title="Click to learn more about ${item.sphere}"` : ''}>
+          <div class="flex items-baseline justify-between gap-2">
+            <p class="text-[10px] uppercase tracking-[0.25em] text-violet2-soft">${item.sphere}</p>
+            ${item.headline_key ? '<p class="text-[9px] text-slate-600 uppercase tracking-wider">↑ tap</p>' : ""}
+          </div>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="font-display text-2xl gold-text">${item.notation}</span>
+            <span class="text-sm text-slate-300">${item.name}</span>
+          </div>
+          <div class="mt-3 grid grid-cols-3 gap-1.5 border-t border-gold/15 pt-2.5 text-center text-xs">
+            <div><p class="text-[9px] uppercase tracking-wider text-slate-600">Shadow</p><p class="mt-0.5 text-[11px] text-slate-400">${item.shadow}</p></div>
+            <div><p class="text-[9px] uppercase tracking-wider text-violet2-soft">Gift</p><p class="mt-0.5 text-[11px] text-slate-200">${item.gift}</p></div>
+            <div><p class="text-[9px] uppercase tracking-wider text-gold-soft">Siddhi</p><p class="mt-0.5 text-[11px] gold-text">${item.siddhi}</p></div>
+          </div>
+        </div>`).join("");
     }
 
     // ---------- Western Astrology ----------
@@ -576,19 +631,45 @@
         </tr>`).join("");
 
       const lagna = vedic.lagna;
+      const sunGraha  = vedic.grahas.find(g => g.name === "Sun")  || {};
+      const moonGraha = vedic.grahas.find(g => g.name === "Moon") || {};
+      const rahuGraha = vedic.grahas.find(g => g.name === "Rahu") || {};
+
+      const portraitCard = (glyph, role, data) =>
+        `<div class="card-metal rounded-2xl p-5 text-center">
+           <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft">${glyph} ${role}</p>
+           <div class="mt-2 font-display text-2xl gold-text">${data.rashi || "—"}</div>
+           <p class="mt-1 text-xs text-slate-400">${data.nakshatra || ""} ${data.pada ? "· Pada " + data.pada : ""}</p>
+           <p class="mt-0.5 font-mono text-[11px] text-slate-500">${data.position || ""}</p>
+         </div>`;
+
       container.innerHTML =
         contextBanner(astro) +
-        `<div class="grid gap-4 sm:grid-cols-2">
-           <div class="card-metal-gold rounded-2xl p-5 text-center">
-             <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft">Lagna (Ascendant)</p>
-             <div class="mt-2 font-display text-3xl gold-text">${lagna.rashi}</div>
-             <p class="mt-2 font-mono text-sm text-slate-300">${lagna.position}</p>
-             <p class="mt-1 text-xs text-slate-400">${lagna.nakshatra} · Pada ${lagna.pada}</p>
+        `<div class="card-metal rounded-2xl p-6">
+           <h3 class="font-display text-lg tracking-wide text-gold-soft">Vedic Portrait</h3>
+           <p class="mt-1 text-xs text-slate-400">The four pillars of the sidereal sky — Atma, Manas, Lagna, Growth vector</p>
+           <div class="mt-4 grid grid-cols-2 gap-4 xl:grid-cols-4">
+             ${portraitCard("☉", "Sun · Atma", sunGraha)}
+             ${portraitCard("☽", "Moon · Manas", moonGraha)}
+             <div class="card-metal-gold rounded-2xl p-5 text-center">
+               <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft">⊕ Lagna · Rising</p>
+               <div class="mt-2 font-display text-2xl gold-text">${lagna.rashi}</div>
+               <p class="mt-1 text-xs text-slate-400">${lagna.nakshatra} · Pada ${lagna.pada}</p>
+               <p class="mt-0.5 font-mono text-[11px] text-slate-500">${lagna.position}</p>
+             </div>
+             ${portraitCard("☊", "Rahu · Growth", rahuGraha)}
            </div>
+         </div>` +
+        `<div class="grid gap-4 sm:grid-cols-2">
            <div class="card-metal rounded-2xl p-5 text-center">
              <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft">Ayanamsa</p>
              <div class="mt-2 font-display text-3xl text-slate-100">${vedic.ayanamsa_dms}</div>
              <p class="mt-2 text-xs text-slate-400">${vedic.ayanamsa_name} · sidereal = tropical − ayanamsa</p>
+           </div>
+           <div class="card-metal rounded-2xl p-5">
+             <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft mb-3">Starting Mahadasha</p>
+             <p class="font-display text-2xl gold-text">${vedic.starting_mahadasha || "—"}</p>
+             <p class="mt-2 text-xs text-slate-400">Dasha lord at birth · Vimsottari 120-year cycle</p>
            </div>
          </div>` +
         tableShell("Graha Positions", "Sidereal zodiac · Lahiri Ayanamsa",
@@ -675,9 +756,12 @@
         setStatus("status-gk", false);
         return;
       }
+      const GK_HEADLINE = { "Life's Work": "lifes_work", "Evolution": "gk_evolution" };
       const gk = astro.gene_keys;
-      const spheres = gk.activation_sequence.map((sphere) => `
-        <div class="card-metal-gold rounded-2xl p-6">
+      const spheres = gk.activation_sequence.map((sphere) => {
+        const hk = GK_HEADLINE[sphere.sphere] || null;
+        return `
+        <div class="card-metal-gold rounded-2xl p-6${hk ? ' cursor-pointer hover:border-gold/60 transition' : ''}"${hk ? ` data-headline="${hk}" title="Click to learn what ${sphere.sphere} means for you"` : ''}>
           <div class="flex items-baseline justify-between gap-3">
             <p class="text-[11px] uppercase tracking-[0.25em] text-violet2-soft">${sphere.sphere}</p>
             <span class="text-[11px] text-slate-500">${sphere.source}</span>
@@ -692,7 +776,8 @@
             <div><p class="text-[10px] uppercase tracking-wider text-violet2-soft">Gift</p><p class="mt-1 text-slate-200">${sphere.gift}</p></div>
             <div><p class="text-[10px] uppercase tracking-wider text-gold-soft">Siddhi</p><p class="mt-1 gold-text font-medium">${sphere.siddhi}</p></div>
           </div>
-        </div>`).join("");
+          ${hk ? '<p class="mt-3 text-[10px] text-slate-600 uppercase tracking-wider text-center">↑ tap for your personal reading</p>' : ""}
+        </div>`}).join("");
 
       const keyRows = gk.all_keys.map((key) => `
         <tr class="odd:bg-charcoal-950/30">
@@ -819,10 +904,12 @@
     }
 
     // ---------- Celestial summary tile ----------
-    function renderCelestial(astro) {
-      const container = document.getElementById("summary-celestial");
+    function renderCelestial(astro, synthesis) {
+      const wrap = document.getElementById("summary-celestial-wrap");
+      const placeholder = document.getElementById("summary-celestial-placeholder");
       if (!astro.available) {
-        container.innerHTML = `<p class="text-sm text-slate-400">${astro.reason}</p>`;
+        if (placeholder) placeholder.style.display = "";
+        wrap.querySelectorAll(".celestial-col").forEach(el => el.remove());
         ["status-western", "status-vedic"].forEach((id) => {
           const el = document.getElementById(id);
           el.innerHTML = "○ Awaiting birth time &amp; place";
@@ -830,25 +917,46 @@
         });
         return;
       }
-      const bodies = Object.fromEntries(astro.western.planets.map((p) => [p.name, p]));
-      const moonVedic = astro.vedic.grahas.find((g) => g.name === "Moon");
-      const tile = (label, main, sub, headlineKey = null) => `
-        <div class="rounded-xl card-metal p-4 text-center${headlineKey ? ' cursor-pointer hover:border-gold/60 transition' : ''}"${headlineKey ? ` data-headline="${headlineKey}" title="Click to learn what this means for you"` : ''}>
-          <p class="text-[11px] uppercase tracking-wider text-slate-500">${label}</p>
-          <div class="mt-1.5 font-display text-xl gold-text">${main}</div>
-          <p class="mt-1 text-[11px] text-violet2-soft">${sub}</p>
-          ${headlineKey ? '<p class="mt-1.5 text-[10px] text-slate-600 uppercase tracking-wider">↑ what this means for you</p>' : ''}
-        </div>`;
-      container.innerHTML =
-        tile("Sun", `${bodies.Sun.sign_glyph} ${bodies.Sun.sign}`, bodies.Sun.position, "sun_sign") +
-        tile("Moon", `${bodies.Moon.sign_glyph} ${bodies.Moon.sign}`, bodies.Moon.position, "moon_sign") +
-        tile("Ascendant", `${astro.western.angles.ascendant.sign_glyph} ${astro.western.angles.ascendant.sign}`, astro.western.angles.ascendant.position, "ascendant") +
-        (moonVedic ? tile("Moon Nakshatra", moonVedic.nakshatra, `${moonVedic.rashi} · Pada ${moonVedic.pada}`) : "");
+      if (placeholder) placeholder.style.display = "none";
+      wrap.querySelectorAll(".celestial-col").forEach(el => el.remove());
+
       ["status-western", "status-vedic"].forEach((id) => {
         const el = document.getElementById(id);
         el.innerHTML = "● Active";
         el.className = "text-emerald-400";
       });
+
+      const tile = (item) => `
+        <div class="rounded-xl card-metal p-4 text-center${item.headline_key ? ' cursor-pointer hover:border-gold/60 transition' : ''}"${item.headline_key ? ` data-headline="${item.headline_key}" title="Click to learn what this means for you"` : ''}>
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">${item.label}</p>
+          <div class="mt-1.5 font-display text-lg gold-text">${item.glyph ? item.glyph + " " : ""}${item.value}</div>
+          <p class="mt-1 text-[11px] text-violet2-soft">${item.sub || ""}</p>
+          ${item.headline_key ? '<p class="mt-1.5 text-[10px] text-slate-600 uppercase tracking-wider">↑ what this means for you</p>' : ''}
+        </div>`;
+
+      if (synthesis && synthesis.celestial_6) {
+        const c6 = synthesis.celestial_6;
+        const colW = document.createElement("div");
+        colW.className = "celestial-col";
+        colW.innerHTML = `<p class="mb-2 text-[10px] uppercase tracking-[0.3em] text-slate-500">Western · Tropical</p><div class="grid gap-3">${(c6.western||[]).map(tile).join("")}</div>`;
+        const colV = document.createElement("div");
+        colV.className = "celestial-col";
+        colV.innerHTML = `<p class="mb-2 text-[10px] uppercase tracking-[0.3em] text-slate-500">Vedic · Sidereal</p><div class="grid gap-3">${(c6.vedic||[]).map(tile).join("")}</div>`;
+        wrap.appendChild(colW);
+        wrap.appendChild(colV);
+      } else {
+        const bodies = Object.fromEntries(astro.western.planets.map((p) => [p.name, p]));
+        const moonVedic = astro.vedic.grahas.find((g) => g.name === "Moon");
+        const tileOld = (label, main, sub, headlineKey = null) => tile({label, glyph: "", value: main, sub, headline_key: headlineKey});
+        const col = document.createElement("div");
+        col.className = "celestial-col sm:col-span-2 grid gap-3 sm:grid-cols-2 xl:grid-cols-4";
+        col.innerHTML =
+          tileOld("Sun", `${bodies.Sun.sign_glyph} ${bodies.Sun.sign}`, bodies.Sun.position, "sun_sign") +
+          tileOld("Moon", `${bodies.Moon.sign_glyph} ${bodies.Moon.sign}`, bodies.Moon.position, "moon_sign") +
+          tileOld("Ascendant", `${astro.western.angles.ascendant.sign_glyph} ${astro.western.angles.ascendant.sign}`, astro.western.angles.ascendant.position, "ascendant") +
+          (moonVedic ? tileOld("Moon Nakshatra", moonVedic.nakshatra, `${moonVedic.rashi} · Pada ${moonVedic.pada}`) : "");
+        wrap.appendChild(col);
+      }
     }
 
     // ---------- Soul Blueprint ----------
@@ -857,16 +965,101 @@
       if (!data.synthesis) { card.classList.add("hidden"); return; }
       card.classList.remove("hidden");
       document.getElementById("blueprint-paragraph").textContent = data.synthesis.paragraph;
-      document.getElementById("blueprint-archetypes").innerHTML = data.synthesis.archetypes.map((entry) => `
-        <div class="rounded-xl bg-charcoal-950/60 border border-charcoal-700/60 p-3 text-center cursor-pointer hover:border-gold/50 hover:bg-charcoal-950/80 transition"
-             data-headline="${entry.headline_key}" title="Click to learn what ${entry.label} means for you">
-          <p class="text-[10px] uppercase tracking-wider text-slate-500">${entry.label}</p>
-          <p class="mt-1 font-display text-base gold-text">${entry.value}</p>
-          <p class="mt-0.5 text-[10px] text-violet2-soft">${entry.detail}</p>
-          <p class="mt-1 text-[10px] text-slate-700 uppercase tracking-wider">↑ tap</p>
-        </div>`).join("");
+
+      const syn = data.synthesis;
+      const boxes = syn.top_10_boxes || syn.archetypes || [];
+
+      if (syn.top_10_boxes) {
+        const SYSTEM_ORDER = ["Gene Keys", "Human Design", "Numerology", "Vedic", "Western"];
+        const grouped = {};
+        boxes.forEach(b => { if (!grouped[b.system]) grouped[b.system] = []; grouped[b.system].push(b); });
+        document.getElementById("blueprint-archetypes").className = "mt-4 space-y-4";
+        document.getElementById("blueprint-archetypes").innerHTML = SYSTEM_ORDER.filter(s => grouped[s]).map(system => {
+          const items = grouped[system].map(entry => `
+            <div class="rounded-xl bg-charcoal-950/60 border border-charcoal-700/60 p-4 text-center cursor-pointer hover:border-gold/50 hover:bg-charcoal-800/60 transition"${entry.headline_key ? ` data-headline="${entry.headline_key}" title="Click to learn what ${entry.label} means for you"` : ''}>
+              <p class="text-[10px] uppercase tracking-wider text-slate-500">${entry.label}</p>
+              <p class="mt-1 font-display text-base gold-text">${entry.value}</p>
+              <p class="mt-0.5 text-[10px] text-violet2-soft">${entry.subtitle || ""}</p>
+              ${entry.detail && entry.detail !== entry.subtitle ? `<p class="mt-0.5 text-[10px] text-slate-500">${entry.detail}</p>` : ""}
+              ${entry.headline_key ? '<p class="mt-1.5 text-[10px] text-slate-700 uppercase tracking-wider">↑ tap</p>' : ""}
+            </div>`).join("");
+          return `<div>
+            <p class="mb-2 text-[10px] uppercase tracking-[0.3em] text-slate-600">${system}</p>
+            <div class="grid grid-cols-2 gap-3">${items}</div>
+          </div>`;
+        }).join("");
+      } else {
+        document.getElementById("blueprint-archetypes").className = "mt-4 grid grid-cols-2 gap-3 md:grid-cols-4";
+        document.getElementById("blueprint-archetypes").innerHTML = boxes.map((entry) => `
+          <div class="rounded-xl bg-charcoal-950/60 border border-charcoal-700/60 p-3 text-center cursor-pointer hover:border-gold/50 hover:bg-charcoal-950/80 transition"
+               data-headline="${entry.headline_key}" title="Click to learn what ${entry.label} means for you">
+            <p class="text-[10px] uppercase tracking-wider text-slate-500">${entry.label}</p>
+            <p class="mt-1 font-display text-base gold-text">${entry.value}</p>
+            <p class="mt-0.5 text-[10px] text-violet2-soft">${entry.detail}</p>
+            <p class="mt-1 text-[10px] text-slate-700 uppercase tracking-wider">↑ tap</p>
+          </div>`).join("");
+      }
+
+      // Synthesis narrative panels
+      let extraHtml = "";
+
+      if (syn.core_identity && syn.core_identity.text) {
+        const badges = (syn.core_identity.sources || []).map(s =>
+          `<span class="rounded-full border border-violet2/30 bg-violet2/10 px-2 py-0.5 text-[10px] font-mono text-violet2-soft">${s}</span>`).join(" ");
+        extraHtml += `
+          <div class="rounded-2xl card-metal p-6 mt-5">
+            <h4 class="font-display text-base tracking-wide text-gold-soft">Core Identity</h4>
+            <p class="mt-3 text-sm leading-relaxed text-slate-300">${syn.core_identity.text}</p>
+            <div class="mt-3 flex flex-wrap gap-1.5">${badges}</div>
+          </div>`;
+      }
+
+      if ((syn.synthesized_strengths || []).length) {
+        const items = syn.synthesized_strengths.map(s => {
+          const badges = (s.sources || []).map(src =>
+            `<span class="rounded-full border border-emerald-700/30 bg-emerald-950/20 px-1.5 py-0.5 text-[9px] font-mono text-emerald-400">${src}</span>`).join(" ");
+          return `<li class="flex items-start gap-3 rounded-xl bg-charcoal-950/50 px-4 py-3">
+            <span class="mt-0.5 text-gold-soft text-base shrink-0">✦</span>
+            <div><p class="text-sm text-slate-200">${s.text}</p><div class="mt-1.5 flex flex-wrap gap-1">${badges}</div></div>
+          </li>`;
+        }).join("");
+        extraHtml += `
+          <div class="rounded-2xl card-metal p-6 mt-5">
+            <h4 class="font-display text-base tracking-wide text-gold-soft">Synthesized Strengths &amp; Talents</h4>
+            <ul class="mt-3 space-y-2">${items}</ul>
+          </div>`;
+      }
+
+      if ((syn.synthesized_shadow || []).length) {
+        const items = syn.synthesized_shadow.map(s => {
+          const badges = (s.sources || []).map(src =>
+            `<span class="rounded-full border border-violet2/30 bg-violet2/10 px-1.5 py-0.5 text-[9px] font-mono text-violet2-soft">${src}</span>`).join(" ");
+          return `<li class="flex items-start gap-3 rounded-xl bg-charcoal-950/50 px-4 py-3">
+            <span class="mt-0.5 text-violet2-soft text-base shrink-0">◈</span>
+            <div><p class="text-sm text-slate-300">${s.text}</p><div class="mt-1.5 flex flex-wrap gap-1">${badges}</div></div>
+          </li>`;
+        }).join("");
+        extraHtml += `
+          <div class="rounded-2xl card-metal p-6 mt-5">
+            <h4 class="font-display text-base tracking-wide text-violet2-soft">Synthesized Shadow Patterns</h4>
+            <p class="mt-1 text-[11px] text-slate-500">Growth edges to integrate — not failures, patterns</p>
+            <ul class="mt-3 space-y-2">${items}</ul>
+          </div>`;
+      }
+
+      if (syn.complete_synthesis && syn.complete_synthesis.text) {
+        const badges = (syn.complete_synthesis.sources || []).map(s =>
+          `<span class="rounded-full border border-gold/30 bg-gold/10 px-2 py-0.5 text-[10px] font-mono text-gold-soft">${s}</span>`).join(" ");
+        extraHtml += `
+          <div class="rounded-2xl card-metal-gold p-6 mt-5">
+            <h4 class="font-display text-base tracking-wide text-gold-soft">Complete Synthesis</h4>
+            <p class="mt-3 text-sm leading-relaxed text-slate-200 font-medium">${syn.complete_synthesis.text}</p>
+            <div class="mt-3 flex flex-wrap gap-1.5">${badges}</div>
+          </div>`;
+      }
+
       document.getElementById("blueprint-synthesis-summary").innerHTML =
-        sectionSummary(data.synthesis.section_summary);
+        extraHtml + sectionSummary(syn.section_summary);
     }
 
     // ---------- All Aspects ----------
@@ -1013,14 +1206,18 @@
         _headlineDescriptions = (data.synthesis && data.synthesis.headline_descriptions) || {};
 
         renderNumerology(data.numerology);
-        renderSummary(data.profile, data.numerology);
+        renderSummary(data.profile, data.numerology, data.synthesis);
         renderWestern(data.astrology);
         renderVedic(data.astrology);
-        renderCelestial(data.astrology);
+        renderCelestial(data.astrology, data.synthesis);
         renderHumanDesign(data.astrology);
         renderGeneKeys(data.astrology);
         renderCommunication(data.astrology);
         renderBlueprint(data);
+        if (data.synthesis) {
+          renderSummaryHD(data.synthesis.hd_summary_6);
+          renderSummaryGK(data.synthesis.gk_summary_4);
+        }
 
         // Update audit download link
         const params = new URLSearchParams({ name, birth_date, birth_time, birth_place });
