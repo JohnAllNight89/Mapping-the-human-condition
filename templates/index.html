@@ -997,6 +997,11 @@
         const entries = (trait.entries || []).map((e) => {
           const tierLabel = BIG_FIVE_TIER_LABEL[e.tier] || "—";
           const tierColor = e.tier === 1 ? "text-gold-soft" : e.tier === 2 ? "text-violet2-soft" : "text-slate-400";
+          const registerHtml = e.register_note ? `
+              <div class="mt-2 rounded-lg border border-violet2/20 bg-violet2/5 p-2.5">
+                <p class="text-[9px] uppercase tracking-wider text-violet2-soft">Register — ${e.register_note.sphere} Gate ${e.register_note.gate} (${e.register_note.gate_name})</p>
+                <p class="mt-1 text-xs text-slate-300 leading-relaxed">${e.register_note.plain}</p>
+              </div>` : "";
           return `
             <div class="rounded-xl bg-charcoal-950/50 p-4">
               <p class="flex flex-wrap items-baseline justify-between gap-2">
@@ -1005,6 +1010,7 @@
               </p>
               <p class="mt-2 text-xs text-slate-400 leading-relaxed">${e.technical}</p>
               <p class="mt-1 text-sm text-slate-200 leading-relaxed">→ ${e.plain}</p>
+              ${registerHtml}
             </div>`;
         }).join("");
 
